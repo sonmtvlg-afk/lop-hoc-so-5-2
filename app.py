@@ -3,49 +3,50 @@ import streamlit.components.v1 as components
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Phòng Thí Nghiệm Hình Học Ảo AI - Lớp 5/2",
-    page_icon="📐",
+    page_title="Phòng Thí Nghiệm Khoa Học Ảo AI - Lớp 5/2",
+    page_icon="🔬",
     layout="wide"
 )
 
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 1.2rem;
+        padding-top: 1rem;
         padding-bottom: 1rem;
     }
-    .top-banner {
-        background: linear-gradient(135deg, #0b7285 0%, #1971c2 60%, #3b5bdb 100%);
+    .sci-banner {
+        background: linear-gradient(135deg, #099268 0%, #0ca678 50%, #1098ad 100%);
         color: white;
         padding: 18px 24px;
         border-radius: 16px;
         text-align: center;
-        box-shadow: 0 6px 18px rgba(25, 113, 194, 0.25);
+        box-shadow: 0 6px 18px rgba(12, 166, 120, 0.28);
         margin-bottom: 12px;
     }
-    .top-banner h1 {
-        font-size: 1.75rem;
+    .sci-banner h1 {
+        font-size: 1.8rem;
         margin: 0;
         color: white;
         font-weight: 800;
     }
-    .top-banner p {
+    .sci-banner p {
         font-size: 1rem;
         margin: 5px 0 0 0;
-        color: #e3fafc;
+        color: #e6fcf5;
+        font-weight: 600;
     }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div class="top-banner">
-    <h1>📐 PHÒNG THÍ NGHIỆM HÌNH HỌC ẢO AI - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Kéo thả Thước Đo Độ, Thước Thẳng & Ê-ke trực quan</p>
+<div class="sci-banner">
+    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC ẢO AI - LỚP 5/2</h1>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Khám phá Năng lượng, Sự biến đổi chất & Môi trường xanh</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== ỨNG DỤNG TƯƠNG TÁC HTML5 CANVAS + AI SENSOR ====================
-geometry_app_html = """
+# ==================== MÔ PHỎNG KHOA HỌC TƯƠNG TÁC HTML5 CANVAS + AI ====================
+science_lab_html = """
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -53,25 +54,25 @@ geometry_app_html = """
 <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
     body { margin: 0; padding: 0; background: #f8f9fa; color: #212529; }
-    .app-wrapper {
+    .lab-wrapper {
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
-        max-width: 1200px;
+        max-width: 1220px;
         margin: 0 auto;
     }
-    .canvas-panel {
+    .stage-panel {
         flex: 2;
-        min-width: 340px;
+        min-width: 350px;
         background: white;
         border-radius: 16px;
-        padding: 12px;
+        padding: 14px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         border: 2px solid #dee2e6;
     }
     .control-panel {
-        flex: 1;
-        min-width: 300px;
+        flex: 1.1;
+        min-width: 310px;
         background: white;
         border-radius: 16px;
         padding: 16px;
@@ -81,59 +82,50 @@ geometry_app_html = """
         flex-direction: column;
         gap: 12px;
     }
-    .toolbar {
+    .station-tabs {
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 10px;
-        justify-content: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
     }
-    .btn {
-        padding: 9px 14px;
-        border: none;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 0.92rem;
+    .tab-btn {
+        flex: 1;
+        padding: 10px 12px;
+        border: 2px solid #96f2d7;
+        background: #e6fcf5;
+        color: #087f5b;
+        font-weight: 800;
+        font-size: 0.93rem;
+        border-radius: 12px;
         cursor: pointer;
-        transition: all 0.15s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+        transition: all 0.2s;
+        text-align: center;
     }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .btn-tool { background: #e7f5ff; color: #1864ab; border: 2px solid #74c0fc; }
-    .btn-tool.active { background: #1971c2; color: white; border-color: #1864ab; }
-    .btn-magic { background: #fff3bf; color: #d9480f; border: 2px solid #fcc419; }
-    .btn-new { background: #ebfbee; color: #2b8a3e; border: 2px solid #69db7c; }
-    .btn-submit { background: linear-gradient(135deg, #f76707, #e8590c); color: white; width: 100%; justify-content: center; font-size: 1.05rem; padding: 12px; }
-
+    .tab-btn.active {
+        background: #0ca678;
+        color: white;
+        border-color: #087f5b;
+        box-shadow: 0 4px 10px rgba(12, 166, 120, 0.3);
+    }
     canvas {
         width: 100%;
         height: auto;
-        background: #ffffff;
-        border: 2px solid #ced4da;
+        background: #1e293b;
+        border-radius: 14px;
+        border: 3px solid #cbd5e1;
+        display: block;
+    }
+    .ai-explain-box {
+        margin-top: 10px;
+        padding: 13px 16px;
         border-radius: 12px;
-        cursor: grab;
-        touch-action: none;
-    }
-    canvas:active { cursor: grabbing; }
-
-    .ai-sensor-bar {
-        margin-top: 8px;
-        padding: 11px 14px;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        font-weight: 600;
         background: #e3fafc;
-        border-left: 5px solid #15aabf;
+        border-left: 6px solid #1098ad;
         color: #0b7285;
+        font-size: 0.96rem;
+        line-height: 1.45;
     }
-    .ai-sensor-bar.aligned {
-        background: #d3f9d8;
-        border-left-color: #2b8a3e;
-        color: #1b4332;
-    }
-    .score-card {
+    .user-bar {
         background: linear-gradient(135deg, #fff9db, #ffec99);
         border: 2px solid #fcc419;
         border-radius: 12px;
@@ -144,807 +136,698 @@ geometry_app_html = """
         font-weight: bold;
         color: #d9480f;
     }
-    .mission-box {
-        background: #f1f3f5;
+    .ctrl-group {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
         border-radius: 12px;
         padding: 12px;
-        border-left: 5px solid #1971c2;
     }
-    .input-group {
-        display: flex;
+    .ctrl-title {
+        font-weight: 800;
+        color: #087f5b;
+        margin-bottom: 8px;
+        font-size: 0.96rem;
+    }
+    .btn-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
-        align-items: center;
+    }
+    .act-btn {
+        padding: 9px 10px;
+        border: 2px solid #ced4da;
+        background: white;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.15s;
+        font-size: 0.9rem;
+    }
+    .act-btn:hover { background: #f1f3f5; transform: translateY(-1px); }
+    .act-btn.selected {
+        background: #0ca678;
+        color: white;
+        border-color: #087f5b;
+    }
+    .switch-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        color: white;
+        background: #e03131;
         margin-top: 6px;
     }
-    input[type="number"], select, input[type="text"] {
+    .switch-btn.on { background: #2f9e44; }
+    input[type="text"], select {
         width: 100%;
-        padding: 9px 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
         border: 2px solid #adb5bd;
-        border-radius: 8px;
-        font-size: 1rem;
         font-weight: bold;
+        font-size: 0.95rem;
     }
-    .slider-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        background: #f8f9fa;
-        padding: 6px 10px;
-        border-radius: 8px;
-    }
-    .skill-box {
-        background: #ebfbee;
-        border: 1px dashed #40c057;
-        border-radius: 10px;
-        padding: 10px;
-        font-size: 0.88rem;
-        color: #2b8a3e;
+    input[type="range"] { width: 100%; margin: 6px 0; }
+    .quiz-card {
+        background: #fff4e6;
+        border: 2px solid #ffa94d;
+        border-radius: 12px;
+        padding: 12px;
     }
 </style>
 </head>
 <body>
 
-<div class="app-wrapper">
-    <!-- CỘT TRÁI: BẢNG VẼ & THƯỚC ẢO TƯƠNG TÁC -->
-    <div class="canvas-panel">
-        <div class="toolbar">
-            <button id="btnProtractor" class="btn btn-tool active" onclick="toggleTool('protractor')">📐 Thước Đo Độ (180°)</button>
-            <button id="btnRuler" class="btn btn-tool" onclick="toggleTool('ruler')">📏 Thước Thẳng (cm)</button>
-            <button id="btnEke" class="btn btn-tool" onclick="toggleTool('eke')">🔺 Thước Ê-ke Vuông</button>
-            <button class="btn btn-magic" onclick="autoAlignTool()">🧲 AI Đặt Thước Mẫu</button>
-            <button class="btn btn-new" onclick="generateNewProblem()">🎲 Đổi Hình Mới</button>
+<div class="lab-wrapper">
+    <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG THÍ NGHIỆM TRỰC QUAN -->
+    <div class="stage-panel">
+        <div class="station-tabs">
+            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Mạch Điện & Vật Dẫn Điện</button>
+            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🧪 Trạm 2: Sự Biến Đổi Của Chất</button>
+            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌍 Trạm 3: Khí Hậu & Năng Lượng Xanh</button>
         </div>
 
-        <canvas id="geoCanvas" width="760" height="460"></canvas>
+        <canvas id="labCanvas" width="760" height="440"></canvas>
 
-        <!-- Thanh xoay thước mượt mà cho điện thoại & máy tính -->
-        <div class="slider-row">
-            <span>🔄 Xoay thước đang chọn:</span>
-            <input type="range" id="angleSlider" min="-180" max="180" value="0" style="flex:1;" oninput="rotateActiveTool(this.value)">
-            <span id="angleLabel" style="min-width:45px; text-align:right;">0°</span>
-            <button class="btn" style="padding:4px 10px; background:#e9ecef;" onclick="rotateActiveTool(0); document.getElementById('angleSlider').value=0;">Đặt ngang 0°</button>
-        </div>
-
-        <div id="aiSensor" class="ai-sensor-bar">
-            🤖 <b>Trợ lý AI:</b> Hãy dùng chuột hoặc ngón tay <b>kéo Tâm thước (chấm đỏ)</b> đặt trùng vào <b>Đỉnh O</b> của góc nhé!
+        <div id="aiExplain" class="ai-explain-box">
+            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b>! Hãy chọn vật liệu lắp vào mạch điện và bấm <b>Đóng Công Tắc</b> để xem dòng điện chạy qua như thế nào nhé!
         </div>
     </div>
 
-    <!-- CỘT PHẢI: NHIỆM VỤ & KIỂM TRA ĐÁP ÁN -->
+    <!-- CỘT PHẢI: BẢNG ĐIỀU KHIỂN THÍ NGHIỆM & THỬ THÁCH -->
     <div class="control-panel">
-        <div class="score-card">
-            <div>👤 <span id="stNameDisplay">Hiểu Minh</span></div>
-            <div>⭐ <span id="starCount">50</span> Sao</div>
-            <div>🏆 Đúng: <span id="correctCount">0</span> bài</div>
-        </div>
-
-        <div style="display:flex; gap:6px;">
-            <input type="text" id="studentName" placeholder="Nhập tên học sinh..." value="Hiểu Minh" oninput="updateStudentName()">
+        <div class="user-bar">
+            <div>👩‍🔬 Nhà khoa học: <span id="scientistName">Hiểu Minh</span></div>
+            <div>🌟 <span id="expScore">60</span> Điểm Khám Phá</div>
         </div>
 
         <div>
-            <label style="font-weight:bold; font-size:0.9rem;">🎯 Chọn Chuyên đề Thực hành Hình học 5:</label>
-            <select id="modeSelect" onchange="changeMode()" style="margin-top:4px;">
-                <option value="angle">1. Thực hành Đo Góc (Góc nhọn, vuông, tù)</option>
-                <option value="segment">2. Thực hành Đo Độ Dài Đoạn Thẳng (cm)</option>
-                <option value="triangle">3. Đo Đáy & Đường Cao Tam Giác -> Tính Diện Tích</option>
+            <input type="text" id="nameInput" value="Hiểu Minh" placeholder="Nhập tên học sinh..." oninput="updateName()">
+        </div>
+
+        <!-- ĐIỀU KHIỂN TRẠM 1: MẠCH ĐIỆN -->
+        <div id="ctrlStation1" class="ctrl-group">
+            <div class="ctrl-title">⚡ Bảng Điều Khiển Mạch Điện Lớp 5</div>
+            <label style="font-size:0.88rem; font-weight:bold;">1. Chọn Nguồn Năng Lượng:</label>
+            <select id="powerSource" onchange="updateCircuit()" style="margin-bottom:8px; margin-top:4px;">
+                <option value="battery">🔋 Pin tiểu 1,5V - 3V</option>
+                <option value="solar">☀️ Pin Năng lượng Mặt trời (Năng lượng sạch)</option>
             </select>
+
+            <label style="font-size:0.88rem; font-weight:bold;">2. Thả vật liệu vào khe thử (Dẫn điện hay Cách điện?):</label>
+            <div class="btn-grid" style="margin-top:6px;">
+                <button class="act-btn selected" id="mat_copper" onclick="selectMaterial('copper')">🪙 Thanh Đồng</button>
+                <button class="act-btn" id="mat_iron" onclick="selectMaterial('iron')">🔩 Đinh Sắt</button>
+                <button class="act-btn" id="mat_plastic" onclick="selectMaterial('plastic')">📏 Thước Nhựa</button>
+                <button class="act-btn" id="mat_wood" onclick="selectMaterial('wood')">🪵 Gỗ Khô</button>
+                <button class="act-btn" id="mat_saltwater" onclick="selectMaterial('saltwater')">🧂 Nước Muối</button>
+                <button class="act-btn" id="mat_rubber" onclick="selectMaterial('rubber')">🧤 Cục Tẩy Cao Su</button>
+            </div>
+
+            <button id="switchBtn" class="switch-btn" onclick="toggleSwitch()">🔘 CÔNG TẮC ĐANG MỞ (Bấm để Đóng mạch)</button>
         </div>
 
-        <div class="mission-box">
-            <div style="font-weight:800; color:#1864ab; margin-bottom:4px;" id="missionTitle">📋 NHIỆM VỤ ĐO GÓC:</div>
-            <div id="missionDesc" style="font-size:0.95rem; line-height:1.4;">
-                Hãy dùng <b>Thước Đo Độ</b> để đo số đo của <b>góc AOB</b> trên hình vẽ và cho biết đó là loại góc gì.
+        <!-- ĐIỀU KHIỂN TRẠM 2: BIẾN ĐỔI CHẤT -->
+        <div id="ctrlStation2" class="ctrl-group" style="display:none;">
+            <div class="ctrl-title">🧪 Bảng Pha Trộn & Đun Nóng Chất</div>
+            <label style="font-size:0.88rem; font-weight:bold;">1. Chọn Thí Nghiệm Trong Cốc Thủy Tinh:</label>
+            <select id="chemSelect" onchange="changeChemExperiment()" style="margin-top:4px; margin-bottom:10px;">
+                <option value="sugar">1. Hòa tan Đường vào Nước (Dung dịch)</option>
+                <option value="sand">2. Trộn Cát vào Nước (Hỗn hợp không tan)</option>
+                <option value="oil">3. Đổ Dầu ăn vào Nước (Hỗn hợp tách lớp)</option>
+                <option value="baking">4. Pha Giấm ăn + Baking Soda (Biến đổi Hóa học)</option>
+                <option value="state">5. Đun nóng Nước đá -> Nước lỏng -> Hơi nước</option>
+            </select>
+
+            <div class="btn-grid">
+                <button class="act-btn" onclick="stirBeaker()">🥄 Khuấy Đều Cốc</button>
+                <button class="act-btn" id="heatBtn" onclick="toggleHeat()">🔥 Bật Đèn Cồn Đun Nóng</button>
             </div>
 
-            <!-- Khu vực nhập kết quả Đo Góc -->
-            <div id="inputAngleBox" style="margin-top:10px;">
-                <label style="font-size:0.9rem; font-weight:bold;">Số đo góc em đo được (Độ °):</label>
-                <div class="input-group">
-                    <input type="number" id="ansAngle" placeholder="Ví dụ: 60" step="5">
-                    <select id="ansAngleType">
-                        <option value="nhon">Góc nhọn (&lt; 90°)</option>
-                        <option value="vuong">Góc vuông (= 90°)</option>
-                        <option value="tu">Góc tù (&gt; 90°)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Khu vực nhập kết quả Đo Đoạn Thẳng -->
-            <div id="inputSegmentBox" style="margin-top:10px; display:none;">
-                <label style="font-size:0.9rem; font-weight:bold;">Độ dài đoạn thẳng AB em đo được (cm):</label>
-                <div class="input-group">
-                    <input type="number" id="ansSegment" placeholder="Ví dụ: 6.5" step="0.5">
-                    <span style="font-weight:bold;">cm</span>
-                </div>
-            </div>
-
-            <!-- Khu vực nhập kết quả Diện tích Tam giác -->
-            <div id="inputTriangleBox" style="margin-top:10px; display:none;">
-                <label style="font-size:0.88rem; font-weight:bold;">Nhập số đo Đáy (a), Chiều cao (h) và Diện tích (S):</label>
-                <div class="input-group">
-                    <input type="number" id="ansBase" placeholder="Đáy a (cm)" step="1">
-                    <input type="number" id="ansHeight" placeholder="Cao h (cm)" step="1">
-                </div>
-                <div class="input-group">
-                    <input type="number" id="ansArea" placeholder="Diện tích S = (a × h) : 2 (cm²)" step="0.5">
-                </div>
+            <div style="margin-top:10px; font-size:0.9rem; font-weight:bold;">
+                🌡️ Nhiệt độ trong cốc: <span id="tempDisplay" style="color:#e03131;">25°C</span>
             </div>
         </div>
 
-        <button class="btn btn-submit" onclick="checkAnswer()">✅ NỘP KẾT QUẢ ĐO & KIỂM TRA</button>
+        <!-- ĐIỀU KHIỂN TRẠM 3: MÔI TRƯỜNG & KHÍ HẬU -->
+        <div id="ctrlStation3" class="ctrl-group" style="display:none;">
+            <div class="ctrl-title">🌍 Điều Chỉnh Hệ Sinh Thái & Năng Lượng</div>
+            <label style="font-size:0.88rem; font-weight:bold;">🌳 Số lượng Cây xanh trồng mới: <span id="treeVal">50</span> cây</label>
+            <input type="range" id="treeSlider" min="0" max="100" value="50" oninput="updateEco()">
 
-        <div id="feedbackMsg" style="font-weight:bold; font-size:0.95rem; min-height:24px;"></div>
+            <label style="font-size:0.88rem; font-weight:bold;">☀️ Lắp đặt Điện Gió & Mặt Trời: <span id="cleanVal">40</span>%</label>
+            <input type="range" id="cleanSlider" min="0" max="100" value="40" oninput="updateEco()">
 
-        <div class="skill-box">
-            <b>🌟 Góc Ghi Nhận Kỹ Năng Hình Học:</b>
-            <div id="skillText" style="margin-top:4px;">
-                Em Hiểu Minh hãy kéo thả thước ảo trên bảng vẽ để rèn kỹ năng đo góc và đo độ dài thật chính xác nhé!
+            <label style="font-size:0.88rem; font-weight:bold;">🏭 Khí thải Nhà máy & Xe cộ: <span id="smokeVal">50</span>%</label>
+            <input type="range" id="smokeSlider" min="0" max="100" value="50" oninput="updateEco()">
+
+            <button class="act-btn selected" style="width:100%; margin-top:6px;" onclick="setGreenIdeal()">🌱 Cân Bằng Xanh Lý Tưởng Cho Trái Đất</button>
+        </div>
+
+        <!-- CÂU HỎI KẾT LUẬN KHOA HỌC NHANH -->
+        <div class="quiz-card">
+            <div style="font-weight:800; color:#d9480f; margin-bottom:4px;">🧠 Thử Thách Quan Sát Thí Nghiệm:</div>
+            <div id="quizQuestion" style="font-size:0.92rem; font-weight:600; margin-bottom:8px;">
+                Sau khi thử nghiệm ở Trạm 1, đố em vật liệu nào dưới đây cho dòng điện chạy qua làm sáng bóng đèn?
             </div>
+            <div class="btn-grid" id="quizOptions">
+                <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
+                <button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>
+            </div>
+            <div id="quizFeedback" style="margin-top:6px; font-size:0.9rem; font-weight:bold;"></div>
         </div>
     </div>
 </div>
 
 <script>
-const canvas = document.getElementById('geoCanvas');
+const canvas = document.getElementById('labCanvas');
 const ctx = canvas.getContext('2d');
-const PX_PER_CM = 40; // 1 cm = 40 pixels trên bảng vẽ
 
-// Trạng thái công cụ
-let tools = {
-    protractor: { active: true, x: 520, y: 340, angle: 0, radius: 175 },
-    ruler: { active: false, x: 140, y: 370, angle: 0, lengthCm: 12 },
-    eke: { active: false, x: 450, y: 280, angle: 0, sizeCm: 6 }
+let currentStation = 1;
+let expScore = 60;
+let tick = 0;
+
+// Trạng thái Trạm 1 (Mạch điện)
+let circuit = {
+    source: 'battery',
+    material: 'copper',
+    switchClosed: false,
+    conductors: ['copper', 'iron', 'saltwater'],
+    matNames: {
+        copper: 'Thanh Đồng (Kim loại)',
+        iron: 'Đinh Sắt (Kim loại)',
+        plastic: 'Thước Nhựa',
+        wood: 'Thanh Gỗ Khô',
+        saltwater: 'Cốc Nước Muối',
+        rubber: 'Cục Tẩy Cao Su'
+    }
 };
-let lastSelectedTool = 'protractor';
-let dragging = null;
 
-// Trạng thái bài tập
-let currentMode = 'angle';
-let stars = 50;
-let solved = 0;
-let problem = {};
+// Trạng thái Trạm 2 (Hóa học & Chất)
+let chem = {
+    type: 'sugar',
+    stirring: 0,
+    heating: false,
+    temp: 25,
+    bubbles: []
+};
+for (let i = 0; i < 25; i++) {
+    chem.bubbles.push({ x: 300 + Math.random() * 160, y: 220 + Math.random() * 140, r: 3 + Math.random() * 5, s: 0.6 + Math.random() * 1.2 });
+}
 
-// Âm thanh Web Audio
-function playSound(isWin) {
+// Trạng thái Trạm 3 (Môi trường)
+let eco = {
+    trees: 50,
+    clean: 40,
+    smoke: 50,
+    earthTemp: 28.5
+};
+
+// Âm thanh hiệu ứng
+function playTone(win) {
     try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (isWin) {
-            [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                o.type = 'triangle';
-                o.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.09);
-                g.gain.setValueAtTime(0.18, audioCtx.currentTime + i * 0.09);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.09 + 0.25);
-                o.connect(g); g.connect(audioCtx.destination);
-                o.start(audioCtx.currentTime + i * 0.09);
-                o.stop(audioCtx.currentTime + i * 0.09 + 0.25);
-            });
-        } else {
-            const o = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            o.type = 'sawtooth';
-            o.frequency.setValueAtTime(200, audioCtx.currentTime);
-            g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-            o.connect(g); g.connect(audioCtx.destination);
-            o.start(); o.stop(audioCtx.currentTime + 0.3);
-        }
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        const freqs = win ? [523, 659, 784, 1046] : [240, 180];
+        freqs.forEach((f, idx) => {
+            const osc = ac.createOscillator();
+            const g = ac.createGain();
+            osc.type = win ? 'triangle' : 'sawtooth';
+            osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.08);
+            g.gain.setValueAtTime(0.15, ac.currentTime + idx * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.08 + 0.22);
+            osc.connect(g); g.connect(ac.destination);
+            osc.start(ac.currentTime + idx * 0.08);
+            osc.stop(ac.currentTime + idx * 0.08 + 0.22);
+        });
     } catch(e) {}
 }
 
-// Khởi tạo bài toán mới
-function generateNewProblem() {
-    document.getElementById('feedbackMsg').innerHTML = "";
-    if (currentMode === 'angle') {
-        const angles = [30, 40, 45, 50, 60, 70, 80, 90, 100, 110, 120, 130, 135, 140, 150];
-        const deg = angles[Math.floor(Math.random() * angles.length)];
-        const baseRot = [0, -10, 10, -15, 15][Math.floor(Math.random() * 5)];
-        problem = {
-            vx: 250 + Math.floor(Math.random() * 120),
-            vy: 290 + Math.floor(Math.random() * 50),
-            deg: deg,
-            baseRot: baseRot,
-            type: deg < 90 ? 'nhon' : (deg === 90 ? 'vuong' : 'tu')
-        };
-        document.getElementById('ansAngle').value = '';
-    } else if (currentMode === 'segment') {
-        const lengths = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 10];
-        const lenCm = lengths[Math.floor(Math.random() * lengths.length)];
-        const rotDeg = [-20, -10, 0, 10, 15, 25][Math.floor(Math.random() * 6)];
-        const x1 = 150, y1 = 220;
-        const rad = rotDeg * Math.PI / 180;
-        const x2 = x1 + lenCm * PX_PER_CM * Math.cos(rad);
-        const y2 = y1 + lenCm * PX_PER_CM * Math.sin(rad);
-        problem = { x1, y1, x2, y2, lenCm, rotDeg };
-        document.getElementById('ansSegment').value = '';
-    } else if (currentMode === 'triangle') {
-        const bases = [6, 7, 8, 9, 10];
-        const heights = [4, 5, 6];
-        const baseCm = bases[Math.floor(Math.random() * bases.length)];
-        const heightCm = heights[Math.floor(Math.random() * heights.length)];
-        const xA = 160, yA = 320;
-        const xB = xA + baseCm * PX_PER_CM, yB = 320;
-        const xH = xA + (baseCm * 0.4) * PX_PER_CM, yH = 320;
-        const xC = xH, yC = yH - heightCm * PX_PER_CM;
-        problem = { xA, yA, xB, yB, xC, yC, xH, yH, baseCm, heightCm, area: (baseCm * heightCm) / 2 };
-        document.getElementById('ansBase').value = '';
-        document.getElementById('ansHeight').value = '';
-        document.getElementById('ansArea').value = '';
-    }
-    drawAll();
+function updateName() {
+    const val = document.getElementById('nameInput').value || 'Hiểu Minh';
+    document.getElementById('scientistName').innerText = val;
 }
 
-function changeMode() {
-    currentMode = document.getElementById('modeSelect').value;
-    document.getElementById('inputAngleBox').style.display = currentMode === 'angle' ? 'block' : 'none';
-    document.getElementById('inputSegmentBox').style.display = currentMode === 'segment' ? 'block' : 'none';
-    document.getElementById('inputTriangleBox').style.display = currentMode === 'triangle' ? 'block' : 'none';
+function switchStation(stNum) {
+    currentStation = stNum;
+    [1, 2, 3].forEach(n => {
+        document.getElementById('tab' + n).className = 'tab-btn' + (n === stNum ? ' active' : '');
+        document.getElementById('ctrlStation' + n).style.display = (n === stNum ? 'block' : 'none');
+    });
+    document.getElementById('quizFeedback').innerText = '';
 
-    if (currentMode === 'angle') {
-        tools.protractor.active = true;
-        tools.ruler.active = false;
-        tools.eke.active = false;
-        lastSelectedTool = 'protractor';
-        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 1: ĐO GÓC AOB";
-        document.getElementById('missionDesc').innerHTML = "Kéo <b>Tâm thước đo độ</b> trùng với <b>Đỉnh O</b>, xoay thước sao cho vạch 0° trùng với cạnh OA rồi đọc số đo góc.";
-    } else if (currentMode === 'segment') {
-        tools.protractor.active = false;
-        tools.ruler.active = true;
-        tools.eke.active = false;
-        lastSelectedTool = 'ruler';
-        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 2: ĐO ĐỘ DÀI ĐOẠN THẲNG AB";
-        document.getElementById('missionDesc').innerHTML = "Kéo <b>Vạch số 0 của Thước thẳng</b> trùng với điểm <b>A</b>, xoay thước dọc theo đoạn AB để đọc độ dài (cm).";
+    const qText = document.getElementById('quizQuestion');
+    const qOpts = document.getElementById('quizOptions');
+
+    if (stNum === 1) {
+        updateCircuitExplanation();
+        qText.innerText = "Qua thí nghiệm Trạm 1, vật liệu nào dưới đây là VẬT DẪN ĐIỆN giúp bóng đèn phát sáng?";
+        qOpts.innerHTML = `
+            <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
+            <button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Cao su</button>
+        `;
+    } else if (stNum === 2) {
+        updateChemExplanation();
+        qText.innerText = "Khi pha Giấm ăn với Baking Soda làm sủi bọt khí CO₂ mới, đó là hiện tượng gì?";
+        qOpts.innerHTML = `
+            <button class="act-btn" onclick="answerQuiz(true)">🧪 Sự biến đổi Hóa học</button>
+            <button class="act-btn" onclick="answerQuiz(false)">🧊 Chỉ là sự nóng chảy</button>
+        `;
     } else {
-        tools.protractor.active = false;
-        tools.ruler.active = true;
-        tools.eke.active = true;
-        lastSelectedTool = 'ruler';
-        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 3: ĐO ĐÁY & CHIỀU CAO TAM GIÁC";
-        document.getElementById('missionDesc').innerHTML = "Dùng <b>Thước thẳng</b> và <b>Ê-ke</b> để đo độ dài đáy <b>AB (cm)</b> và đường cao <b>CH (cm)</b>, sau đó tính diện tích hình tam giác ABC.";
-    }
-    updateToolbarButtons();
-    generateNewProblem();
-}
-
-function toggleTool(name) {
-    tools[name].active = !tools[name].active;
-    if (tools[name].active) {
-        lastSelectedTool = name;
-        document.getElementById('angleSlider').value = Math.round(tools[name].angle);
-        document.getElementById('angleLabel').innerText = Math.round(tools[name].angle) + '°';
-    }
-    updateToolbarButtons();
-    drawAll();
-}
-
-function updateToolbarButtons() {
-    document.getElementById('btnProtractor').className = 'btn btn-tool' + (tools.protractor.active ? ' active' : '');
-    document.getElementById('btnRuler').className = 'btn btn-tool' + (tools.ruler.active ? ' active' : '');
-    document.getElementById('btnEke').className = 'btn btn-tool' + (tools.eke.active ? ' active' : '');
-}
-
-function rotateActiveTool(val) {
-    const deg = parseFloat(val);
-    tools[lastSelectedTool].angle = deg;
-    document.getElementById('angleLabel').innerText = Math.round(deg) + '°';
-    drawAll();
-}
-
-function autoAlignTool() {
-    if (currentMode === 'angle') {
-        tools.protractor.active = true;
-        lastSelectedTool = 'protractor';
-        tools.protractor.x = problem.vx;
-        tools.protractor.y = problem.vy;
-        tools.protractor.angle = problem.baseRot;
-        document.getElementById('angleSlider').value = problem.baseRot;
-        document.getElementById('angleLabel').innerText = problem.baseRot + '°';
-    } else if (currentMode === 'segment') {
-        tools.ruler.active = true;
-        lastSelectedTool = 'ruler';
-        tools.ruler.x = problem.x1;
-        tools.ruler.y = problem.y1;
-        tools.ruler.angle = problem.rotDeg;
-        document.getElementById('angleSlider').value = problem.rotDeg;
-        document.getElementById('angleLabel').innerText = problem.rotDeg + '°';
-    } else if (currentMode === 'triangle') {
-        tools.ruler.active = true;
-        tools.eke.active = true;
-        tools.ruler.x = problem.xA;
-        tools.ruler.y = problem.yA;
-        tools.ruler.angle = 0;
-        tools.eke.x = problem.xH;
-        tools.eke.y = problem.yH;
-        tools.eke.angle = 0;
-    }
-    updateToolbarButtons();
-    drawAll();
-}
-
-// ==================== VẼ LƯỚI NỀN & BÀI TOÁN ====================
-function drawGrid() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#f1f3f5';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 20) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-    }
-    for (let y = 0; y < canvas.height; y += 20) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        updateEco();
+        qText.innerText = "Giải pháp nào giúp giảm nhiệt độ Trái Đất và bảo vệ môi trường bền vững nhất?";
+        qOpts.innerHTML = `
+            <button class="act-btn" onclick="answerQuiz(true)">🌱 Trồng cây & Dùng điện mặt trời</button>
+            <button class="act-btn" onclick="answerQuiz(false)">🏭 Tăng khói bụi nhà máy</button>
+        `;
     }
 }
 
-function drawProblem() {
-    ctx.save();
-    if (currentMode === 'angle') {
-        const { vx, vy, deg, baseRot } = problem;
-        const len = 210;
-        const rad1 = (baseRot) * Math.PI / 180;
-        const rad2 = (baseRot - deg) * Math.PI / 180;
+function answerQuiz(isCorrect) {
+    const fb = document.getElementById('quizFeedback');
+    const stName = document.getElementById('nameInput').value || 'Hiểu Minh';
+    if (isCorrect) {
+        playTone(true);
+        expScore += 10;
+        document.getElementById('expScore').innerText = expScore;
+        fb.style.color = '#2b8a3e';
+        fb.innerText = `🎉 Xuất sắc quá ${stName} ơi! Em đã rút ra kết luận khoa học hoàn toàn chính xác (+10 Điểm)!`;
+    } else {
+        playTone(false);
+        fb.style.color = '#e03131';
+        fb.innerText = `💡 Chưa đúng rồi! Em hãy nhìn lại hiện tượng trên màn hình thí nghiệm để chọn lại nhé!`;
+    }
+}
 
-        const xA = vx + len * Math.cos(rad1);
-        const yA = vy + len * Math.sin(rad1);
-        const xB = vx + len * Math.cos(rad2);
-        const yB = vy + len * Math.sin(rad2);
+// ==================== LOGIC TRẠM 1: MẠCH ĐIỆN ====================
+function selectMaterial(mat) {
+    circuit.material = mat;
+    ['copper', 'iron', 'plastic', 'wood', 'saltwater', 'rubber'].forEach(m => {
+        document.getElementById('mat_' + m).className = 'act-btn' + (m === mat ? ' selected' : '');
+    });
+    if (circuit.switchClosed) {
+        playTone(circuit.conductors.includes(mat));
+    }
+    updateCircuitExplanation();
+}
 
-        ctx.beginPath();
-        ctx.arc(vx, vy, 38, rad2, rad1);
-        ctx.fillStyle = 'rgba(255, 193, 7, 0.25)';
-        ctx.fill();
-        ctx.strokeStyle = '#f59f00';
+function toggleSwitch() {
+    circuit.switchClosed = !circuit.switchClosed;
+    const btn = document.getElementById('switchBtn');
+    if (circuit.switchClosed) {
+        btn.className = 'switch-btn on';
+        btn.innerText = '⚡ CÔNG TẮC ĐANG ĐÓNG (Bấm để Ngắt điện)';
+        playTone(circuit.conductors.includes(circuit.material));
+    } else {
+        btn.className = 'switch-btn';
+        btn.innerText = '🔘 CÔNG TẮC ĐANG MỞ (Bấm để Đóng mạch)';
+    }
+    updateCircuitExplanation();
+}
+
+function updateCircuit() {
+    circuit.source = document.getElementById('powerSource').value;
+    updateCircuitExplanation();
+}
+
+function updateCircuitExplanation() {
+    const box = document.getElementById('aiExplain');
+    const isCond = circuit.conductors.includes(circuit.material);
+    const mName = circuit.matNames[circuit.material];
+
+    if (!circuit.switchClosed) {
+        box.innerHTML = `🤖 <b>Trợ lý Khoa học AI:</b> Hiện tại <b>Mạch điện đang hở</b> (Công tắc mở). Em hãy chọn vật liệu <b>${mName}</b> và bấm <b>Đóng Công Tắc</b> để kiểm tra tính dẫn điện nhé!`;
+    } else if (isCond) {
+        box.innerHTML = `✅ <b>Kết luận AI: Bóng đèn SÁNG RỰC & Quạt QUAY!</b> Vì <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho phép dòng điện (các hạt màu vàng) chạy qua mạch kín từ nguồn điện đến bóng đèn!`;
+    } else {
+        box.innerHTML = `⚠️ <b>Kết luận AI: Bóng đèn KHÔNG SÁNG!</b> Vì <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, dòng điện không thể đi qua được. Nhờ tính chất này, nhựa và cao su thường dùng làm vỏ bọc dây điện để đảm bảo an toàn!`;
+    }
+}
+
+// ==================== VẼ TRẠM 1: MẠCH ĐIỆN SỐNG ĐỘNG ====================
+function drawStation1() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const isFlowing = circuit.switchClosed && circuit.conductors.includes(circuit.material);
+
+    // Tiêu đề trên Canvas
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN THỰC HÀNH (KHOA HỌC LỚP 5)', 25, 35);
+
+    // Khung dây dẫn hình chữ nhật: (120, 100) -> (640, 360)
+    ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(120, 100, 520, 260);
+
+    // Hiệu ứng hạt electron chạy quanh dây khi mạch kín
+    if (isFlowing) {
+        ctx.fillStyle = '#fef08a';
+        const perim = (520 + 260) * 2;
+        for (let i = 0; i < 18; i++) {
+            let d = ((i * (perim / 18)) + tick * 3.5) % perim;
+            let ex = 120, ey = 100;
+            if (d < 520) { ex = 120 + d; ey = 100; }
+            else if (d < 520 + 260) { ex = 640; ey = 100 + (d - 520); }
+            else if (d < 520 * 2 + 260) { ex = 640 - (d - 780); ey = 360; }
+            else { ex = 120; ey = 360 - (d - 1300); }
+
+            ctx.beginPath();
+            ctx.arc(ex, ey, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // 1. Nguồn điện bên trái (120, 230)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(75, 165, 90, 130);
+    if (circuit.source === 'battery') {
+        ctx.fillStyle = '#f97316';
+        ctx.fillRect(92, 180, 56, 35);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(92, 215, 56, 65);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.fillRect(108, 170, 24, 10);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('+ PIN -', 96, 245);
+    } else {
+        // Tấm pin mặt trời
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(80, 180, 80, 95);
+        ctx.strokeStyle = '#bae6fd';
         ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.strokeStyle = '#1864ab';
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(vx, vy); ctx.lineTo(xA, yA);
-        ctx.moveTo(vx, vy); ctx.lineTo(xB, yB);
-        ctx.stroke();
-
-        ctx.fillStyle = '#e03131';
-        ctx.beginPath(); ctx.arc(vx, vy, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.font = 'bold 18px sans-serif';
-        ctx.fillStyle = '#c92a2a';
-        ctx.fillText('O (Đỉnh góc)', vx - 35, vy + 26);
-        ctx.fillStyle = '#1864ab';
-        ctx.fillText('A', xA + 10, yA + 5);
-        ctx.fillText('B', xB + 10, yB - 8);
-
-    } else if (currentMode === 'segment') {
-        const { x1, y1, x2, y2 } = problem;
-        ctx.strokeStyle = '#2b8a3e';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        ctx.fillStyle = '#e03131';
-        ctx.beginPath(); ctx.arc(x1, y1, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(x2, y2, 6, 0, Math.PI * 2); ctx.fill();
-
-        ctx.font = 'bold 18px sans-serif';
-        ctx.fillStyle = '#1b4332';
-        ctx.fillText('A', x1 - 10, y1 - 12);
-        ctx.fillText('B', x2 + 8, y2 - 12);
-
-    } else if (currentMode === 'triangle') {
-        const { xA, yA, xB, yB, xC, yC, xH, yH } = problem;
-        ctx.fillStyle = 'rgba(116, 192, 252, 0.2)';
-        ctx.strokeStyle = '#1971c2';
-        ctx.lineWidth = 3.5;
-        ctx.beginPath();
-        ctx.moveTo(xA, yA); ctx.lineTo(xB, yB); ctx.lineTo(xC, yC); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-
-        ctx.save();
-        ctx.setLineDash([6, 5]);
-        ctx.strokeStyle = '#e03131';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(xC, yC); ctx.lineTo(xH, yH);
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.strokeStyle = '#e03131';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(xH, yH - 12, 12, 12);
-
-        ctx.font = 'bold 17px sans-serif';
-        ctx.fillStyle = '#1864ab';
-        ctx.fillText('A', xA - 18, yA + 6);
-        ctx.fillText('B', xB + 8, yB + 6);
-        ctx.fillText('C', xC - 6, yC - 10);
-        ctx.fillStyle = '#e03131';
-        ctx.fillText('H', xH - 6, yH + 22);
+        ctx.strokeRect(80, 180, 80, 95);
+        ctx.fillStyle = '#fde047';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillText('☀️', 105, 165);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText('PIN MẶT TRỜI', 82, 295);
     }
-    ctx.restore();
-}
 
-// ==================== 1. VẼ THƯỚC ĐO ĐỘ ẢO (PROTRACTOR) ====================
-function drawProtractor() {
-    if (!tools.protractor.active) return;
-    const { x, y, angle, radius } = tools.protractor;
+    // 2. Công tắc ở cạnh trên (300, 100)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(260, 80, 90, 40);
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath(); ctx.arc(265, 100, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(345, 100, 7, 0, Math.PI * 2); ctx.fill();
 
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle * Math.PI / 180);
-
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(0, 0, radius, Math.PI, 0, false);
-    ctx.lineTo(radius, 22);
-    ctx.lineTo(-radius, 22);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255, 243, 191, 0.72)';
-    ctx.fill();
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#f08c00';
+    ctx.moveTo(265, 100);
+    if (circuit.switchClosed) {
+        ctx.lineTo(345, 100);
+    } else {
+        ctx.lineTo(335, 62);
+    }
     ctx.stroke();
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText(circuit.switchClosed ? 'Công tắc: ĐÓNG' : 'Công tắc: MỞ', 255, 50);
 
-    ctx.beginPath();
-    ctx.arc(0, 0, radius * 0.42, Math.PI, 0, false);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.fill();
-    ctx.strokeStyle = '#fcc419';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    // 3. Bóng đèn & Quạt nhỏ bên phải (640, 230)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(600, 160, 80, 130);
 
-    ctx.beginPath();
-    ctx.moveTo(-radius, 0); ctx.lineTo(radius, 0);
-    ctx.strokeStyle = '#d9480f';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    for (let deg = 0; deg <= 180; deg += 1) {
-        const rad = -deg * Math.PI / 180;
-        let tickLen = 5;
-        if (deg % 10 === 0) tickLen = 15;
-        else if (deg % 5 === 0) tickLen = 10;
-
-        const rOuter = radius;
-        const rInner = radius - tickLen;
-        ctx.beginPath();
-        ctx.moveTo(rOuter * Math.cos(rad), rOuter * Math.sin(rad));
-        ctx.lineTo(rInner * Math.cos(rad), rInner * Math.sin(rad));
-        ctx.strokeStyle = deg % 10 === 0 ? '#c92a2a' : '#495057';
-        ctx.lineWidth = deg % 10 === 0 ? 1.5 : 0.7;
-        ctx.stroke();
-
-        if (deg % 10 === 0) {
-            const rText = radius - 26;
-            ctx.save();
-            ctx.translate(rText * Math.cos(rad), rText * Math.sin(rad));
-            ctx.rotate(rad + Math.PI / 2);
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillStyle = '#c92a2a';
-            ctx.textAlign = 'center';
-            ctx.fillText(deg.toString(), 0, 0);
-            ctx.restore();
-        }
+    if (isFlowing) {
+        const grad = ctx.createRadialGradient(640, 210, 10, 640, 210, 75);
+        grad.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+        grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(640, 210, 75, 0, Math.PI * 2); ctx.fill();
     }
 
     ctx.beginPath();
-    ctx.arc(0, 0, 7, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(224, 49, 49, 0.9)';
+    ctx.arc(640, 210, 32, 0, Math.PI * 2);
+    ctx.fillStyle = isFlowing ? '#fef08a' : '#475569';
     ctx.fill();
-    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = isFlowing ? '#facc15' : '#94a3b8';
+    ctx.stroke();
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(626, 240, 28, 20);
+    ctx.fillStyle = isFlowing ? '#fde047' : '#cbd5e1';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText(isFlowing ? '💡 ĐÈN SÁNG!' : '💡 Đèn tắt', 602, 285);
+
+    // 4. Khe thử Vật Dẫn Điện / Vật Cách Điện ở cạnh dưới (380, 360)
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.fillRect(280, 325, 200, 70);
+    ctx.strokeRect(280, 325, 200, 70);
 
-    ctx.beginPath();
-    ctx.arc(radius - 16, 12, 10, 0, Math.PI * 2);
-    ctx.fillStyle = '#1971c2';
-    ctx.fill();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('↻', radius - 16, 16);
-
-    ctx.restore();
-}
-
-// ==================== 2. VẼ THƯỚC THẲNG ẢO (VIRTUAL RULER CM) ====================
-function drawRuler() {
-    if (!tools.ruler.active) return;
-    const { x, y, angle, lengthCm } = tools.ruler;
-    const widthPx = lengthCm * PX_PER_CM;
-    const heightPx = 54;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle * Math.PI / 180);
-
-    ctx.fillStyle = 'rgba(208, 235, 255, 0.8)';
-    ctx.strokeStyle = '#1971c2';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-15, 0, widthPx + 35, heightPx, 8);
-    ctx.fill();
-    ctx.stroke();
-
-    for (let mm = 0; mm <= lengthCm * 10; mm++) {
-        const px = (mm / 10) * PX_PER_CM;
-        let tickH = 7;
-        if (mm % 10 === 0) tickH = 18;
-        else if (mm % 5 === 0) tickH = 12;
-
-        ctx.beginPath();
-        ctx.moveTo(px, 0);
-        ctx.lineTo(px, tickH);
-        ctx.strokeStyle = mm % 10 === 0 ? '#0b7285' : '#495057';
-        ctx.lineWidth = mm % 10 === 0 ? 1.8 : 0.8;
-        ctx.stroke();
-
-        if (mm % 10 === 0) {
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillStyle = '#0b7285';
-            ctx.textAlign = 'center';
-            ctx.fillText((mm / 10).toString(), px, 33);
-        }
-    }
-    ctx.font = 'italic bold 11px sans-serif';
-    ctx.fillStyle = '#1864ab';
-    ctx.fillText('THƯỚC THẲNG LỚP 5/2 (Đơn vị: cm)', widthPx / 2, 48);
-
-    ctx.beginPath();
-    ctx.arc(0, 0, 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#e03131';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(widthPx + 8, heightPx / 2, 11, 0, Math.PI * 2);
-    ctx.fillStyle = '#f08c00';
-    ctx.fill();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('↻', widthPx + 8, heightPx / 2 + 4);
-
-    ctx.restore();
-}
-
-// ==================== 3. VẼ THƯỚC Ê-KE VUÔNG GÓC ====================
-function drawEke() {
-    if (!tools.eke.active) return;
-    const { x, y, angle, sizeCm } = tools.eke;
-    const sidePx = sizeCm * PX_PER_CM;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle * Math.PI / 180);
-
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(sidePx, 0);
-    ctx.lineTo(0, -sidePx);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(211, 249, 216, 0.78)';
-    ctx.fill();
-    ctx.lineWidth = 2.2;
-    ctx.strokeStyle = '#2b8a3e';
-    ctx.stroke();
-
-    for (let cm = 0; cm <= sizeCm; cm++) {
-        const py = -cm * PX_PER_CM;
-        ctx.beginPath();
-        ctx.moveTo(0, py);
-        ctx.lineTo(12, py);
-        ctx.strokeStyle = '#1b4332';
-        ctx.lineWidth = 1.6;
-        ctx.stroke();
-        if (cm > 0 && cm < sizeCm) {
-            ctx.font = 'bold 12px sans-serif';
-            ctx.fillStyle = '#1b4332';
-            ctx.fillText(cm + 'cm', 16, py + 4);
-        }
-    }
-
-    ctx.beginPath();
-    ctx.arc(0, 0, 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#2b8a3e';
-    ctx.fill();
-
-    ctx.restore();
-}
-
-// ==================== CẢM BIẾN AI KIỂM TRA ĐẶT THƯỚC ====================
-function updateAISensor() {
-    const sensorBar = document.getElementById('aiSensor');
-    if (currentMode === 'angle' && tools.protractor.active) {
-        const dist = Math.hypot(tools.protractor.x - problem.vx, tools.protractor.y - problem.vy);
-        const angleDiff = Math.abs(tools.protractor.angle - problem.baseRot);
-        if (dist < 18 && angleDiff < 5) {
-            sensorBar.className = 'ai-sensor-bar aligned';
-            sensorBar.innerHTML = `✅ <b>Cảm biến AI: Tuyệt vời!</b> Tâm thước đã trùng khít <b>Đỉnh O</b> và vạch 0° đã thẳng hàng cạnh OA. Em hãy nhìn xem cạnh OB chỉ vào vạch bao nhiêu độ nhé!`;
-        } else if (dist < 18) {
-            sensorBar.className = 'ai-sensor-bar';
-            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Tâm thước đã đặt đúng Đỉnh O! Hãy chỉnh thanh <b>Xoay thước (${problem.baseRot}°)</b> để vạch số 0° trùng khít với cạnh OA nhé!`;
-        } else {
-            sensorBar.className = 'ai-sensor-bar';
-            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Hãy kéo <b>chấm đỏ Tâm thước</b> lại gần <b>Đỉnh O</b> (còn cách khoảng ${Math.round(dist)} px) hoặc bấm nút <b>"🧲 AI Đặt Thước Mẫu"</b>.`;
-        }
-    } else if (currentMode === 'segment' && tools.ruler.active) {
-        const dist = Math.hypot(tools.ruler.x - problem.x1, tools.ruler.y - problem.y1);
-        const angleDiff = Math.abs(tools.ruler.angle - problem.rotDeg);
-        if (dist < 18 && angleDiff < 5) {
-            sensorBar.className = 'ai-sensor-bar aligned';
-            sensorBar.innerHTML = `✅ <b>Cảm biến AI: Chính xác!</b> Vạch 0 cm đã đặt trùng khít điểm A và thước nằm dọc theo đoạn AB. Hãy đọc số cm tại điểm B!`;
-        } else {
-            sensorBar.className = 'ai-sensor-bar';
-            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Hãy kéo <b>chấm đỏ vạch 0 cm</b> của Thước thẳng trùng vào điểm <b>A</b> và xoay thước góc <b>${problem.rotDeg}°</b> theo đoạn AB.`;
-        }
-    } else if (currentMode === 'triangle') {
-        sensorBar.className = 'ai-sensor-bar';
-        sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Dùng <b>Thước thẳng</b> đo cạnh đáy AB và dùng <b>Thước Ê-ke</b> đo đường cao CH (màu đỏ nét đứt), sau đó lấy <b>(Đáy × Cao) : 2</b> nhé!`;
-    }
-}
-
-function drawAll() {
-    drawGrid();
-    drawProblem();
-    drawRuler();
-    drawEke();
-    drawProtractor();
-    updateAISensor();
-}
-
-// ==================== XỬ LÝ KÉO THẢ CHUỘT & CẢM ỨNG ====================
-function getPointerPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-        x: (clientX - rect.left) * (canvas.width / rect.width),
-        y: (clientY - rect.top) * (canvas.height / rect.height)
+    const matColors = {
+        copper: '#d97706', iron: '#94a3b8', plastic: '#38bdf8',
+        wood: '#854d0e', saltwater: '#22d3ee', rubber: '#f43f5e'
     };
+    ctx.fillStyle = matColors[circuit.material];
+    ctx.fillRect(300, 345, 160, 28);
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(circuit.matNames[circuit.material], 380, 364);
+    ctx.fillStyle = isFlowing ? '#4ade80' : '#f87171';
+    ctx.fillText(circuit.conductors.includes(circuit.material) ? '👉 VẬT DẪN ĐIỆN' : '👉 VẬT CÁCH ĐIỆN', 380, 315);
+    ctx.textAlign = 'left';
 }
 
-function onPointerDown(e) {
-    const pos = getPointerPos(e);
-    const order = ['protractor', 'eke', 'ruler'];
-    for (let name of order) {
-        const t = tools[name];
-        if (!t.active) continue;
+// ==================== LOGIC & VẼ TRẠM 2: BIẾN ĐỔI CHẤT ====================
+function changeChemExperiment() {
+    chem.type = document.getElementById('chemSelect').value;
+    chem.stirring = 0;
+    updateChemExplanation();
+}
 
-        const dx = pos.x - t.x;
-        const dy = pos.y - t.y;
-        const dist = Math.hypot(dx, dy);
+function stirBeaker() {
+    chem.stirring = 60;
+    playTone(true);
+    updateChemExplanation();
+}
 
-        if (name === 'protractor' && dist <= t.radius + 15) {
-            lastSelectedTool = name;
-            dragging = { name, offsetX: dx, offsetY: dy };
-            e.preventDefault();
-            return;
-        }
-        if (name === 'ruler' && dist <= t.lengthCm * PX_PER_CM + 30) {
-            lastSelectedTool = name;
-            dragging = { name, offsetX: dx, offsetY: dy };
-            e.preventDefault();
-            return;
-        }
-        if (name === 'eke' && dist <= t.sizeCm * PX_PER_CM + 20) {
-            lastSelectedTool = name;
-            dragging = { name, offsetX: dx, offsetY: dy };
-            e.preventDefault();
-            return;
-        }
+function toggleHeat() {
+    chem.heating = !chem.heating;
+    const btn = document.getElementById('heatBtn');
+    btn.className = 'act-btn' + (chem.heating ? ' selected' : '');
+    btn.innerText = chem.heating ? '🔥 Đang Đun Nóng (Bấm để Tắt)' : '🔥 Bật Đèn Cồn Đun Nóng';
+    updateChemExplanation();
+}
+
+function updateChemExplanation() {
+    const box = document.getElementById('aiExplain');
+    if (chem.type === 'sugar') {
+        box.innerHTML = `🧪 <b>Trợ lý AI:</b> Khi khuấy <b>Đường vào Nước</b>, các hạt đường phân tán đều và tan hoàn toàn tạo thành <b>DUNG DỊCH nước đường</b> đồng nhất (Khi đun nóng đường càng tan nhanh hơn!).`;
+    } else if (chem.type === 'sand') {
+        box.innerHTML = `🧪 <b>Trợ lý AI:</b> <b>Cát không tan trong nước!</b> Dù em có khuấy mạnh thì sau đó hạt cát vẫn lắng xuống đáy cốc. Đây là một <b>HỖN HỢP</b>, ta có thể tách cát ra bằng cách lọc hoặc lắng gạn.`;
+    } else if (chem.type === 'oil') {
+        box.innerHTML = `🧪 <b>Trợ lý AI:</b> <b>Dầu ăn nhẹ hơn nước và không tan trong nước</b> nên luôn nổi lên tạo thành một lớp màu vàng phía trên mặt nước!`;
+    } else if (chem.type === 'baking') {
+        box.innerHTML = `🎉 <b>Sự Biến Đổi Hóa Học!</b> Khi đổ <b>Giấm ăn vào Baking Soda</b>, chúng phản ứng tạo ra chất mới là <b>khí Cacbon đioxit (CO₂)</b> sủi bọt trắng xóa khắp cốc!`;
+    } else {
+        box.innerHTML = `🌡️ <b>Sự Chuyển Thể Của Nước (Biến đổi Vật lý):</b> Hãy bấm <b>"🔥 Bật Đèn Cồn"</b>! Dưới 0°C nước ở thể rắn (nước đá), nóng lên chuyển thành thể lỏng, và đạt <b>100°C nước sôi bốc hơi</b> mạnh thành thể khí!`;
     }
 }
 
-function onPointerMove(e) {
-    if (!dragging) return;
-    e.preventDefault();
-    const pos = getPointerPos(e);
-    const t = tools[dragging.name];
-    t.x = pos.x - dragging.offsetX;
-    t.y = pos.y - dragging.offsetY;
+function drawStation2() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (dragging.name === 'protractor' && currentMode === 'angle') {
-        if (Math.hypot(t.x - problem.vx, t.y - problem.vy) < 15) {
-            t.x = problem.vx;
-            t.y = problem.vy;
-        }
-    }
-    if (dragging.name === 'ruler' && currentMode === 'segment') {
-        if (Math.hypot(t.x - problem.x1, t.y - problem.y1) < 15) {
-            t.x = problem.x1;
-            t.y = problem.y1;
-        }
-    }
-    drawAll();
-}
+    if (chem.heating && chem.temp < 100) chem.temp += 0.25;
+    else if (!chem.heating && chem.temp > 25) chem.temp -= 0.15;
+    document.getElementById('tempDisplay').innerText = Math.round(chem.temp) + '°C';
 
-function onPointerUp() {
-    dragging = null;
-}
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('🧪 PHÒNG THÍ NGHIỆM DUNG DỊCH & SỰ BIẾN ĐỔI CỦA CHẤT', 25, 35);
 
-canvas.addEventListener('mousedown', onPointerDown);
-canvas.addEventListener('mousemove', onPointerMove);
-window.addEventListener('mouseup', onPointerUp);
+    // Bàn thí nghiệm
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(150, 370, 460, 18);
 
-canvas.addEventListener('touchstart', onPointerDown, { passive: false });
-canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-window.addEventListener('touchend', onPointerUp);
+    // Cốc thủy tinh (Beaker): x=280..480, y=120..350
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.fillRect(285, 180, 190, 165);
 
-// ==================== KIỂM TRA ĐÁP ÁN & LỜI KHEN ====================
-function updateStudentName() {
-    const name = document.getElementById('studentName').value || 'Hiểu Minh';
-    document.getElementById('stNameDisplay').innerText = name;
-}
-
-function checkAnswer() {
-    const fb = document.getElementById('feedbackMsg');
-    const stName = document.getElementById('studentName').value || 'Hiểu Minh';
-
-    if (currentMode === 'angle') {
-        const userDeg = parseFloat(document.getElementById('ansAngle').value);
-        const userType = document.getElementById('ansAngleType').value;
-        if (isNaN(userDeg)) {
-            fb.style.color = '#e03131';
-            fb.innerText = "⚠️ Em hãy nhập số đo góc mà em đọc được trên thước nhé!";
-            return;
+    // Vẽ hiện tượng bên trong cốc
+    if (chem.type === 'oil') {
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.85)';
+        ctx.fillRect(285, 155, 190, 35);
+        ctx.fillStyle = '#fef08a';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillText('Lớp Dầu ăn nổi phía trên', 305, 177);
+    } else if (chem.type === 'sand') {
+        ctx.fillStyle = '#d97706';
+        for (let i = 0; i < 45; i++) {
+            let sy = chem.stirring > 0 ? (220 + (i * 19 + tick * 3) % 120) : (330 + (i % 12));
+            ctx.fillRect(295 + (i * 3.8), sy, 4, 4);
         }
-        if (Math.abs(userDeg - problem.deg) <= 2 && userType === problem.type) {
-            playSound(true);
-            stars += 10; solved += 1;
-            fb.style.color = '#2b8a3e';
-            fb.innerHTML = `🎉 Chính xác tuyệt đối! Góc AOB = <b>${problem.deg}°</b> (${problem.type === 'nhon' ? 'Góc nhọn' : problem.type === 'vuong' ? 'Góc vuông' : 'Góc tù'}). Thưởng +10 Sao!`;
-            document.getElementById('skillText').innerText = `Hoan hô ${stName}! Em sử dụng thước đo độ rất khéo léo, đặt đúng tâm thước và nhận biết chính xác các loại góc.`;
-        } else {
-            playSound(false);
-            fb.style.color = '#d9480f';
-            fb.innerHTML = `💡 Chưa chính xác! Hãy bấm nút <b>"🧲 AI Đặt Thước Mẫu"</b> để kiểm tra lại số đo và loại góc nhé!`;
-        }
-    } else if (currentMode === 'segment') {
-        const userLen = parseFloat(document.getElementById('ansSegment').value);
-        if (isNaN(userLen)) {
-            fb.style.color = '#e03131';
-            fb.innerText = "⚠️ Em hãy nhập độ dài đoạn thẳng AB (cm) nhé!";
-            return;
-        }
-        if (Math.abs(userLen - problem.lenCm) <= 0.2) {
-            playSound(true);
-            stars += 10; solved += 1;
-            fb.style.color = '#2b8a3e';
-            fb.innerHTML = `🎉 Xuất sắc! Đoạn thẳng AB dài chính xác <b>${problem.lenCm} cm</b>. Thưởng +10 Sao!`;
-            document.getElementById('skillText').innerText = `Tuyệt vời lắm ${stName}! Em biết đặt vạch số 0 của thước thẳng đúng vị trí để đo chính xác độ dài đoạn thẳng.`;
-        } else {
-            playSound(false);
-            fb.style.color = '#d9480f';
-            fb.innerHTML = `💡 Gợi ý AI: Nhớ đặt vạch số <b>0 cm</b> (chấm đỏ) ngay tại điểm A nhé!`;
-        }
-    } else if (currentMode === 'triangle') {
-        const uBase = parseFloat(document.getElementById('ansBase').value);
-        const uHeight = parseFloat(document.getElementById('ansHeight').value);
-        const uArea = parseFloat(document.getElementById('ansArea').value);
-        if (uBase === problem.baseCm && uHeight === problem.heightCm && uArea === problem.area) {
-            playSound(true);
-            stars += 15; solved += 1;
-            fb.style.color = '#2b8a3e';
-            fb.innerHTML = `🎉 Quá giỏi! Đáy = ${problem.baseCm}cm, Cao = ${problem.heightCm}cm => Diện tích S = (${problem.baseCm} × ${problem.heightCm}) : 2 = <b>${problem.area} cm²</b>! (+15 Sao)`;
-            document.getElementById('skillText').innerText = `Xuất sắc quá ${stName} ơi! Em biết kết hợp thước thẳng và ê-ke để đo đáy, đường cao và tính diện tích tam giác rất chuẩn xác.`;
-        } else {
-            playSound(false);
-            fb.style.color = '#d9480f';
-            fb.innerHTML = `💡 Gợi ý AI: Hãy bấm <b>"🧲 AI Đặt Thước Mẫu"</b> để đọc số đo Đáy AB và Chiều cao CH trên 2 thước, rồi tính S = (a × h) : 2 nhé!`;
-        }
+    } else if (chem.type === 'baking' || chem.temp >= 85) {
+        // Sủi bọt khí CO2 hoặc nước sôi
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        chem.bubbles.forEach(b => {
+            b.y -= b.s * (chem.temp >= 85 ? 2.2 : 1.5);
+            if (b.y < 165) b.y = 340;
+            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+        });
+    } else if (chem.type === 'state' && chem.temp < 40) {
+        // Viên nước đá nổi
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.85)';
+        ctx.fillRect(320, 175, 45, 35);
+        ctx.fillRect(390, 178, 45, 35);
     }
 
-    document.getElementById('starCount').innerText = stars;
-    document.getElementById('correctCount').innerText = solved;
+    if (chem.stirring > 0) {
+        chem.stirring--;
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 5;
+        let sx = 380 + Math.sin(tick * 0.3) * 45;
+        ctx.beginPath(); ctx.moveTo(380, 90); ctx.lineTo(sx, 320); ctx.stroke();
+    }
+
+    // Thành cốc thủy tinh và vạch chia ml
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(280, 120); ctx.lineTo(280, 350); ctx.lineTo(480, 350); ctx.lineTo(480, 120);
+    ctx.stroke();
+
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '12px sans-serif';
+    [100, 200, 300].forEach((ml, i) => {
+        let my = 310 - i * 50;
+        ctx.fillText(ml + ' ml', 490, my + 4);
+        ctx.beginPath(); ctx.moveTo(465, my); ctx.lineTo(480, my); ctx.stroke();
+    });
+
+    // Ngọn lửa đèn cồn bên dưới
+    if (chem.heating) {
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.arc(380, 362, 18 + Math.sin(tick * 0.4) * 4, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(380, 362, 10, Math.PI, 0);
+        ctx.fill();
+    }
 }
 
-// Khởi chạy lần đầu
-generateNewProblem();
+// ==================== LOGIC & VẼ TRẠM 3: KHÍ HẬU & MÔI TRƯỜNG ====================
+function updateEco() {
+    eco.trees = parseInt(document.getElementById('treeSlider').value);
+    eco.clean = parseInt(document.getElementById('cleanSlider').value);
+    eco.smoke = parseInt(document.getElementById('smokeSlider').value);
+
+    document.getElementById('treeVal').innerText = eco.trees;
+    document.getElementById('cleanVal').innerText = eco.clean;
+    document.getElementById('smokeVal').innerText = eco.smoke;
+
+    // Công thức mô phỏng nhiệt độ và chất lượng không khí
+    let temp = 27.0 + (eco.smoke * 0.06) - (eco.trees * 0.03) - (eco.clean * 0.02);
+    eco.earthTemp = Math.max(24.0, Math.min(34.0, temp));
+
+    const box = document.getElementById('aiExplain');
+    if (eco.earthTemp <= 26.5) {
+        box.innerHTML = `🌱 <b>Môi trường Xanh Lý Tưởng (Nhiệt độ: ${eco.earthTemp.toFixed(1)}°C):</b> Nhờ trồng nhiều cây xanh hấp thụ khí CO₂ và dùng điện mặt trời, điện gió, bầu khí quyển rất trong lành!`;
+    } else if (eco.earthTemp <= 29.0) {
+        box.innerHTML = `🌤️ <b>Môi trường Trung bình (Nhiệt độ: ${eco.earthTemp.toFixed(1)}°C):</b> Hãy trồng thêm cây xanh và giảm khí thải nhà máy để ngăn chặn hiệu ứng nhà kính nhé!`;
+    } else {
+        box.innerHTML = `🔥 <b>Cảnh báo Hiệu ứng Nhà kính (${eco.earthTemp.toFixed(1)}°C):</b> Khói bụi CO₂ quá cao làm Trái Đất nóng lên! Hãy tăng diện tích rừng và năng lượng tái tạo ngay!`;
+    }
+}
+
+function setGreenIdeal() {
+    document.getElementById('treeSlider').value = 90;
+    document.getElementById('cleanSlider').value = 85;
+    document.getElementById('smokeSlider').value = 10;
+    playTone(true);
+    updateEco();
+}
+
+function drawStation3() {
+    // Màu bầu trời phụ thuộc độ ô nhiễm
+    const skyR = Math.min(200, 30 + eco.smoke * 1.4);
+    const skyG = Math.max(110, 190 - eco.smoke * 0.8);
+    const skyB = Math.max(120, 245 - eco.smoke * 1.1);
+    ctx.fillStyle = `rgb(${skyR}, ${skyG}, ${skyB})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Mặt trời
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath(); ctx.arc(650, 75, 38, 0, Math.PI * 2); ctx.fill();
+
+    // Mặt đất xanh hoặc khô cằn
+    ctx.fillStyle = eco.trees > 40 ? '#2f9e44' : '#b45309';
+    ctx.fillRect(0, 310, canvas.width, 130);
+
+    // Dòng sông
+    ctx.fillStyle = eco.smoke < 50 ? '#0ea5e9' : '#64748b';
+    ctx.fillRect(0, 365, canvas.width, 75);
+
+    // Vẽ Cây xanh theo số lượng thanh trượt
+    const numTrees = Math.floor(eco.trees / 8);
+    for (let i = 0; i < numTrees; i++) {
+        let tx = 40 + i * 42;
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(tx - 4, 275, 8, 35);
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath(); ctx.arc(tx, 265, 20, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Vẽ Tua-bin Điện gió khi Clean Energy > 20
+    if (eco.clean >= 25) {
+        [520, 610].forEach(wx => {
+            ctx.strokeStyle = '#f8fafc';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(wx, 310); ctx.lineTo(wx, 190); ctx.stroke();
+            for (let b = 0; b < 3; b++) {
+                let ang = (tick * 0.04) + (b * Math.PI * 2 / 3);
+                ctx.beginPath();
+                ctx.moveTo(wx, 190);
+                ctx.lineTo(wx + Math.cos(ang) * 42, 190 + Math.sin(ang) * 42);
+                ctx.stroke();
+            }
+        });
+    }
+
+    // Khói nhà máy khi Smoke cao
+    if (eco.smoke > 20) {
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(670, 230, 55, 80);
+        ctx.fillStyle = 'rgba(71, 85, 105, 0.65)';
+        for (let s = 0; s < 4; s++) {
+            let sy = 215 - ((tick + s * 30) % 120);
+            ctx.beginPath(); ctx.arc(695 - s * 10, sy, 18 + s * 4, 0, Math.PI * 2); ctx.fill();
+        }
+    }
+
+    // Bảng chỉ số nhiệt kế Trái Đất
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    ctx.fillRect(20, 20, 320, 55);
+    ctx.fillStyle = eco.earthTemp > 29 ? '#f87171' : '#4ade80';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText(`🌡️ Nhiệt độ Trái Đất: ${eco.earthTemp.toFixed(1)}°C`, 35, 53);
+}
+
+// Vòng lặp hoạt hình 60 FPS
+function animate() {
+    tick++;
+    if (currentStation === 1) drawStation1();
+    else if (currentStation === 2) drawStation2();
+    else drawStation3();
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
 </body>
 </html>
 """
 
-components.html(geometry_app_html, height=650, scrolling=True)
+components.html(science_lab_html, height=640, scrolling=True)
