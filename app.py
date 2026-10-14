@@ -41,11 +41,11 @@ st.markdown("""
 st.markdown("""
 <div class="sci-banner">
     <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC ẢO AI - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Khám phá Năng lượng, Sự biến đổi chất & Môi trường xanh</p>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Khám phá Mạch điện, Thể của Chất & Vòng tuần hoàn Mây Mưa</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== MÔ PHỎNG KHOA HỌC TƯƠNG TÁC HTML5 CANVAS + AI ====================
+# ==================== MÔ PHỎNG KHOA HỌC TƯƠNG TÁC HTML5 CANVAS ====================
 science_lab_html = """
 <!DOCTYPE html>
 <html lang="vi">
@@ -84,18 +84,18 @@ science_lab_html = """
     }
     .station-tabs {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 12px;
         flex-wrap: wrap;
     }
     .tab-btn {
         flex: 1;
-        padding: 10px 12px;
+        padding: 9px 10px;
         border: 2px solid #96f2d7;
         background: #e6fcf5;
         color: #087f5b;
         font-weight: 800;
-        font-size: 0.93rem;
+        font-size: 0.88rem;
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s;
@@ -122,7 +122,7 @@ science_lab_html = """
         background: #e3fafc;
         border-left: 6px solid #1098ad;
         color: #0b7285;
-        font-size: 0.96rem;
+        font-size: 0.95rem;
         line-height: 1.45;
     }
     .user-bar {
@@ -146,7 +146,7 @@ science_lab_html = """
         font-weight: 800;
         color: #087f5b;
         margin-bottom: 8px;
-        font-size: 0.96rem;
+        font-size: 0.95rem;
     }
     .btn-grid {
         display: grid;
@@ -161,7 +161,7 @@ science_lab_html = """
         font-weight: 700;
         cursor: pointer;
         transition: 0.15s;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
     }
     .act-btn:hover { background: #f1f3f5; transform: translateY(-1px); }
     .act-btn.selected {
@@ -169,26 +169,37 @@ science_lab_html = """
         color: white;
         border-color: #087f5b;
     }
-    .switch-btn {
-        width: 100%;
+    /* Nút Công Tắc Rõ Ràng */
+    .switch-box {
+        margin-top: 10px;
+        background: #fff3bf;
+        border: 2px dashed #f59f00;
+        border-radius: 12px;
         padding: 12px;
+        text-align: center;
+    }
+    .big-switch {
+        width: 100%;
+        padding: 14px;
         border: none;
-        border-radius: 10px;
-        font-weight: 800;
-        font-size: 1rem;
+        border-radius: 12px;
+        font-weight: 900;
+        font-size: 1.05rem;
         cursor: pointer;
         color: white;
-        background: #e03131;
-        margin-top: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: 0.2s;
     }
-    .switch-btn.on { background: #2f9e44; }
+    .big-switch.off { background: #e03131; border: 2px solid #c92a2a; }
+    .big-switch.on { background: #2f9e44; border: 2px solid #2b8a3e; }
+
     input[type="text"], select {
         width: 100%;
         padding: 8px 12px;
         border-radius: 8px;
         border: 2px solid #adb5bd;
         font-weight: bold;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
     }
     input[type="range"] { width: 100%; margin: 6px 0; }
     .quiz-card {
@@ -202,26 +213,26 @@ science_lab_html = """
 <body>
 
 <div class="lab-wrapper">
-    <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG THÍ NGHIỆM TRỰC QUAN -->
+    <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG KHOA HỌC -->
     <div class="stage-panel">
         <div class="station-tabs">
-            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Mạch Điện & Vật Dẫn Điện</button>
-            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🧪 Trạm 2: Sự Biến Đổi Của Chất</button>
-            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌍 Trạm 3: Khí Hậu & Năng Lượng Xanh</button>
+            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Mạch Điện</button>
+            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🧊 Trạm 2: Thể Rắn - Lỏng - Khí</button>
+            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌧️ Trạm 3: Mây & Vòng Mưa</button>
         </div>
 
-        <canvas id="labCanvas" width="760" height="440"></canvas>
+        <canvas id="labCanvas" width="760" height="430"></canvas>
 
         <div id="aiExplain" class="ai-explain-box">
-            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b>! Hãy chọn vật liệu lắp vào mạch điện và bấm <b>Đóng Công Tắc</b> để xem dòng điện chạy qua như thế nào nhé!
+            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b>! Hãy chọn vật liệu và bấm nút công tắc màu đỏ bên phải để đóng mạch điện nhé!
         </div>
     </div>
 
-    <!-- CỘT PHẢI: BẢNG ĐIỀU KHIỂN THÍ NGHIỆM & THỬ THÁCH -->
+    <!-- CỘT PHẢI: BẢNG ĐIỀU KHIỂN -->
     <div class="control-panel">
         <div class="user-bar">
             <div>👩‍🔬 Nhà khoa học: <span id="scientistName">Hiểu Minh</span></div>
-            <div>🌟 <span id="expScore">60</span> Điểm Khám Phá</div>
+            <div>🌟 <span id="expScore">70</span> Điểm</div>
         </div>
 
         <div>
@@ -231,73 +242,68 @@ science_lab_html = """
         <!-- ĐIỀU KHIỂN TRẠM 1: MẠCH ĐIỆN -->
         <div id="ctrlStation1" class="ctrl-group">
             <div class="ctrl-title">⚡ Bảng Điều Khiển Mạch Điện Lớp 5</div>
-            <label style="font-size:0.88rem; font-weight:bold;">1. Chọn Nguồn Năng Lượng:</label>
+            <label style="font-size:0.86rem; font-weight:bold;">1. Nguồn Điện:</label>
             <select id="powerSource" onchange="updateCircuit()" style="margin-bottom:8px; margin-top:4px;">
                 <option value="battery">🔋 Pin tiểu 1,5V - 3V</option>
-                <option value="solar">☀️ Pin Năng lượng Mặt trời (Năng lượng sạch)</option>
+                <option value="solar">☀️ Tấm Pin Năng lượng Mặt trời</option>
             </select>
 
-            <label style="font-size:0.88rem; font-weight:bold;">2. Thả vật liệu vào khe thử (Dẫn điện hay Cách điện?):</label>
-            <div class="btn-grid" style="margin-top:6px;">
+            <label style="font-size:0.86rem; font-weight:bold;">2. Thả vật liệu vào khe thử:</label>
+            <div class="btn-grid" style="margin-top:4px;">
                 <button class="act-btn selected" id="mat_copper" onclick="selectMaterial('copper')">🪙 Thanh Đồng</button>
                 <button class="act-btn" id="mat_iron" onclick="selectMaterial('iron')">🔩 Đinh Sắt</button>
                 <button class="act-btn" id="mat_plastic" onclick="selectMaterial('plastic')">📏 Thước Nhựa</button>
                 <button class="act-btn" id="mat_wood" onclick="selectMaterial('wood')">🪵 Gỗ Khô</button>
-                <button class="act-btn" id="mat_saltwater" onclick="selectMaterial('saltwater')">🧂 Nước Muối</button>
-                <button class="act-btn" id="mat_rubber" onclick="selectMaterial('rubber')">🧤 Cục Tẩy Cao Su</button>
             </div>
 
-            <button id="switchBtn" class="switch-btn" onclick="toggleSwitch()">🔘 CÔNG TẮC ĐANG MỞ (Bấm để Đóng mạch)</button>
+            <div class="switch-box">
+                <div style="font-size:0.83rem; font-weight:bold; margin-bottom:5px; color:#5c940d;">BẤM ĐỂ ĐÓNG/MỞ MẠCH ĐIỆN:</div>
+                <button id="bigSwitchBtn" class="big-switch off" onclick="toggleSwitch()">🔴 CÔNG TẮC: ĐANG MỞ (Hở mạch)</button>
+            </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 2: BIẾN ĐỔI CHẤT -->
+        <!-- ĐIỀU KHIỂN TRẠM 2: THỂ RẮN - LỎNG - KHÍ & ĐUN NÓNG -->
         <div id="ctrlStation2" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🧪 Bảng Pha Trộn & Đun Nóng Chất</div>
-            <label style="font-size:0.88rem; font-weight:bold;">1. Chọn Thí Nghiệm Trong Cốc Thủy Tinh:</label>
-            <select id="chemSelect" onchange="changeChemExperiment()" style="margin-top:4px; margin-bottom:10px;">
-                <option value="sugar">1. Hòa tan Đường vào Nước (Dung dịch)</option>
-                <option value="sand">2. Trộn Cát vào Nước (Hỗn hợp không tan)</option>
-                <option value="oil">3. Đổ Dầu ăn vào Nước (Hỗn hợp tách lớp)</option>
-                <option value="baking">4. Pha Giấm ăn + Baking Soda (Biến đổi Hóa học)</option>
-                <option value="state">5. Đun nóng Nước đá -> Nước lỏng -> Hơi nước</option>
+            <div class="ctrl-title">🧊 Thí Nghiệm Sự Chuyển Thể (Rắn - Lỏng - Khí)</div>
+            <label style="font-size:0.86rem; font-weight:bold;">1. Trạng thái nhiệt độ chất:</label>
+            <select id="stateSelect" onchange="changeStateExp()" style="margin-top:4px; margin-bottom:8px;">
+                <option value="ice">❄️ Thể Rắn (-10°C đến 0°C): Nước đá</option>
+                <option value="water">💧 Thể Lỏng (25°C): Nước trong cốc</option>
+                <option value="steam">♨️ Thể Khí (100°C): Hơi nước sôi bay lên</option>
             </select>
 
             <div class="btn-grid">
-                <button class="act-btn" onclick="stirBeaker()">🥄 Khuấy Đều Cốc</button>
-                <button class="act-btn" id="heatBtn" onclick="toggleHeat()">🔥 Bật Đèn Cồn Đun Nóng</button>
+                <button class="act-btn" id="heatStateBtn" onclick="toggleStateHeat()">🔥 Bật Đèn Cồn Đun Nóng</button>
+                <button class="act-btn" onclick="resetStateExp()">🔄 Làm Lạnh Lại</button>
             </div>
-
-            <div style="margin-top:10px; font-size:0.9rem; font-weight:bold;">
-                🌡️ Nhiệt độ trong cốc: <span id="tempDisplay" style="color:#e03131;">25°C</span>
+            <div style="margin-top:8px; font-size:0.9rem; font-weight:bold;">
+                🌡️ Nhiệt độ hiện tại: <span id="stateTempDisplay" style="color:#e03131;">0°C</span>
             </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 3: MÔI TRƯỜNG & KHÍ HẬU -->
+        <!-- ĐIỀU KHIỂN TRẠM 3: MÂY, MƯA & VÒNG TUẦN HOÀN -->
         <div id="ctrlStation3" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🌍 Điều Chỉnh Hệ Sinh Thái & Năng Lượng</div>
-            <label style="font-size:0.88rem; font-weight:bold;">🌳 Số lượng Cây xanh trồng mới: <span id="treeVal">50</span> cây</label>
-            <input type="range" id="treeSlider" min="0" max="100" value="50" oninput="updateEco()">
+            <div class="ctrl-title">🌧️ Mô Hình Vòng Tuần Hoàn Nước (Mây & Mưa)</div>
+            <label style="font-size:0.86rem; font-weight:bold;">☀️ Cường độ nắng bốc hơi nước: <span id="sunVal">50</span>%</label>
+            <input type="range" id="sunSlider" min="10" max="100" value="50" oninput="updateRainModel()">
 
-            <label style="font-size:0.88rem; font-weight:bold;">☀️ Lắp đặt Điện Gió & Mặt Trời: <span id="cleanVal">40</span>%</label>
-            <input type="range" id="cleanSlider" min="0" max="100" value="40" oninput="updateEco()">
+            <label style="font-size:0.86rem; font-weight:bold;">❄️ Độ lạnh tầng mây cao: <span id="coldVal">60</span>%</label>
+            <input type="range" id="coldSlider" min="10" max="100" value="60" oninput="updateRainModel()">
 
-            <label style="font-size:0.88rem; font-weight:bold;">🏭 Khí thải Nhà máy & Xe cộ: <span id="smokeVal">50</span>%</label>
-            <input type="range" id="smokeSlider" min="0" max="100" value="50" oninput="updateEco()">
-
-            <button class="act-btn selected" style="width:100%; margin-top:6px;" onclick="setGreenIdeal()">🌱 Cân Bằng Xanh Lý Tưởng Cho Trái Đất</button>
+            <button class="act-btn" style="width:100%; margin-top:6px; background:#e7f5ff; color:#1864ab; border-color:#74c0fc;" onclick="triggerRainStorm()">🌧️ Kích Hoạt Cơn Mưa Rào</button>
         </div>
 
-        <!-- CÂU HỎI KẾT LUẬN KHOA HỌC NHANH -->
+        <!-- CÂU HỎI KẾT LUẬN -->
         <div class="quiz-card">
-            <div style="font-weight:800; color:#d9480f; margin-bottom:4px;">🧠 Thử Thách Quan Sát Thí Nghiệm:</div>
-            <div id="quizQuestion" style="font-size:0.92rem; font-weight:600; margin-bottom:8px;">
-                Sau khi thử nghiệm ở Trạm 1, đố em vật liệu nào dưới đây cho dòng điện chạy qua làm sáng bóng đèn?
+            <div style="font-weight:800; color:#d9480f; margin-bottom:4px;">🧠 Thử Thách Khoa Học Lớp 5:</div>
+            <div id="quizQuestion" style="font-size:0.9rem; font-weight:600; margin-bottom:6px;">
+                Nước chuyển từ Thể Lỏng sang Thể Khí (hơi nước) khi đạt đến nhiệt độ bao nhiêu?
             </div>
             <div class="btn-grid" id="quizOptions">
-                <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
-                <button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>
+                <button class="act-btn" onclick="answerQuiz(true)">♨️ Đạt 100°C (Sôi)</button>
+                <button class="act-btn" onclick="answerQuiz(false)">❄️ Đạt 0°C (Đông đặc)</button>
             </div>
-            <div id="quizFeedback" style="margin-top:6px; font-size:0.9rem; font-weight:bold;"></div>
+            <div id="quizFeedback" style="margin-top:5px; font-size:0.88rem; font-weight:bold;"></div>
         </div>
     </div>
 </div>
@@ -307,60 +313,52 @@ const canvas = document.getElementById('labCanvas');
 const ctx = canvas.getContext('2d');
 
 let currentStation = 1;
-let expScore = 60;
+let expScore = 70;
 let tick = 0;
 
-// Trạng thái Trạm 1 (Mạch điện)
+// Trạm 1
 let circuit = {
     source: 'battery',
     material: 'copper',
     switchClosed: false,
-    conductors: ['copper', 'iron', 'saltwater'],
-    matNames: {
-        copper: 'Thanh Đồng (Kim loại)',
-        iron: 'Đinh Sắt (Kim loại)',
-        plastic: 'Thước Nhựa',
-        wood: 'Thanh Gỗ Khô',
-        saltwater: 'Cốc Nước Muối',
-        rubber: 'Cục Tẩy Cao Su'
-    }
+    conductors: ['copper', 'iron'],
+    matNames: { copper: 'Thanh Đồng', iron: 'Đinh Sắt', plastic: 'Thước Nhựa', wood: 'Thanh Gỗ Khô' }
 };
 
-// Trạng thái Trạm 2 (Hóa học & Chất)
-let chem = {
-    type: 'sugar',
-    stirring: 0,
+// Trạm 2 (Thể chất)
+let stateLab = {
+    mode: 'ice',
+    temp: 0,
     heating: false,
-    temp: 25,
-    bubbles: []
+    particles: []
 };
-for (let i = 0; i < 25; i++) {
-    chem.bubbles.push({ x: 300 + Math.random() * 160, y: 220 + Math.random() * 140, r: 3 + Math.random() * 5, s: 0.6 + Math.random() * 1.2 });
+for (let i = 0; i < 30; i++) {
+    stateLab.particles.push({ x: 320 + Math.random() * 120, y: 220 + Math.random() * 100, vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1 });
 }
 
-// Trạng thái Trạm 3 (Môi trường)
-let eco = {
-    trees: 50,
-    clean: 40,
-    smoke: 50,
-    earthTemp: 28.5
+// Trạm 3 (Mây Mưa)
+let rainLab = {
+    sunPower: 50,
+    coldPower: 60,
+    vapors: [],
+    raindrops: [],
+    isRaining: false
 };
 
-// Âm thanh hiệu ứng
 function playTone(win) {
     try {
         const ac = new (window.AudioContext || window.webkitAudioContext)();
-        const freqs = win ? [523, 659, 784, 1046] : [240, 180];
+        const freqs = win ? [523, 659, 784, 1046] : [220, 160];
         freqs.forEach((f, idx) => {
-            const osc = ac.createOscillator();
+            const o = ac.createOscillator();
             const g = ac.createGain();
-            osc.type = win ? 'triangle' : 'sawtooth';
-            osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.08);
+            o.type = win ? 'triangle' : 'sawtooth';
+            o.frequency.setValueAtTime(f, ac.currentTime + idx * 0.08);
             g.gain.setValueAtTime(0.15, ac.currentTime + idx * 0.08);
             g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.08 + 0.22);
-            osc.connect(g); g.connect(ac.destination);
-            osc.start(ac.currentTime + idx * 0.08);
-            osc.stop(ac.currentTime + idx * 0.08 + 0.22);
+            o.connect(g); g.connect(ac.destination);
+            o.start(ac.currentTime + idx * 0.08);
+            o.stop(ac.currentTime + idx * 0.08 + 0.22);
         });
     } catch(e) {}
 }
@@ -383,25 +381,16 @@ function switchStation(stNum) {
 
     if (stNum === 1) {
         updateCircuitExplanation();
-        qText.innerText = "Qua thí nghiệm Trạm 1, vật liệu nào dưới đây là VẬT DẪN ĐIỆN giúp bóng đèn phát sáng?";
-        qOpts.innerHTML = `
-            <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
-            <button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Cao su</button>
-        `;
+        qText.innerText = "Vật liệu nào dưới đây là VẬT DẪN ĐIỆN giúp bóng đèn phát sáng?";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button><button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ</button>`;
     } else if (stNum === 2) {
-        updateChemExplanation();
-        qText.innerText = "Khi pha Giấm ăn với Baking Soda làm sủi bọt khí CO₂ mới, đó là hiện tượng gì?";
-        qOpts.innerHTML = `
-            <button class="act-btn" onclick="answerQuiz(true)">🧪 Sự biến đổi Hóa học</button>
-            <button class="act-btn" onclick="answerQuiz(false)">🧊 Chỉ là sự nóng chảy</button>
-        `;
+        updateStateExplanation();
+        qText.innerText = "Nước chuyển từ Thể Lỏng sang Thể Khí (hơi nước) khi đạt đến nhiệt độ bao nhiêu?";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">♨️ Đạt 100°C (Sôi)</button><button class="act-btn" onclick="answerQuiz(false)">❄️ Đạt 0°C (Đông đặc)</button>`;
     } else {
-        updateEco();
-        qText.innerText = "Giải pháp nào giúp giảm nhiệt độ Trái Đất và bảo vệ môi trường bền vững nhất?";
-        qOpts.innerHTML = `
-            <button class="act-btn" onclick="answerQuiz(true)">🌱 Trồng cây & Dùng điện mặt trời</button>
-            <button class="act-btn" onclick="answerQuiz(false)">🏭 Tăng khói bụi nhà máy</button>
-        `;
+        updateRainModel();
+        qText.innerText = "Mây trên bầu trời được hình thành từ quá trình nào của nước?";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">☁️ Hơi nước bay lên gặp lạnh ngưng tụ</button><button class="act-btn" onclick="answerQuiz(false)">🔥 Nước dưới đất tự hóa thành đá</button>`;
     }
 }
 
@@ -413,36 +402,34 @@ function answerQuiz(isCorrect) {
         expScore += 10;
         document.getElementById('expScore').innerText = expScore;
         fb.style.color = '#2b8a3e';
-        fb.innerText = `🎉 Xuất sắc quá ${stName} ơi! Em đã rút ra kết luận khoa học hoàn toàn chính xác (+10 Điểm)!`;
+        fb.innerText = `🎉 Giỏi lắm ${stName}! Em trả lời hoàn toàn chính xác (+10 Điểm)!`;
     } else {
         playTone(false);
         fb.style.color = '#e03131';
-        fb.innerText = `💡 Chưa đúng rồi! Em hãy nhìn lại hiện tượng trên màn hình thí nghiệm để chọn lại nhé!`;
+        fb.innerText = `💡 Chưa đúng rồi! Em quan sát thí nghiệm trên màn hình để thử lại nhé!`;
     }
 }
 
-// ==================== LOGIC TRẠM 1: MẠCH ĐIỆN ====================
+// ==================== TRẠM 1 LOGIC ====================
 function selectMaterial(mat) {
     circuit.material = mat;
-    ['copper', 'iron', 'plastic', 'wood', 'saltwater', 'rubber'].forEach(m => {
+    ['copper', 'iron', 'plastic', 'wood'].forEach(m => {
         document.getElementById('mat_' + m).className = 'act-btn' + (m === mat ? ' selected' : '');
     });
-    if (circuit.switchClosed) {
-        playTone(circuit.conductors.includes(mat));
-    }
+    if (circuit.switchClosed) playTone(circuit.conductors.includes(mat));
     updateCircuitExplanation();
 }
 
 function toggleSwitch() {
     circuit.switchClosed = !circuit.switchClosed;
-    const btn = document.getElementById('switchBtn');
+    const btn = document.getElementById('bigSwitchBtn');
     if (circuit.switchClosed) {
-        btn.className = 'switch-btn on';
-        btn.innerText = '⚡ CÔNG TẮC ĐANG ĐÓNG (Bấm để Ngắt điện)';
+        btn.className = 'big-switch on';
+        btn.innerText = '🟢 CÔNG TẮC: ĐANG ĐÓNG (Mạch kín)';
         playTone(circuit.conductors.includes(circuit.material));
     } else {
-        btn.className = 'switch-btn';
-        btn.innerText = '🔘 CÔNG TẮC ĐANG MỞ (Bấm để Đóng mạch)';
+        btn.className = 'big-switch off';
+        btn.innerText = '🔴 CÔNG TẮC: ĐANG MỞ (Hở mạch)';
     }
     updateCircuitExplanation();
 }
@@ -458,365 +445,214 @@ function updateCircuitExplanation() {
     const mName = circuit.matNames[circuit.material];
 
     if (!circuit.switchClosed) {
-        box.innerHTML = `🤖 <b>Trợ lý Khoa học AI:</b> Hiện tại <b>Mạch điện đang hở</b> (Công tắc mở). Em hãy chọn vật liệu <b>${mName}</b> và bấm <b>Đóng Công Tắc</b> để kiểm tra tính dẫn điện nhé!`;
+        box.innerHTML = `🤖 <b>Trợ lý AI:</b> Công tắc đang <b>Mở (Hở mạch)</b>. Em hãy chọn vật liệu <b>${mName}</b> rồi bấm nút <b>Đóng công tắc màu xanh</b> để dòng điện chạy qua nhé!`;
     } else if (isCond) {
-        box.innerHTML = `✅ <b>Kết luận AI: Bóng đèn SÁNG RỰC & Quạt QUAY!</b> Vì <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho phép dòng điện (các hạt màu vàng) chạy qua mạch kín từ nguồn điện đến bóng đèn!`;
+        box.innerHTML = `✅ <b>Đèn Sáng Rực!</b> <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho phép dòng điện chạy qua mạch kín từ nguồn đến bóng đèn!`;
     } else {
-        box.innerHTML = `⚠️ <b>Kết luận AI: Bóng đèn KHÔNG SÁNG!</b> Vì <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, dòng điện không thể đi qua được. Nhờ tính chất này, nhựa và cao su thường dùng làm vỏ bọc dây điện để đảm bảo an toàn!`;
+        box.innerHTML = `⚠️ <b>Đèn Tắt!</b> <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, không cho dòng điện chạy qua. Nhựa và gỗ dùng làm vật liệu cách điện an toàn.`;
     }
 }
 
-// ==================== VẼ TRẠM 1: MẠCH ĐIỆN SỐNG ĐỘNG ====================
+// ==================== TRẠM 2 LOGIC (THỂ CHẤT) ====================
+function changeStateExp() {
+    stateLab.mode = document.getElementById('stateSelect').value;
+    if (stateLab.mode === 'ice') stateLab.temp = -5;
+    else if (stateLab.mode === 'water') stateLab.temp = 25;
+    else stateLab.temp = 100;
+    stateLab.heating = false;
+    document.getElementById('heatStateBtn').innerText = '🔥 Bật Đèn Cồn Đun Nóng';
+    updateStateExplanation();
+}
+
+function toggleStateHeat() {
+    stateLab.heating = !stateLab.heating;
+    const btn = document.getElementById('heatStateBtn');
+    btn.className = 'act-btn' + (stateLab.heating ? ' selected' : '');
+    btn.innerText = stateLab.heating ? '🔥 Đang đun nóng...' : '🔥 Bật Đèn Cồn Đun Nóng';
+    updateStateExplanation();
+}
+
+function resetStateExp() {
+    stateLab.mode = 'ice';
+    stateLab.temp = -5;
+    stateLab.heating = false;
+    document.getElementById('stateSelect').value = 'ice';
+    document.getElementById('heatStateBtn').innerText = '🔥 Bật Đèn Cồn Đun Nóng';
+    updateStateExplanation();
+}
+
+function updateStateExplanation() {
+    const box = document.getElementById('aiExplain');
+    if (stateLab.temp < 0) {
+        box.innerHTML = `❄️ <b>Thể Rắn (Nước đá):</b> Ở dưới 0°C, các phân tử nước liên kết chặt chẽ với nhau đứng yên một chỗ thành khối cứng rắn.`;
+    } else if (stateLab.temp < 100) {
+        box.innerHTML = `💧 <b>Thể Lỏng (Nước):</b> Từ 0°C đến dưới 100°C, các hạt nước trượt lên nhau, giữ thể lỏng chảy được và tràn đầy cốc.`;
+    } else {
+        box.innerHTML = `♨️ <b>Thể Khí (Hơi nước):</b> Đạt 100°C nước sôi, các phân tử chuyển động rất nhanh bay hơi mạnh mẽ lên không trung thành thể khí!`;
+    }
+}
+
+// ==================== TRẠM 3 LOGIC (MÂY MƯA) ====================
+function updateRainModel() {
+    rainLab.sunPower = parseInt(document.getElementById('sunSlider').value);
+    rainLab.coldPower = parseInt(document.getElementById('coldSlider').value);
+    document.getElementById('sunVal').innerText = rainLab.sunPower;
+    document.getElementById('coldVal').innerText = rainLab.coldPower;
+}
+
+function triggerRainStorm() {
+    rainLab.isRaining = true;
+    playTone(true);
+    document.getElementById('aiExplain.innerHTML').innerHTML = `🌧️ <b>Vòng Tuần Hoàn Nước:</b> Nơi mặt đất nhận nhiệt độ cao từ mặt trời làm nước bay hơi $\rightarrow$ gặp tầng mây lạnh ngưng tụ thành hạt nước nặng $\rightarrow$ rơi xuống thành những cơn mưa rào tưới mát đồng ruộng!`;
+    setTimeout(() => { rainLab.isRaining = false; }, 4000);
+}
+
+// ==================== VẼ ĐỒ HỌA 60 FPS ====================
 function drawStation1() {
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     const isFlowing = circuit.switchClosed && circuit.conductors.includes(circuit.material);
 
-    // Tiêu đề trên Canvas
     ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN THỰC HÀNH (KHOA HỌC LỚP 5)', 25, 35);
+    ctx.font = 'bold 17px sans-serif';
+    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN THỰC HÀNH', 25, 32);
 
-    // Khung dây dẫn hình chữ nhật: (120, 100) -> (640, 360)
     ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b';
     ctx.lineWidth = 6;
-    ctx.strokeRect(120, 100, 520, 260);
+    ctx.strokeRect(120, 95, 520, 250);
 
-    // Hiệu ứng hạt electron chạy quanh dây khi mạch kín
     if (isFlowing) {
         ctx.fillStyle = '#fef08a';
-        const perim = (520 + 260) * 2;
-        for (let i = 0; i < 18; i++) {
-            let d = ((i * (perim / 18)) + tick * 3.5) % perim;
-            let ex = 120, ey = 100;
-            if (d < 520) { ex = 120 + d; ey = 100; }
-            else if (d < 520 + 260) { ex = 640; ey = 100 + (d - 520); }
-            else if (d < 520 * 2 + 260) { ex = 640 - (d - 780); ey = 360; }
-            else { ex = 120; ey = 360 - (d - 1300); }
-
-            ctx.beginPath();
-            ctx.arc(ex, ey, 5, 0, Math.PI * 2);
-            ctx.fill();
+        const perim = (520 + 250) * 2;
+        for (let i = 0; i < 16; i++) {
+            let d = ((i * (perim / 16)) + tick * 3.5) % perim;
+            let ex = 120, ey = 95;
+            if (d < 520) { ex = 120 + d; ey = 95; }
+            else if (d < 520 + 250) { ex = 640; ey = 95 + (d - 520); }
+            else if (d < 520 * 2 + 250) { ex = 640 - (d - 770); ey = 345; }
+            else { ex = 120; ey = 345 - (d - 1290); }
+            ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI * 2); ctx.fill();
         }
     }
 
-    // 1. Nguồn điện bên trái (120, 230)
+    // Nguồn
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(75, 165, 90, 130);
+    ctx.fillRect(75, 160, 90, 120);
     if (circuit.source === 'battery') {
-        ctx.fillStyle = '#f97316';
-        ctx.fillRect(92, 180, 56, 35);
-        ctx.fillStyle = '#334155';
-        ctx.fillRect(92, 215, 56, 65);
-        ctx.fillStyle = '#e2e8f0';
-        ctx.fillRect(108, 170, 24, 10);
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.fillText('+ PIN -', 96, 245);
+        ctx.fillStyle = '#f97316'; ctx.fillRect(92, 175, 56, 30);
+        ctx.fillStyle = '#334155'; ctx.fillRect(92, 205, 56, 60);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 13px sans-serif'; ctx.fillText('+ PIN -', 98, 242);
     } else {
-        // Tấm pin mặt trời
-        ctx.fillStyle = '#0284c7';
-        ctx.fillRect(80, 180, 80, 95);
-        ctx.strokeStyle = '#bae6fd';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(80, 180, 80, 95);
-        ctx.fillStyle = '#fde047';
-        ctx.font = 'bold 24px sans-serif';
-        ctx.fillText('☀️', 105, 165);
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.fillText('PIN MẶT TRỜI', 82, 295);
+        ctx.fillStyle = '#0284c7'; ctx.fillRect(80, 170, 80, 90);
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 22px sans-serif'; ctx.fillText('☀️', 108, 225);
     }
 
-    // 2. Công tắc ở cạnh trên (300, 100)
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(260, 80, 90, 40);
-    ctx.fillStyle = '#ef4444';
-    ctx.beginPath(); ctx.arc(265, 100, 7, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(345, 100, 7, 0, Math.PI * 2); ctx.fill();
-
-    ctx.strokeStyle = '#f8fafc';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(265, 100);
-    if (circuit.switchClosed) {
-        ctx.lineTo(345, 100);
-    } else {
-        ctx.lineTo(335, 62);
-    }
+    // Công tắc
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(260, 75, 90, 38);
+    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(265, 95);
+    if (circuit.switchClosed) ctx.lineTo(345, 95);
+    else ctx.lineTo(335, 55);
     ctx.stroke();
-    ctx.fillStyle = '#cbd5e1';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillText(circuit.switchClosed ? 'Công tắc: ĐÓNG' : 'Công tắc: MỞ', 255, 50);
 
-    // 3. Bóng đèn & Quạt nhỏ bên phải (640, 230)
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(600, 160, 80, 130);
-
+    // Đèn
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(600, 155, 80, 120);
     if (isFlowing) {
-        const grad = ctx.createRadialGradient(640, 210, 10, 640, 210, 75);
-        grad.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
-        grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(640, 210, 75, 0, Math.PI * 2); ctx.fill();
+        const grad = ctx.createRadialGradient(640, 205, 10, 640, 205, 70);
+        grad.addColorStop(0, 'rgba(253, 224, 71, 0.95)'); grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
+        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(640, 205, 70, 0, Math.PI * 2); ctx.fill();
     }
-
-    ctx.beginPath();
-    ctx.arc(640, 210, 32, 0, Math.PI * 2);
-    ctx.fillStyle = isFlowing ? '#fef08a' : '#475569';
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = isFlowing ? '#facc15' : '#94a3b8';
+    ctx.beginPath(); ctx.arc(640, 205, 30, 0, Math.PI * 2);
+    ctx.fillStyle = isFlowing ? '#fef08a' : '#475569'; ctx.fill();
     ctx.stroke();
+    ctx.fillStyle = isFlowing ? '#fde047' : '#cbd5e1'; ctx.font = 'bold 13px sans-serif';
+    ctx.fillText(isFlowing ? '💡 ĐÈN SÁNG' : '💡 Đèn tắt', 605, 275);
 
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(626, 240, 28, 20);
-    ctx.fillStyle = isFlowing ? '#fde047' : '#cbd5e1';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillText(isFlowing ? '💡 ĐÈN SÁNG!' : '💡 Đèn tắt', 602, 285);
-
-    // 4. Khe thử Vật Dẫn Điện / Vật Cách Điện ở cạnh dưới (380, 360)
-    ctx.fillStyle = '#1e293b';
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 2;
-    ctx.fillRect(280, 325, 200, 70);
-    ctx.strokeRect(280, 325, 200, 70);
-
-    const matColors = {
-        copper: '#d97706', iron: '#94a3b8', plastic: '#38bdf8',
-        wood: '#854d0e', saltwater: '#22d3ee', rubber: '#f43f5e'
-    };
-    ctx.fillStyle = matColors[circuit.material];
-    ctx.fillRect(300, 345, 160, 28);
-
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(circuit.matNames[circuit.material], 380, 364);
-    ctx.fillStyle = isFlowing ? '#4ade80' : '#f87171';
-    ctx.fillText(circuit.conductors.includes(circuit.material) ? '👉 VẬT DẪN ĐIỆN' : '👉 VẬT CÁCH ĐIỆN', 380, 315);
+    // Vật liệu
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(280, 310, 200, 65);
+    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.strokeRect(280, 310, 200, 65);
+    ctx.fillStyle = '#d97706'; ctx.fillRect(295, 328, 170, 28);
+    ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(circuit.matNames[circuit.material], 380, 347);
     ctx.textAlign = 'left';
-}
-
-// ==================== LOGIC & VẼ TRẠM 2: BIẾN ĐỔI CHẤT ====================
-function changeChemExperiment() {
-    chem.type = document.getElementById('chemSelect').value;
-    chem.stirring = 0;
-    updateChemExplanation();
-}
-
-function stirBeaker() {
-    chem.stirring = 60;
-    playTone(true);
-    updateChemExplanation();
-}
-
-function toggleHeat() {
-    chem.heating = !chem.heating;
-    const btn = document.getElementById('heatBtn');
-    btn.className = 'act-btn' + (chem.heating ? ' selected' : '');
-    btn.innerText = chem.heating ? '🔥 Đang Đun Nóng (Bấm để Tắt)' : '🔥 Bật Đèn Cồn Đun Nóng';
-    updateChemExplanation();
-}
-
-function updateChemExplanation() {
-    const box = document.getElementById('aiExplain');
-    if (chem.type === 'sugar') {
-        box.innerHTML = `🧪 <b>Trợ lý AI:</b> Khi khuấy <b>Đường vào Nước</b>, các hạt đường phân tán đều và tan hoàn toàn tạo thành <b>DUNG DỊCH nước đường</b> đồng nhất (Khi đun nóng đường càng tan nhanh hơn!).`;
-    } else if (chem.type === 'sand') {
-        box.innerHTML = `🧪 <b>Trợ lý AI:</b> <b>Cát không tan trong nước!</b> Dù em có khuấy mạnh thì sau đó hạt cát vẫn lắng xuống đáy cốc. Đây là một <b>HỖN HỢP</b>, ta có thể tách cát ra bằng cách lọc hoặc lắng gạn.`;
-    } else if (chem.type === 'oil') {
-        box.innerHTML = `🧪 <b>Trợ lý AI:</b> <b>Dầu ăn nhẹ hơn nước và không tan trong nước</b> nên luôn nổi lên tạo thành một lớp màu vàng phía trên mặt nước!`;
-    } else if (chem.type === 'baking') {
-        box.innerHTML = `🎉 <b>Sự Biến Đổi Hóa Học!</b> Khi đổ <b>Giấm ăn vào Baking Soda</b>, chúng phản ứng tạo ra chất mới là <b>khí Cacbon đioxit (CO₂)</b> sủi bọt trắng xóa khắp cốc!`;
-    } else {
-        box.innerHTML = `🌡️ <b>Sự Chuyển Thể Của Nước (Biến đổi Vật lý):</b> Hãy bấm <b>"🔥 Bật Đèn Cồn"</b>! Dưới 0°C nước ở thể rắn (nước đá), nóng lên chuyển thành thể lỏng, và đạt <b>100°C nước sôi bốc hơi</b> mạnh thành thể khí!`;
-    }
 }
 
 function drawStation2() {
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (chem.heating && chem.temp < 100) chem.temp += 0.25;
-    else if (!chem.heating && chem.temp > 25) chem.temp -= 0.15;
-    document.getElementById('tempDisplay').innerText = Math.round(chem.temp) + '°C';
+    if (stateLab.heating && stateLab.temp < 100) stateLab.temp += 0.3;
+    document.getElementById('stateTempDisplay').innerText = Math.round(stateLab.temp) + '°C';
 
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText('🧪 PHÒNG THÍ NGHIỆM DUNG DỊCH & SỰ BIẾN ĐỔI CỦA CHẤT', 25, 35);
+    ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
+    ctx.fillText('🧊 SỰ CHUYỂN THỂ (RẮN - LỎNG - KHÍ)', 25, 32);
 
-    // Bàn thí nghiệm
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(150, 370, 460, 18);
+    // Bàn
+    ctx.fillStyle = '#334155'; ctx.fillRect(180, 350, 400, 16);
 
-    // Cốc thủy tinh (Beaker): x=280..480, y=120..350
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
-    ctx.fillRect(285, 180, 190, 165);
+    // Cốc thủy tinh
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(290, 150); ctx.lineTo(290, 330); ctx.lineTo(470, 330); ctx.lineTo(470, 150); ctx.stroke();
 
-    // Vẽ hiện tượng bên trong cốc
-    if (chem.type === 'oil') {
-        ctx.fillStyle = 'rgba(250, 204, 21, 0.85)';
-        ctx.fillRect(285, 155, 190, 35);
-        ctx.fillStyle = '#fef08a';
-        ctx.font = 'bold 13px sans-serif';
-        ctx.fillText('Lớp Dầu ăn nổi phía trên', 305, 177);
-    } else if (chem.type === 'sand') {
-        ctx.fillStyle = '#d97706';
-        for (let i = 0; i < 45; i++) {
-            let sy = chem.stirring > 0 ? (220 + (i * 19 + tick * 3) % 120) : (330 + (i % 12));
-            ctx.fillRect(295 + (i * 3.8), sy, 4, 4);
-        }
-    } else if (chem.type === 'baking' || chem.temp >= 85) {
-        // Sủi bọt khí CO2 hoặc nước sôi
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        chem.bubbles.forEach(b => {
-            b.y -= b.s * (chem.temp >= 85 ? 2.2 : 1.5);
-            if (b.y < 165) b.y = 340;
-            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
-        });
-    } else if (chem.type === 'state' && chem.temp < 40) {
-        // Viên nước đá nổi
-        ctx.fillStyle = 'rgba(224, 242, 254, 0.85)';
-        ctx.fillRect(320, 175, 45, 35);
-        ctx.fillRect(390, 178, 45, 35);
-    }
-
-    if (chem.stirring > 0) {
-        chem.stirring--;
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 5;
-        let sx = 380 + Math.sin(tick * 0.3) * 45;
-        ctx.beginPath(); ctx.moveTo(380, 90); ctx.lineTo(sx, 320); ctx.stroke();
-    }
-
-    // Thành cốc thủy tinh và vạch chia ml
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(280, 120); ctx.lineTo(280, 350); ctx.lineTo(480, 350); ctx.lineTo(480, 120);
-    ctx.stroke();
-
-    ctx.fillStyle = '#cbd5e1';
-    ctx.font = '12px sans-serif';
-    [100, 200, 300].forEach((ml, i) => {
-        let my = 310 - i * 50;
-        ctx.fillText(ml + ' ml', 490, my + 4);
-        ctx.beginPath(); ctx.moveTo(465, my); ctx.lineTo(480, my); ctx.stroke();
-    });
-
-    // Ngọn lửa đèn cồn bên dưới
-    if (chem.heating) {
-        ctx.fillStyle = '#f97316';
-        ctx.beginPath();
-        ctx.arc(380, 362, 18 + Math.sin(tick * 0.4) * 4, Math.PI, 0);
-        ctx.fill();
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.arc(380, 362, 10, Math.PI, 0);
-        ctx.fill();
-    }
-}
-
-// ==================== LOGIC & VẼ TRẠM 3: KHÍ HẬU & MÔI TRƯỜNG ====================
-function updateEco() {
-    eco.trees = parseInt(document.getElementById('treeSlider').value);
-    eco.clean = parseInt(document.getElementById('cleanSlider').value);
-    eco.smoke = parseInt(document.getElementById('smokeSlider').value);
-
-    document.getElementById('treeVal').innerText = eco.trees;
-    document.getElementById('cleanVal').innerText = eco.clean;
-    document.getElementById('smokeVal').innerText = eco.smoke;
-
-    // Công thức mô phỏng nhiệt độ và chất lượng không khí
-    let temp = 27.0 + (eco.smoke * 0.06) - (eco.trees * 0.03) - (eco.clean * 0.02);
-    eco.earthTemp = Math.max(24.0, Math.min(34.0, temp));
-
-    const box = document.getElementById('aiExplain');
-    if (eco.earthTemp <= 26.5) {
-        box.innerHTML = `🌱 <b>Môi trường Xanh Lý Tưởng (Nhiệt độ: ${eco.earthTemp.toFixed(1)}°C):</b> Nhờ trồng nhiều cây xanh hấp thụ khí CO₂ và dùng điện mặt trời, điện gió, bầu khí quyển rất trong lành!`;
-    } else if (eco.earthTemp <= 29.0) {
-        box.innerHTML = `🌤️ <b>Môi trường Trung bình (Nhiệt độ: ${eco.earthTemp.toFixed(1)}°C):</b> Hãy trồng thêm cây xanh và giảm khí thải nhà máy để ngăn chặn hiệu ứng nhà kính nhé!`;
+    if (stateLab.temp <= 0) {
+        // Khối nước đá thể rắn
+        ctx.fillStyle = 'rgba(186, 230, 253, 0.9)';
+        ctx.fillRect(320, 210, 110, 110);
+        ctx.fillStyle = '#0369a1'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('🧊 THỂ RẮN (Đá cứng)', 305, 195);
+    } else if (stateLab.temp < 100) {
+        // Thể lỏng
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.65)';
+        ctx.fillRect(292, 210, 176, 118);
+        ctx.fillStyle = '#e0f2fe'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('💧 THỂ LỎNG (Nước)', 315, 195);
     } else {
-        box.innerHTML = `🔥 <b>Cảnh báo Hiệu ứng Nhà kính (${eco.earthTemp.toFixed(1)}°C):</b> Khói bụi CO₂ quá cao làm Trái Đất nóng lên! Hãy tăng diện tích rừng và năng lượng tái tạo ngay!`;
+        // Thể khí (Hơi nước bay lên)
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.4)'; ctx.fillRect(292, 210, 176, 118);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        for (let i = 0; i < 8; i++) {
+            let hy = 180 - ((tick * 1.5 + i * 25) % 130);
+            ctx.beginPath(); ctx.arc(330 + (i * 15) % 90, hy, 10, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('♨️ THỂ KHÍ (Hơi nước sôi)', 295, 135);
     }
-}
 
-function setGreenIdeal() {
-    document.getElementById('treeSlider').value = 90;
-    document.getElementById('cleanSlider').value = 85;
-    document.getElementById('smokeSlider').value = 10;
-    playTone(true);
-    updateEco();
+    if (stateLab.heating) {
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath(); ctx.arc(380, 342, 16 + Math.sin(tick * 0.4) * 4, Math.PI, 0); ctx.fill();
+    }
 }
 
 function drawStation3() {
-    // Màu bầu trời phụ thuộc độ ô nhiễm
-    const skyR = Math.min(200, 30 + eco.smoke * 1.4);
-    const skyG = Math.max(110, 190 - eco.smoke * 0.8);
-    const skyB = Math.max(120, 245 - eco.smoke * 1.1);
-    ctx.fillStyle = `rgb(${skyR}, ${skyG}, ${skyB})`;
+    ctx.fillStyle = '#0284c7'; // Bầu trời xanh
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Mặt trời
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath(); ctx.arc(650, 75, 38, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(620, 75, 35, 0, Math.PI * 2); ctx.fill();
 
-    // Mặt đất xanh hoặc khô cằn
-    ctx.fillStyle = eco.trees > 40 ? '#2f9e44' : '#b45309';
-    ctx.fillRect(0, 310, canvas.width, 130);
+    // Mặt đất & Dòng sông
+    ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 310, canvas.width, 120);
+    ctx.fillStyle = '#0284c7'; ctx.fillRect(0, 360, canvas.width, 70);
 
-    // Dòng sông
-    ctx.fillStyle = eco.smoke < 50 ? '#0ea5e9' : '#64748b';
-    ctx.fillRect(0, 365, canvas.width, 75);
+    ctx.fillStyle = 'white'; ctx.font = 'bold 17px sans-serif';
+    ctx.fillText('🌧️ VÒNG TUẦN HOÀN CỦA NƯỚC (MÂY & MƯA)', 25, 32);
 
-    // Vẽ Cây xanh theo số lượng thanh trượt
-    const numTrees = Math.floor(eco.trees / 8);
-    for (let i = 0; i < numTrees; i++) {
-        let tx = 40 + i * 42;
-        ctx.fillStyle = '#78350f';
-        ctx.fillRect(tx - 4, 275, 8, 35);
-        ctx.fillStyle = '#16a34a';
-        ctx.beginPath(); ctx.arc(tx, 265, 20, 0, Math.PI * 2); ctx.fill();
-    }
+    // Mây ngưng tụ trên cao
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    [200, 360, 520].forEach((mx, idx) => {
+        ctx.beginPath(); ctx.arc(mx, 130, 30 + idx*4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(mx + 25, 120, 25, 0, Math.PI * 2); ctx.fill();
+    });
 
-    // Vẽ Tua-bin Điện gió khi Clean Energy > 20
-    if (eco.clean >= 25) {
-        [520, 610].forEach(wx => {
-            ctx.strokeStyle = '#f8fafc';
-            ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(wx, 310); ctx.lineTo(wx, 190); ctx.stroke();
-            for (let b = 0; b < 3; b++) {
-                let ang = (tick * 0.04) + (b * Math.PI * 2 / 3);
-                ctx.beginPath();
-                ctx.moveTo(wx, 190);
-                ctx.lineTo(wx + Math.cos(ang) * 42, 190 + Math.sin(ang) * 42);
-                ctx.stroke();
-            }
-        });
-    }
-
-    // Khói nhà máy khi Smoke cao
-    if (eco.smoke > 20) {
-        ctx.fillStyle = '#475569';
-        ctx.fillRect(670, 230, 55, 80);
-        ctx.fillStyle = 'rgba(71, 85, 105, 0.65)';
-        for (let s = 0; s < 4; s++) {
-            let sy = 215 - ((tick + s * 30) % 120);
-            ctx.beginPath(); ctx.arc(695 - s * 10, sy, 18 + s * 4, 0, Math.PI * 2); ctx.fill();
+    // Hiệu ứng hạt mưa rơi
+    if (rainLab.isRaining || tick % 120 < 40) {
+        ctx.strokeStyle = '#bae6fd'; ctx.lineWidth = 2;
+        for (let r = 0; r < 30; r++) {
+            let rx = (r * 28 + tick * 6) % canvas.width;
+            let ry = (tick * 8 + r * 15) % 320;
+            ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 2, ry + 12); ctx.stroke();
         }
     }
-
-    // Bảng chỉ số nhiệt kế Trái Đất
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-    ctx.fillRect(20, 20, 320, 55);
-    ctx.fillStyle = eco.earthTemp > 29 ? '#f87171' : '#4ade80';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText(`🌡️ Nhiệt độ Trái Đất: ${eco.earthTemp.toFixed(1)}°C`, 35, 53);
 }
 
-// Vòng lặp hoạt hình 60 FPS
 function animate() {
     tick++;
     if (currentStation === 1) drawStation1();
@@ -830,4 +666,4 @@ animate();
 </html>
 """
 
-components.html(science_lab_html, height=640, scrolling=True)
+components.html(science_lab_html, height=620, scrolling=True)
