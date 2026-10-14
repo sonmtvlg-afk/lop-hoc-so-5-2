@@ -1,566 +1,974 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import random
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Vương Quốc Tri Thức Lớp 5/2 - TH Bình Phước",
-    page_icon="🐉",
-    layout="centered"
+    page_title="Phòng Thí Nghiệm Hình Học Ảo AI - Lớp 5/2",
+    page_icon="📐",
+    layout="wide"
 )
 
-# ==================== HÀM PHÁT ÂM THANH TRÒ CHƠI (KHÔNG CẦN FILE MP3) ====================
-def play_sound(sound_type="win"):
-    if sound_type == "win":
-        js = """
-        <script>
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((freq, idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.25);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(ctx.currentTime + idx * 0.1);
-            osc.stop(ctx.currentTime + idx * 0.1 + 0.25);
-        });
-        </script>
-        """
-    else:
-        js = """
-        <script>
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(220, ctx.currentTime);
-        osc.frequency.setValueAtTime(160, ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.35);
-        </script>
-        """
-    components.html(js, height=0)
-
-# ==================== GIAO DIỆN CSS GAME HÓA RỰC RỠ ====================
 st.markdown("""
 <style>
-    .game-header {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    .block-container {
+        padding-top: 1.2rem;
+        padding-bottom: 1rem;
+    }
+    .top-banner {
+        background: linear-gradient(135deg, #0b7285 0%, #1971c2 60%, #3b5bdb 100%);
         color: white;
-        padding: 22px;
-        border-radius: 20px;
+        padding: 18px 24px;
+        border-radius: 16px;
         text-align: center;
-        box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
-        margin-bottom: 15px;
+        box-shadow: 0 6px 18px rgba(25, 113, 194, 0.25);
+        margin-bottom: 12px;
     }
-    .game-header h1 {
-        font-size: 1.85rem;
+    .top-banner h1 {
+        font-size: 1.75rem;
         margin: 0;
-        color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        color: white;
+        font-weight: 800;
     }
-    .pet-arena {
-        background: linear-gradient(135deg, #fff6e5 0%, #ffe8cc 100%);
-        border: 3px solid #ffa94d;
-        border-radius: 18px;
-        padding: 16px;
-        text-align: center;
-        margin-bottom: 18px;
-        box-shadow: 0 4px 12px rgba(255, 169, 77, 0.2);
-    }
-    .pet-avatar {
-        font-size: 4.2rem;
-        margin: 5px 0;
-        animation: bounce 1.5s infinite alternate;
-    }
-    @keyframes bounce {
-        from { transform: translateY(0px); }
-        to { transform: translateY(-8px); }
-    }
-    .quest-card {
-        background: #ffffff;
-        border: 3px solid #74c0fc;
-        border-radius: 18px;
-        padding: 20px;
-        margin: 12px 0;
-        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-    }
-    .ai-bubble {
-        background: #e3fafc;
-        border-left: 6px solid #15aabf;
-        padding: 15px;
-        border-radius: 12px;
-        color: #0b7285;
-        font-size: 1.05rem;
-        margin-top: 12px;
-    }
-    .item-badge {
-        display: inline-block;
-        background: #f3f0ff;
-        border: 2px solid #845ef7;
-        color: #5f3dc4;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-weight: bold;
-        margin: 4px;
-        font-size: 0.9rem;
+    .top-banner p {
+        font-size: 1rem;
+        margin: 5px 0 0 0;
+        color: #e3fafc;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ==================== MÁY SINH ĐỀ AI VÔ HẠN (INFINITE GENERATOR) ====================
-def generate_infinite_question(topic_choice):
-    friends = ["Minh Khôi", "Bảo Ngọc", "Gia Huy", "Thanh Thảo", "Tuấn Kiệt", "Phương Anh"]
-    friend = random.choice(friends)
-
-    if topic_choice == "🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)":
-        topic = random.choice(["thap_phan", "phan_tram", "hinh_hoc", "thuc_te", "tieng_viet"])
-    elif "Số thập phân" in topic_choice:
-        topic = "thap_phan"
-    elif "Tỉ số phần trăm" in topic_choice:
-        topic = "phan_tram"
-    elif "Hình học" in topic_choice:
-        topic = "hinh_hoc"
-    elif "Toán Thực tế" in topic_choice:
-        topic = "thuc_te"
-    else:
-        topic = "tieng_viet"
-
-    # 1. CHỦ ĐỀ SỐ THẬP PHÂN (SINH TỰ ĐỘNG VÔ HẠN)
-    if topic == "thap_phan":
-        a = round(random.uniform(2.5, 25.5), 1)
-        b = round(random.uniform(1.25, 14.75), 2)
-        op = random.choice(["+", "-"])
-        if op == "+" or a < b:
-            ans = round(a + b, 2)
-            q_text = f"⚡ **Thử thách Tia Chớp:** Bạn {friend} thực hiện phép tính cộng hai số thập phân: **{a} + {b}**. Kết quả đúng là bao nhiêu?"
-            hint = f"💡 **AI gợi ý:** Đặt dấu phẩy thẳng cột! Viết **{a:.2f} + {b:.2f}**, cộng từ phải sang trái nhé!"
-            explain = f"🌟 **AI Giải chi tiết:** Ta có {a:.2f} + {b:.2f} = **{ans}**."
-        else:
-            ans = round(a - b, 2)
-            q_text = f"⚡ **Thử thách Tia Chớp:** Bạn {friend} có sợi dây dài **{a} m**, cắt bớt đi **{b} m**. Hỏi sợi dây còn lại dài bao nhiêu mét?"
-            hint = f"💡 **AI gợi ý:** Viết thêm chữ số 0 vào phần thập phân để trừ: **{a:.2f} - {b:.2f}**."
-            explain = f"🌟 **AI Giải chi tiết:** Độ dài còn lại là: {a:.2f} - {b:.2f} = **{ans} m**."
-
-        wrongs = [round(ans + 1.1, 2), round(abs(ans - 0.5), 2), round(ans + 0.25, 2)]
-        opts = [f"{ans}", f"{wrongs[0]}", f"{wrongs[1]}", f"{wrongs[2]}"]
-        random.shuffle(opts)
-        return {"title": "🧮 Toán 5: Số Thập Phân", "q": q_text, "opts": opts, "ans": f"{ans}", "hint": hint, "exp": explain}
-
-    # 2. CHỦ ĐỀ TỈ SỐ PHẦN TRĂM (SINH TỰ ĐỘNG VÔ HẠN)
-    elif topic == "phan_tram":
-        total = random.choice([40, 50, 80, 100, 120, 200, 300, 400, 500])
-        pct = random.choice([10, 15, 20, 25, 30, 40, 50, 75])
-        ans = int(total * pct / 100)
-        q_text = f"🌱 **Chiến dịch Xanh:** Trường Tiểu học Bình Phước trồng **{total} cây xanh**, trong đó lớp 5/2 chăm sóc **{pct}%** số cây. Hỏi lớp 5/2 chăm sóc bao nhiêu cây xanh?"
-        hint = f"💡 **AI gợi ý:** Muốn tìm **{pct}%** của **{total}**, em lấy **{total} : 100 × {pct}** nhé!"
-        explain = f"🌟 **AI Giải chi tiết:** Số cây lớp 5/2 chăm sóc là: {total} : 100 × {pct} = **{ans} (cây)**."
-        wrongs = [ans + 5, max(1, ans - 4), ans + 10]
-        opts = [f"{ans} cây", f"{wrongs[0]} cây", f"{wrongs[1]} cây", f"{wrongs[2]} cây"]
-        random.shuffle(opts)
-        return {"title": "🌱 Toán 5: Tỉ Số Phần Trăm", "q": q_text, "opts": opts, "ans": f"{ans} cây", "hint": hint, "exp": explain}
-
-    # 3. CHỦ ĐỀ HÌNH HỌC LỚP 5 (TAM GIÁC, HÌNH THANG)
-    elif topic == "hinh_hoc":
-        shape = random.choice(["tam_giac", "hinh_thang"])
-        if shape == "tam_giac":
-            day = random.choice([6, 8, 10, 12, 14, 16])
-            cao = random.choice([4, 5, 7, 9, 10])
-            ans = int(day * cao / 2)
-            q_text = f"📐 **Kiến trúc sư Nhí:** Một bồn hoa hình tam giác ở sân trường Tiểu học Bình Phước có độ dài đáy là **{day} m** và chiều cao là **{cao} m**. Diện tích bồn hoa đó là:"
-            hint = f"💡 **AI gợi ý:** Diện tích hình tam giác = **(Đáy × Chiều cao) : 2** = ({day} × {cao}) : 2."
-            explain = f"🌟 **AI Giải chi tiết:** Diện tích bồn hoa là: ({day} × {cao}) : 2 = **{ans} m²**."
-        else:
-            day_lon = random.choice([10, 12, 15, 18])
-            day_be = day_lon - random.choice([2, 4, 6])
-            cao = random.choice([4, 6, 8, 10])
-            ans = int((day_lon + day_be) * cao / 2)
-            q_text = f"📐 **Kiến trúc sư Nhí:** Một mảnh vườn hình thang có đáy lớn **{day_lon} m**, đáy bé **{day_be} m** và chiều cao **{cao} m**. Diện tích mảnh vườn là:"
-            hint = f"💡 **AI gợi ý:** Muốn tính diện tích hình thang, đáy lớn đáy nhỏ ta mang cộng vào, thế rồi nhân với chiều cao, chia đôi lấy nửa: **({day_lon} + {day_be}) × {cao} : 2**."
-            explain = f"🌟 **AI Giải chi tiết:** Diện tích hình thang là: ({day_lon} + {day_be}) × {cao} : 2 = **{ans} m²**."
-        wrongs = [ans * 2, ans + 6, max(2, ans - 5)]
-        opts = [f"{ans} m²", f"{wrongs[0]} m²", f"{wrongs[1]} m²", f"{wrongs[2]} m²"]
-        random.shuffle(opts)
-        return {"title": "📐 Toán 5: Hình Học Trực Quan", "q": q_text, "opts": opts, "ans": f"{ans} m²", "hint": hint, "exp": explain}
-
-    # 4. TOÁN THỰC TẾ ĐI CHỢ & TIẾT KIỆM
-    elif topic == "thuc_te":
-        price = random.choice([40, 60, 80, 100, 120, 150, 200])
-        discount = random.choice([10, 20, 25, 50])
-        saved = int(price * discount / 100)
-        pay = price - saved
-        q_text = f"🛒 **Siêu thị Thông minh:** Bạn {friend} cùng mẹ đi mua một quyển sách giá **{price}.000 đồng**. Nhân dịp lễ, nhà sách giảm giá **{discount}%**. Hỏi mẹ phải trả bao nhiêu tiền?"
-        hint = f"💡 **AI gợi ý:** Bước 1: Tìm số tiền được giảm ({price} × {discount} : 100 = {saved} nghìn). Bước 2: Lấy giá gốc trừ đi số tiền được giảm!"
-        explain = f"🌟 **AI Giải chi tiết:** Số tiền được giảm là {saved}.000đ. Số tiền mẹ phải trả là: {price}.000 - {saved}.000 = **{pay}.000 đồng**."
-        wrongs = [f"{saved}.000 đồng", f"{pay + 10}.000 đồng", f"{max(10, pay - 10)}.000 đồng"]
-        opts = [f"{pay}.000 đồng"] + wrongs
-        random.shuffle(opts)
-        return {"title": "🛒 Toán Thực Tế Cuộc Sống", "q": q_text, "opts": opts, "ans": f"{pay}.000 đồng", "hint": hint, "exp": explain}
-
-    # 5. KHO TRÒ CHƠI VUA TIẾNG VIỆT ĐA DẠNG
-    else:
-        tv_bank = [
-            {
-                "q": "📚 **Vua Tiếng Việt:** Câu ca dao *'Có công mài sắt, có ngày nên kim'* khuyên chúng ta rèn luyện đức tính gì?",
-                "ans": "Kiên trì, nhẫn nại, không ngại khó",
-                "w": ["Làm việc thật nhanh", "Thích sưu tầm kim loại", "Chỉ làm việc khi có người nhắc"],
-                "hint": "💡 **AI gợi ý:** Từ một thanh sắt to mài thành chiếc kim nhỏ đòi hỏi sự bền bỉ giống như khi các em rèn chữ đẹp mỗi ngày!",
-                "exp": "🌟 **AI Giải thích:** Câu tục ngữ khuyên chúng ta kiên trì, nhẫn nại thì việc khó đến mấy cũng sẽ thành công."
-            },
-            {
-                "q": "📚 **Thám tử Ngôn từ:** Trong câu *'Những chú ong chăm chỉ bay đi tìm mật ngọt'*, tác giả đã dùng biện pháp nghệ thuật gì?",
-                "ans": "Nhân hóa (gọi ong là 'chú', tả tính nết 'chăm chỉ')",
-                "w": ["So sánh", "Điệp từ", "Đảo ngữ"],
-                "hint": "💡 **AI gợi ý:** 'Chú' và 'chăm chỉ' vốn là từ dùng cho con người nhưng lại được dùng để tả con ong!",
-                "exp": "🌟 **AI Giải thích:** Biện pháp nhân hóa giúp hình ảnh chú ong trở nên sinh động, gần gũi với học sinh."
-            },
-            {
-                "q": "📚 **Mở rộng Vốn từ:** Dòng nào dưới đây gồm toàn các **từ đồng nghĩa** với từ *'Hạnh phúc'*?",
-                "ans": "Sungk sướng, viên mãn, phúc hậu (niềm vui lớn)",
-                "w": ["Buồn bã, ủ rũ, lo âu", "Nhanh nhẹn, tháo vát, hoạt bát", "Cao ráo, mảnh mai, vạm vỡ"],
-                "hint": "💡 **AI gợi ý:** Hãy tìm những từ cùng chỉ trạng thái vui vẻ, mãn nguyện trong cuộc sống!",
-                "exp": "🌟 **AI Giải thích:** Từ đồng nghĩa là những từ có nghĩa giống hoặc gần giống nhau."
-            },
-            {
-                "q": "📚 **Từ đa nghĩa:** Từ **'chân'** trong câu nào dưới đây được dùng theo **nghĩa gốc**?",
-                "ans": "Bạn Nam chạy nhanh nên đôi chân rất khỏe.",
-                "w": ["Chân bàn học lớp 5/2 làm bằng sắt rất chắc chắn.", "Đám mây trắng bồng bềnh dưới chân núi.", "Chân tường lớp học được sơn màu xanh sạch đẹp."],
-                "hint": "💡 **AI gợi ý:** Nghĩa gốc của từ 'chân' là bộ phận cơ thể của người hoặc động vật dùng để đi, đứng!",
-                "exp": "🌟 **AI Giải thích:** 'Đôi chân' của bạn Nam là nghĩa gốc, còn chân bàn, chân núi, chân tường là nghĩa chuyển."
-            },
-            {
-                "q": "📚 **Điền từ Tinh tế:** Điền từ thích hợp vào câu tục ngữ: *'Một cây làm chẳng nên non / Ba cây chụm lại nên ... cao'*?",
-                "ans": "hòn núi",
-                "w": ["cánh rừng", "bầu trời", "biển rộng"],
-                "hint": "💡 **AI gợi ý:** Từ nào đồng nghĩa với từ 'non' (núi) ở câu trên và tạo vần lưng với từ 'non'?",
-                "exp": "🌟 **AI Giải thích:** 'Ba cây chụm lại nên hòn núi cao' ca ngợi sức mạnh của tinh thần đoàn kết trong tập thể lớp 5/2!"
-            },
-            {
-                "q": "📚 **Luyện câu Lớp 5:** Cặp quan hệ từ nào phù hợp nhất để nối câu chỉ **Nguyên nhân - Kết quả**: *'... bạn Lan chịu khó rèn chữ mỗi ngày ... vở của bạn ấy rất sạch đẹp.'*?",
-                "ans": "Nhờ ... nên ...",
-                "w": ["Tuy ... nhưng ...", "Nếu ... thì ...", "Không những ... mà còn ..."],
-                "hint": "💡 **AI gợi ý:** Việc chịu khó rèn chữ mang lại kết quả tốt đẹp, ta dùng cặp từ nào để khen ngợi?",
-                "exp": "🌟 **AI Giải thích:** Cặp quan hệ từ 'Nhờ... nên...' biểu thị quan hệ nguyên nhân dẫn đến kết quả tích cực."
-            }
-        ]
-        item = random.choice(tv_bank)
-        opts = [item["ans"]] + item["w"]
-        random.shuffle(opts)
-        return {"title": "📚 Đấu Trường Vua Tiếng Việt 5", "q": item["q"], "opts": opts, "ans": item["ans"], "hint": item["hint"], "exp": item["exp"]}
-
-# ==================== KHỞI TẠO TRẠNG THÁI GAME ====================
-if "student" not in st.session_state:
-    st.session_state.student = "Minh Khôi"
-if "group" not in st.session_state:
-    st.session_state.group = "Tổ 1"
-if "xp" not in st.session_state:
-    st.session_state.xp = 40
-if "streak" not in st.session_state:
-    st.session_state.streak = 0
-if "chests" not in st.session_state:
-    st.session_state.chests = 1
-if "inventory" not in st.session_state:
-    st.session_state.inventory = ["🌟 Huy hiệu Tân Binh 5/2"]
-if "current_q" not in st.session_state:
-    st.session_state.current_q = generate_infinite_question("🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)")
-if "show_hint" not in st.session_state:
-    st.session_state.show_hint = False
-if "answered" not in st.session_state:
-    st.session_state.answered = False
-if "group_scores" not in st.session_state:
-    st.session_state.group_scores = {"Tổ 1": 210, "Tổ 2": 190, "Tổ 3": 220, "Tổ 4": 180}
-
-# ==================== TÍNH CẤP ĐỘ TIẾN HÓA LINH VẬT ====================
-def get_pet_stage(xp):
-    if xp < 60:
-        return "🥚", "Cấp 1: Trứng Thần Kỳ", 60
-    elif xp < 120:
-        return "🐣", "Cấp 2: Rồng Con Hiếu Học", 120
-    elif xp < 200:
-        return "🦖", "Cấp 3: Chiến Binh Rồng Xanh", 200
-    elif xp < 300:
-        return "🐉", "Cấp 4: Rồng Lửa Tri Thức", 300
-    else:
-        return "👑🐉", "Cấp Tối Thượng: Thần Rồng Bình Phước", 500
-
-pet_icon, pet_title, next_xp = get_pet_stage(st.session_state.xp)
-
-# ==================== HEADER & HỒ SƠ NHANH ====================
 st.markdown("""
-<div class="game-header">
-    <h1>🐉 VƯƠNG QUỐC TRI THỨC LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn</p>
+<div class="top-banner">
+    <h1>📐 PHÒNG THÍ NGHIỆM HÌNH HỌC ẢO AI - LỚP 5/2</h1>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Kéo thả Thước Đo Độ, Thước Thẳng & Ê-ke trực quan</p>
 </div>
 """, unsafe_allow_html=True)
 
-c_info1, c_info2 = st.columns([1.5, 1])
-with c_info1:
-    st.session_state.student = st.text_input("👦👧 Tên nhà thám hiểm nhí:", st.session_state.student)
-with c_info2:
-    st.session_state.group = st.selectbox("🚩 Chiến đội:", ["Tổ 1", "Tổ 2", "Tổ 3", "Tổ 4"])
+# ==================== ỨNG DỤNG TƯƠNG TÁC HTML5 CANVAS + AI SENSOR ====================
+geometry_app_html = """
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body { margin: 0; padding: 0; background: #f8f9fa; color: #212529; }
+    .app-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .canvas-panel {
+        flex: 2;
+        min-width: 340px;
+        background: white;
+        border-radius: 16px;
+        padding: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #dee2e6;
+    }
+    .control-panel {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+    .btn {
+        padding: 9px 14px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .btn-tool { background: #e7f5ff; color: #1864ab; border: 2px solid #74c0fc; }
+    .btn-tool.active { background: #1971c2; color: white; border-color: #1864ab; }
+    .btn-magic { background: #fff3bf; color: #d9480f; border: 2px solid #fcc419; }
+    .btn-new { background: #ebfbee; color: #2b8a3e; border: 2px solid #69db7c; }
+    .btn-submit { background: linear-gradient(135deg, #f76707, #e8590c); color: white; width: 100%; justify-content: center; font-size: 1.05rem; padding: 12px; }
 
-# ==================== KHU VỰC NUÔI LINH VẬT (PET ARENA) ====================
-st.markdown(f"""
-<div class="pet-arena">
-    <div style="font-weight:bold; color:#d9480f;">LINH VẬT ĐỒNG HÀNH CỦA {st.session_state.student.upper()} ({st.session_state.group})</div>
-    <div class="pet-avatar">{pet_icon}</div>
-    <h3 style="margin:4px 0; color:#e67700;">{pet_title}</h3>
-    <p style="margin:4px 0; font-size:1.05rem;">
-        ⚡ Năng lượng: <b>{st.session_state.xp}/{next_xp} XP</b> &nbsp;|&nbsp;
-        🔥 Chuỗi thắng: <b>{st.session_state.streak} liên tiếp</b> &nbsp;|&nbsp;
-        🎁 Rương kho báu: <b>{st.session_state.chests} rương</b>
-    </p>
-</div>
-""", unsafe_allow_html=True)
+    canvas {
+        width: 100%;
+        height: auto;
+        background: #ffffff;
+        border: 2px solid #ced4da;
+        border-radius: 12px;
+        cursor: grab;
+        touch-action: none;
+    }
+    canvas:active { cursor: grabbing; }
 
-st.progress(min(st.session_state.xp / next_xp, 1.0))
+    .ai-sensor-bar {
+        margin-top: 8px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        background: #e3fafc;
+        border-left: 5px solid #15aabf;
+        color: #0b7285;
+    }
+    .ai-sensor-bar.aligned {
+        background: #d3f9d8;
+        border-left-color: #2b8a3e;
+        color: #1b4332;
+    }
+    .score-card {
+        background: linear-gradient(135deg, #fff9db, #ffec99);
+        border: 2px solid #fcc419;
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        color: #d9480f;
+    }
+    .mission-box {
+        background: #f1f3f5;
+        border-radius: 12px;
+        padding: 12px;
+        border-left: 5px solid #1971c2;
+    }
+    .input-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 6px;
+    }
+    input[type="number"], select, input[type="text"] {
+        width: 100%;
+        padding: 9px 12px;
+        border: 2px solid #adb5bd;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        background: #f8f9fa;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+    .tt27-box {
+        background: #f8f9fa;
+        border: 1px dashed #868e96;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.86rem;
+        color: #495057;
+    }
+</style>
+</head>
+<body>
 
-# Nút mở Rương Kho Báu Ngẫu Nhiên
-if st.session_state.chests > 0:
-    if st.button(f"🎁 MỞ RƯƠNG KHO BÁU BÍ MẬT ({st.session_state.chests} rương đang chờ!)", use_container_width=True):
-        rewards = [
-            "🗡️ Kiếm Ánh Sáng Toán Học",
-            "🛡️ Khiên Tiếng Việt Bất Bại",
-            "💎 Viên Ngọc Kiên Trì (Rèn Chữ Đẹp)",
-            "🌱 Chồi Non Bảo Vệ Môi Trường",
-            "🦉 Cú Mèo Thông Thái AI",
-            "👑 Vương Miện Sao Chăm Ngoan"
-        ]
-        avail = [r for r in rewards if r not in st.session_state.inventory]
-        new_item = random.choice(avail) if avail else "🌟 Siêu Cúp Vinh Quang (+30 XP)"
-        if new_item not in st.session_state.inventory:
-            st.session_state.inventory.append(new_item)
-        st.session_state.chests -= 1
-        st.session_state.xp += 15
-        play_sound("win")
-        st.balloons()
-        st.success(f"🎉 Chúc mừng! Em mở rương nhận được vật phẩm quý hiếm: **{new_item}** và **+15 XP**!")
-
-# Hiển thị bộ sưu tập vật phẩm
-inv_html = "".join([f'<span class="item-badge">{item}</span>' for item in st.session_state.inventory])
-st.markdown(f"**🎒 Túi đồ Sưu tầm:** {inv_html}", unsafe_allow_html=True)
-st.write("")
-
-# ==================== 4 TAB TRẢI NGHIỆM SỐNG ĐỘNG ====================
-tab1, tab2, tab3, tab4 = st.tabs([
-    "⚔️ 1. ĐẤU TRƯỜNG VÔ HẠN",
-    "🤖 2. HỎI ĐÁP AI MỌI BÀI TOÁN",
-    "🎨 3. TRỰC QUAN HÓA",
-    "🏆 4. GÓC PHỤ HUYNH & GV"
-])
-
-# ==============================================================================
-# TAB 1: ĐẤU TRƯỜNG SINH ĐỀ VÔ HẠN (KHÔNG BAO GIỜ LẶP LẠI)
-# ==============================================================================
-with tab1:
-    st.subheader("⚔️ Máy Sinh Đề Thông Minh Vô Hạn (Mỗi lần bấm 1 đề mới!)")
-
-    topic_sel = st.selectbox(
-        "🎯 Chọn vùng đất thử thách:",
-        [
-            "🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)",
-            "🧮 Chuyên đề 1: Cộng, trừ Số thập phân (Vô hạn đề)",
-            "🌱 Chuyên đề 2: Tỉ số phần trăm % (Vô hạn đề)",
-            "📐 Chuyên đề 3: Hình học Lớp 5 - Tam giác, Hình thang (Vô hạn đề)",
-            "🛒 Chuyên đề 4: Toán Thực tế Đi chợ & Tiết kiệm (Vô hạn đề)",
-            "📚 Chuyên đề 5: Đấu trường Vua Tiếng Việt 5"
-        ]
-    )
-
-    if st.button("🔄 Sinh Câu Hỏi Mới Tinh Ngay Lập Tức!", use_container_width=True):
-        st.session_state.current_q = generate_infinite_question(topic_sel)
-        st.session_state.show_hint = False
-        st.session_state.answered = False
-        st.rerun()
-
-    q_data = st.session_state.current_q
-
-    st.markdown(f"""
-    <div class="quest-card">
-        <div style="color:#1971c2; font-weight:bold; margin-bottom:6px;">{q_data['title']}</div>
-        <div style="font-size:1.18rem;">{q_data['q']}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    user_ans = st.radio("👉 Chọn đáp án để giúp Linh Vật tiến hóa:", q_data["opts"], key=f"q_{q_data['q']}")
-
-    col_b1, col_b2, col_b3 = st.columns(3)
-    with col_b1:
-        if st.button("⚡ Tung Chiêu (Nộp bài)", use_container_width=True):
-            if user_ans == q_data["ans"]:
-                play_sound("win")
-                st.balloons()
-                st.session_state.xp += 20
-                st.session_state.streak += 1
-                st.session_state.group_scores[st.session_state.group] += 20
-                st.session_state.answered = True
-                if st.session_state.streak % 3 == 0:
-                    st.session_state.chests += 1
-                    st.toast("🎁 Chuỗi 3 câu đúng liên tiếp! Em được thưởng +1 Rương Kho Báu!", icon="🎉")
-                st.success(f"🎉 Chính xác! Linh vật nhận +20 XP! (Chuỗi thắng: {st.session_state.streak})")
-                st.markdown(f'<div class="ai-bubble">{q_data["exp"]}</div>', unsafe_allow_html=True)
-            else:
-                play_sound("lose")
-                st.session_state.streak = 0
-                st.session_state.show_hint = True
-                st.warning("Chưa trúng mục tiêu rồi! Hãy xem Trợ lý AI mách nước ở dưới nhé!")
-
-    with col_b2:
-        if st.button("💡 AI Mách Nước", use_container_width=True):
-            st.session_state.show_hint = True
-
-    with col_b3:
-        if st.button("➡️ Sang Câu Mới", use_container_width=True):
-            st.session_state.current_q = generate_infinite_question(topic_sel)
-            st.session_state.show_hint = False
-            st.session_state.answered = False
-            st.rerun()
-
-    if st.session_state.show_hint:
-        st.markdown(f'<div class="ai-bubble">{q_data["hint"]}</div>', unsafe_allow_html=True)
-
-# ==============================================================================
-# TAB 2: TRỢ LÝ AI GIẢI ĐÁP MỌI BÀI TOÁN TỰ NHẬP
-# ==============================================================================
-with tab2:
-    st.subheader("🤖 Trợ Lý AI Lớp 5/2: Em Hỏi Bất Kỳ – AI Hướng Dẫn Từng Bước")
-    st.write("Không giới hạn câu hỏi! Học sinh và phụ huynh có thể tự nhập số liệu bài toán ở nhà để AI giảng bài ngay:")
-
-    ai_mode = st.selectbox(
-        "📌 Chọn dạng bài em muốn AI giảng giải chi tiết:",
-        [
-            "1. Tìm Tỉ số phần trăm của hai số bất kỳ (Ví dụ: 15 và 60)",
-            "2. Tính diện tích Hình thang / Hình tam giác / Hình tròn với số đo bất kỳ",
-            "3. Giải bài toán Giảm giá % khi đi siêu thị",
-            "4. Tra cứu nhanh Từ đồng nghĩa, Trái nghĩa & Mẹo Rèn chữ đẹp"
-        ]
-    )
-
-    if "1." in ai_mode:
-        c1, c2 = st.columns(2)
-        with c1:
-            so_a = st.number_input("Nhập số thứ nhất (a):", value=18.0, step=1.0)
-        with c2:
-            so_b = st.number_input("Nhập số thứ hai (b - khác 0):", value=72.0, min_value=0.1, step=1.0)
-        if st.button("🤖 AI Hướng dẫn từng bước giải"):
-            thuong = so_a / so_b
-            ty_so = thuong * 100
-            st.markdown(f"""
-            <div class="ai-bubble">
-                🤖 <b>Trợ lý AI Lớp 5/2 hướng dẫn giải bài toán tìm tỉ số phần trăm của {so_a:g} và {so_b:g}:</b><br><br>
-                • <b>Bước 1 (Tìm thương):</b> Lấy {so_a:g} chia cho {so_b:g} ta được: <b>{so_a:g} : {so_b:g} = {thuong:.4f}</b><br>
-                • <b>Bước 2 (Nhân nhẩm với 100 và viết ký hiệu %):</b> Lấy {thuong:.4f} × 100 = <b>{ty_so:.2f}%</b>.<br>
-                👉 <b>Đáp số: {ty_so:.2f}%</b>
-            </div>
-            """, unsafe_allow_html=True)
-
-    elif "2." in ai_mode:
-        hinh = st.radio("Chọn hình cần tính:", ["Hình thang", "Hình tam giác", "Hình tròn"], horizontal=True)
-        if hinh == "Hình thang":
-            d1 = st.number_input("Đáy lớn:", value=12.0)
-            d2 = st.number_input("Đáy bé:", value=8.0)
-            h = st.number_input("Chiều cao:", value=5.0)
-            dt = (d1 + d2) * h / 2
-            st.markdown(f"""
-            <div class="ai-bubble">
-                🤖 <b>Lời giải chi tiết từ AI:</b><br>
-                • Tổng độ dài hai đáy là: {d1:g} + {d2:g} = {d1+d2:g}<br>
-                • Diện tích hình thang là: ({d1:g} + {d2:g}) × {h:g} : 2 = <b>{dt:g} (đơn vị diện tích)</b>
-            </div>
-            """, unsafe_allow_html=True)
-        elif hinh == "Hình tam giác":
-            d = st.number_input("Độ dài đáy:", value=10.0)
-            h = st.number_input("Chiều cao:", value=6.0)
-            st.markdown(f"""
-            <div class="ai-bubble">
-                🤖 <b>Lời giải chi tiết từ AI:</b><br>
-                • Diện tích hình tam giác là: ({d:g} × {h:g}) : 2 = <b>{d*h/2:g} (đơn vị diện tích)</b>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            r = st.number_input("Bán kính hình tròn (r):", value=5.0)
-            st.markdown(f"""
-            <div class="ai-bubble">
-                🤖 <b>Lời giải chi tiết từ AI:</b><br>
-                • <b>Chu vi hình tròn:</b> {r:g} × 2 × 3,14 = <b>{r*2*3.14:.2f}</b><br>
-                • <b>Diện tích hình tròn:</b> {r:g} × {r:g} × 3,14 = <b>{r*r*3.14:.2f}</b>
-            </div>
-            """, unsafe_allow_html=True)
-
-    elif "3." in ai_mode:
-        gia = st.number_input("Giá gốc món hàng (nghìn đồng):", value=150.0, step=10.0)
-        giam = st.slider("Mức giảm giá (%):", 5, 80, 20, step=5)
-        tien_giam = gia * giam / 100
-        con_lai = gia - tien_giam
-        st.markdown(f"""
-        <div class="ai-bubble">
-            🤖 <b>Trợ lý AI giải bài toán thực tế:</b><br>
-            • Số tiền được giảm ({giam}%) là: {gia:g} × {giam} : 100 = <b>{tien_giam:g} nghìn đồng</b><br>
-            • Số tiền thực tế cần trả là: {gia:g} - {tien_giam:g} = <b>{con_lai:g} nghìn đồng</b>
+<div class="app-wrapper">
+    <!-- CỘT TRÁI: BẢNG VẼ & THƯỚC ẢO TƯƠNG TÁC -->
+    <div class="canvas-panel">
+        <div class="toolbar">
+            <button id="btnProtractor" class="btn btn-tool active" onclick="toggleTool('protractor')">📐 Thước Đo Độ (180°)</button>
+            <button id="btnRuler" class="btn btn-tool" onclick="toggleTool('ruler')">📏 Thước Thẳng (cm)</button>
+            <button id="btnEke" class="btn btn-tool" onclick="toggleTool('eke')">🔺 Thước Ê-ke Vuông</button>
+            <button class="btn btn-magic" onclick="autoAlignTool()">🧲 AI Đặt Thước Mẫu</button>
+            <button class="btn btn-new" onclick="generateNewProblem()">🎲 Đổi Hình Mới</button>
         </div>
-        """, unsafe_allow_html=True)
 
-    else:
-        tu_khoa = st.selectbox("Chọn chủ đề từ vựng cần tra cứu:", ["Chăm chỉ / Kiên trì", "Bảo vệ môi trường", "Đoàn kết yêu thương", "Bí quyết Rèn chữ đẹp Lớp 5/2"])
-        tu_dien = {
-            "Chăm chỉ / Kiên trì": "• **Từ đồng nghĩa:** Siêng năng, cần cù, chịu khó, bền bỉ, nhẫn nại.\n• **Từ trái nghĩa:** Lười biếng, biếng nhác, nản lòng.\n• **Đặt câu mẫu:** *Nhờ kiên trì rèn chữ mỗi ngày, nét chữ của em ngày càng thanh thoát.*",
-            "Bảo vệ môi trường": "• **Từ ngữ mở rộng:** Sinh thái, phủ xanh, năng lượng sạch, tái chế, trong lành.\n• **Đặt câu mẫu:** *Chúng em phân loại rác thải nhựa để góp phần bảo vệ môi trường xanh - sạch - đẹp.*",
-            "Đoàn kết yêu thương": "• **Thành ngữ - Tục ngữ:** *Lá lành đùm lá rách; Một con ngựa đau cả tàu bỏ cỏ; Đoàn kết là sức mạnh.*\n• **Đặt câu mẫu:** *Tập thể lớp 5/2 luôn đoàn kết, giúp đỡ nhau cùng tiến bộ.*",
-            "Bí quyết Rèn chữ đẹp Lớp 5/2": "• **Quy tắc vàng:** Lưng thẳng, mắt cách vở 25-30cm. Chữ cái cao 2,5 ô li (h, k, l, b, g, y) viết đều nét, khoảng cách giữa các chữ bằng 1 con chữ *o*."
-        }
-        st.info(tu_dien[tu_khoa])
+        <canvas id="geoCanvas" width="760" height="460"></canvas>
 
-# ==============================================================================
-# TAB 3: TRỰC QUAN HÓA TOÁN HỌC SINH ĐỘNG
-# ==============================================================================
-with tab3:
-    st.subheader("🎨 Phòng Thí Nghiệm Trực Quan (Nhìn Hình Hiểu Bản Chất)")
-    tu = st.slider("🍕 Chọn số phần bánh em có (Tử số):", 1, 10, 3)
-    mau = st.slider("🍽️ Tổng số phần bánh bằng nhau (Mẫu số):", tu, 10, 4)
+        <!-- Thanh xoay thước mượt mà cho điện thoại & máy tính -->
+        <div class="slider-row">
+            <span>🔄 Xoay thước đang chọn:</span>
+            <input type="range" id="angleSlider" min="-180" max="180" value="0" style="flex:1;" oninput="rotateActiveTool(this.value)">
+            <span id="angleLabel" style="min-width:45px; text-align:right;">0°</span>
+            <button class="btn" style="padding:4px 10px; background:#e9ecef;" onclick="rotateActiveTool(0); document.getElementById('angleSlider').value=0;">Đặt ngang 0°</button>
+        </div>
 
-    icons = "🍕 " * tu + "⚪ " * (mau - tu)
-    st.markdown(f"""
-    <div class="quest-card" style="text-align:center;">
-        <div style="font-size:2.3rem;">{icons}</div>
-        <h3>Phân số: <b>{tu}/{mau}</b> &nbsp;=&nbsp; Số thập phân: <b>{tu/mau:.2f}</b> &nbsp;=&nbsp; Phần trăm: <b>{tu/mau*100:.1f}%</b></h3>
+        <div id="aiSensor" class="ai-sensor-bar">
+            🤖 <b>Trợ lý AI:</b> Hãy dùng chuột hoặc ngón tay <b>kéo Tâm thước (chấm đỏ)</b> đặt trùng vào <b>Đỉnh O</b> của góc nhé!
+        </div>
     </div>
-    """, unsafe_allow_html=True)
 
-# ==============================================================================
-# TAB 4: BẢNG THI ĐUA TỔ & PHIẾU NHẬN XÉT THÔNG TƯ 27
-# ==============================================================================
-with tab4:
-    st.subheader("🏆 Bảng Thi Đua Các Tổ - Lớp 5/2 (Trường Tiểu học Bình Phước)")
-    for g_name, g_score in sorted(st.session_state.group_scores.items(), key=lambda x: x[1], reverse=True):
-        st.write(f"**{g_name}**: `{g_score} XP` 🔥")
-        st.progress(min(g_score / 400, 1.0))
+    <!-- CỘT PHẢI: NHIỆM VỤ, KIỂM TRA ĐÁP ÁN & ĐÁNH GIÁ TT27 -->
+    <div class="control-panel">
+        <div class="score-card">
+            <div>👤 <span id="stNameDisplay">Học sinh 5/2</span></div>
+            <div>⭐ <span id="starCount">50</span> Sao</div>
+            <div>🏆 Đúng: <span id="correctCount">0</span> bài</div>
+        </div>
 
-    st.markdown("---")
-    st.subheader("👨‍👩‍👧 Góc Phụ Huynh Phối Hợp & Đánh Giá Thông Tư 27")
-    c_ph1 = st.checkbox("📖 Con tự giác hoàn thành bài và chuẩn bị sách vở (+15 XP)")
-    c_ph2 = st.checkbox("✍️ Con rèn chữ cẩn thận, giữ vở sạch đẹp (+15 XP)")
-    if st.button("💌 Phụ huynh Xác nhận & Thưởng Năng lượng cho Linh vật", use_container_width=True):
-        bonus = (15 if c_ph1 else 0) + (15 if c_ph2 else 0)
-        if bonus > 0:
-            play_sound("win")
-            st.session_state.xp += bonus
-            st.session_state.group_scores[st.session_state.group] += bonus
-            st.balloons()
-            st.success(f"Đã cộng +{bonus} XP giúp Linh vật của {st.session_state.student} mau tiến hóa!")
+        <div style="display:flex; gap:6px;">
+            <input type="text" id="studentName" placeholder="Nhập tên học sinh..." value="Minh Khôi (Tổ 1)" oninput="updateStudentName()">
+        </div>
 
-    muc_tt27 = "Hoàn thành tốt (HTT)" if st.session_state.xp >= 80 else "Hoàn thành (HT)"
-    nhan_xet = (
-        f"TRƯỜNG TIỂU HỌC BÌNH PHƯỚC - LỚP 5/2 (GVCN: Huỳnh Minh Sơn)\n"
-        f"• Học sinh: {st.session_state.student} ({st.session_state.group}) | Cấp độ: {pet_title}\n"
-        f"• Đánh giá Thông tư 27: {muc_tt27}\n"
-        f"• Nhận xét: Tích cực tham gia giải toán và rèn luyện Tiếng Việt trên hệ thống AI thích ứng; nắm vững kiến thức số thập phân, tỉ số phần trăm và hình học; có ý thức rèn chữ, giữ vở và phối hợp tốt giữa gia đình - nhà trường."
-    )
-    st.text_area("📋 Bản nhận xét tự động (Sao chép gửi Zalo Phụ huynh):", nhan_xet, height=135)
+        <div>
+            <label style="font-weight:bold; font-size:0.9rem;">🎯 Chọn Chuyên đề Thực hành Hình học 5:</label>
+            <select id="modeSelect" onchange="changeMode()" style="margin-top:4px;">
+                <option value="angle">1. Thực hành Đo Góc (Góc nhọn, vuông, tù)</option>
+                <option value="segment">2. Thực hành Đo Độ Dài Đoạn Thẳng (cm)</option>
+                <option value="triangle">3. Đo Đáy & Đường Cao Tam Giác -> Tính Diện Tích</option>
+            </select>
+        </div>
+
+        <div class="mission-box">
+            <div style="font-weight:800; color:#1864ab; margin-bottom:4px;" id="missionTitle">📋 NHIỆM VỤ ĐO GÓC:</div>
+            <div id="missionDesc" style="font-size:0.95rem; line-height:1.4;">
+                Hãy dùng <b>Thước Đo Độ</b> để đo số đo của <b>góc AOB</b> trên hình vẽ và cho biết đó là loại góc gì.
+            </div>
+
+            <!-- Khu vực nhập kết quả Đo Góc -->
+            <div id="inputAngleBox" style="margin-top:10px;">
+                <label style="font-size:0.9rem; font-weight:bold;">Số đo góc em đo được (Độ °):</label>
+                <div class="input-group">
+                    <input type="number" id="ansAngle" placeholder="Ví dụ: 60" step="5">
+                    <select id="ansAngleType">
+                        <option value="nhon">Góc nhọn (&lt; 90°)</option>
+                        <option value="vuong">Góc vuông (= 90°)</option>
+                        <option value="tu">Góc tù (&gt; 90°)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Khu vực nhập kết quả Đo Đoạn Thẳng -->
+            <div id="inputSegmentBox" style="margin-top:10px; display:none;">
+                <label style="font-size:0.9rem; font-weight:bold;">Độ dài đoạn thẳng AB em đo được (cm):</label>
+                <div class="input-group">
+                    <input type="number" id="ansSegment" placeholder="Ví dụ: 6.5" step="0.5">
+                    <span style="font-weight:bold;">cm</span>
+                </div>
+            </div>
+
+            <!-- Khu vực nhập kết quả Diện tích Tam giác -->
+            <div id="inputTriangleBox" style="margin-top:10px; display:none;">
+                <label style="font-size:0.88rem; font-weight:bold;">Nhập số đo Đáy (a), Chiều cao (h) và Diện tích (S):</label>
+                <div class="input-group">
+                    <input type="number" id="ansBase" placeholder="Đáy a (cm)" step="1">
+                    <input type="number" id="ansHeight" placeholder="Cao h (cm)" step="1">
+                </div>
+                <div class="input-group">
+                    <input type="number" id="ansArea" placeholder="Diện tích S = (a × h) : 2 (cm²)" step="0.5">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-submit" onclick="checkAnswer()">✅ NỘP KẾT QUẢ ĐO & KIỂM TRA</button>
+
+        <div id="feedbackMsg" style="font-weight:bold; font-size:0.95rem; min-height:24px;"></div>
+
+        <div class="tt27-box">
+            <b>📋 Nhận xét Kĩ năng Hình học (Thông tư 27):</b>
+            <div id="tt27Text" style="margin-top:4px;">
+                Học sinh biết sử dụng thước đo góc và thước thẳng có chia vạch cm để đo đại lượng hình học; rèn luyện tính cẩn thận, chính xác.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('geoCanvas');
+const ctx = canvas.getContext('2d');
+const PX_PER_CM = 40; // 1 cm = 40 pixels trên bảng vẽ
+
+// Trạng thái công cụ
+let tools = {
+    protractor: { active: true, x: 520, y: 340, angle: 0, radius: 175 },
+    ruler: { active: false, x: 140, y: 370, angle: 0, lengthCm: 12 },
+    eke: { active: false, x: 450, y: 280, angle: 0, sizeCm: 6 }
+};
+let lastSelectedTool = 'protractor';
+let dragging = null; // { toolName, mode: 'move' | 'rotate', offsetX, offsetY }
+
+// Trạng thái bài tập
+let currentMode = 'angle';
+let stars = 50;
+let solved = 0;
+let problem = {};
+
+// Âm thanh Web Audio
+function playSound(isWin) {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (isWin) {
+            [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.09);
+                g.gain.setValueAtTime(0.18, audioCtx.currentTime + i * 0.09);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.09 + 0.25);
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start(audioCtx.currentTime + i * 0.09);
+                o.stop(audioCtx.currentTime + i * 0.09 + 0.25);
+            });
+        } else {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sawtooth';
+            o.frequency.setValueAtTime(200, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + 0.3);
+        }
+    } catch(e) {}
+}
+
+// Khởi tạo bài toán mới
+function generateNewProblem() {
+    document.getElementById('feedbackMsg').innerHTML = "";
+    if (currentMode === 'angle') {
+        const angles = [30, 40, 45, 50, 60, 70, 80, 90, 100, 110, 120, 130, 135, 140, 150];
+        const deg = angles[Math.floor(Math.random() * angles.length)];
+        const baseRot = [0, -10, 10, -15, 15][Math.floor(Math.random() * 5)];
+        problem = {
+            vx: 250 + Math.floor(Math.random() * 120),
+            vy: 290 + Math.floor(Math.random() * 50),
+            deg: deg,
+            baseRot: baseRot,
+            type: deg < 90 ? 'nhon' : (deg === 90 ? 'vuong' : 'tu')
+        };
+        document.getElementById('ansAngle').value = '';
+    } else if (currentMode === 'segment') {
+        const lengths = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 10];
+        const lenCm = lengths[Math.floor(Math.random() * lengths.length)];
+        const rotDeg = [-20, -10, 0, 10, 15, 25][Math.floor(Math.random() * 6)];
+        const x1 = 150, y1 = 220;
+        const rad = rotDeg * Math.PI / 180;
+        const x2 = x1 + lenCm * PX_PER_CM * Math.cos(rad);
+        const y2 = y1 + lenCm * PX_PER_CM * Math.sin(rad);
+        problem = { x1, y1, x2, y2, lenCm, rotDeg };
+        document.getElementById('ansSegment').value = '';
+    } else if (currentMode === 'triangle') {
+        const bases = [6, 7, 8, 9, 10];
+        const heights = [4, 5, 6];
+        const baseCm = bases[Math.floor(Math.random() * bases.length)];
+        const heightCm = heights[Math.floor(Math.random() * heights.length)];
+        const xA = 160, yA = 320;
+        const xB = xA + baseCm * PX_PER_CM, yB = 320;
+        const xH = xA + (baseCm * 0.4) * PX_PER_CM, yH = 320;
+        const xC = xH, yC = yH - heightCm * PX_PER_CM;
+        problem = { xA, yA, xB, yB, xC, yC, xH, yH, baseCm, heightCm, area: (baseCm * heightCm) / 2 };
+        document.getElementById('ansBase').value = '';
+        document.getElementById('ansHeight').value = '';
+        document.getElementById('ansArea').value = '';
+    }
+    drawAll();
+}
+
+function changeMode() {
+    currentMode = document.getElementById('modeSelect').value;
+    document.getElementById('inputAngleBox').style.display = currentMode === 'angle' ? 'block' : 'none';
+    document.getElementById('inputSegmentBox').style.display = currentMode === 'segment' ? 'block' : 'none';
+    document.getElementById('inputTriangleBox').style.display = currentMode === 'triangle' ? 'block' : 'none';
+
+    if (currentMode === 'angle') {
+        tools.protractor.active = true;
+        tools.ruler.active = false;
+        tools.eke.active = false;
+        lastSelectedTool = 'protractor';
+        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 1: ĐO GÓC AOB";
+        document.getElementById('missionDesc').innerHTML = "Kéo <b>Tâm thước đo độ</b> trùng với <b>Đỉnh O</b>, xoay thước sao cho vạch 0° trùng với cạnh OA rồi đọc số đo góc.";
+    } else if (currentMode === 'segment') {
+        tools.protractor.active = false;
+        tools.ruler.active = true;
+        tools.eke.active = false;
+        lastSelectedTool = 'ruler';
+        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 2: ĐO ĐỘ DÀI ĐOẠN THẲNG AB";
+        document.getElementById('missionDesc').innerHTML = "Kéo <b>Vạch số 0 của Thước thẳng</b> trùng với điểm <b>A</b>, xoay thước dọc theo đoạn AB để đọc độ dài (cm).";
+    } else {
+        tools.protractor.active = false;
+        tools.ruler.active = true;
+        tools.eke.active = true;
+        lastSelectedTool = 'ruler';
+        document.getElementById('missionTitle').innerText = "📋 NHIỆM VỤ 3: ĐO ĐÁY & CHIỀU CAO TAM GIÁC";
+        document.getElementById('missionDesc').innerHTML = "Dùng <b>Thước thẳng</b> và <b>Ê-ke</b> để đo độ dài đáy <b>AB (cm)</b> và đường cao <b>CH (cm)</b>, sau đó tính diện tích hình tam giác ABC.";
+    }
+    updateToolbarButtons();
+    generateNewProblem();
+}
+
+function toggleTool(name) {
+    tools[name].active = !tools[name].active;
+    if (tools[name].active) {
+        lastSelectedTool = name;
+        document.getElementById('angleSlider').value = Math.round(tools[name].angle);
+        document.getElementById('angleLabel').innerText = Math.round(tools[name].angle) + '°';
+    }
+    updateToolbarButtons();
+    drawAll();
+}
+
+function updateToolbarButtons() {
+    document.getElementById('btnProtractor').className = 'btn btn-tool' + (tools.protractor.active ? ' active' : '');
+    document.getElementById('btnRuler').className = 'btn btn-tool' + (tools.ruler.active ? ' active' : '');
+    document.getElementById('btnEke').className = 'btn btn-tool' + (tools.eke.active ? ' active' : '');
+}
+
+function rotateActiveTool(val) {
+    const deg = parseFloat(val);
+    tools[lastSelectedTool].angle = deg;
+    document.getElementById('angleLabel').innerText = Math.round(deg) + '°';
+    drawAll();
+}
+
+// Nút AI Đặt Thước Mẫu tự động khớp
+function autoAlignTool() {
+    if (currentMode === 'angle') {
+        tools.protractor.active = true;
+        lastSelectedTool = 'protractor';
+        tools.protractor.x = problem.vx;
+        tools.protractor.y = problem.vy;
+        tools.protractor.angle = problem.baseRot;
+        document.getElementById('angleSlider').value = problem.baseRot;
+        document.getElementById('angleLabel').innerText = problem.baseRot + '°';
+    } else if (currentMode === 'segment') {
+        tools.ruler.active = true;
+        lastSelectedTool = 'ruler';
+        tools.ruler.x = problem.x1;
+        tools.ruler.y = problem.y1;
+        tools.ruler.angle = problem.rotDeg;
+        document.getElementById('angleSlider').value = problem.rotDeg;
+        document.getElementById('angleLabel').innerText = problem.rotDeg + '°';
+    } else if (currentMode === 'triangle') {
+        tools.ruler.active = true;
+        tools.eke.active = true;
+        tools.ruler.x = problem.xA;
+        tools.ruler.y = problem.yA;
+        tools.ruler.angle = 0;
+        tools.eke.x = problem.xH;
+        tools.eke.y = problem.yH;
+        tools.eke.angle = 0;
+    }
+    updateToolbarButtons();
+    drawAll();
+}
+
+// ==================== VẼ LƯỚI NỀN & BÀI TOÁN ====================
+function drawGrid() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#f1f3f5';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+}
+
+function drawProblem() {
+    ctx.save();
+    if (currentMode === 'angle') {
+        const { vx, vy, deg, baseRot } = problem;
+        const len = 210;
+        const rad1 = (baseRot) * Math.PI / 180;
+        const rad2 = (baseRot - deg) * Math.PI / 180;
+
+        const xA = vx + len * Math.cos(rad1);
+        const yA = vy + len * Math.sin(rad1);
+        const xB = vx + len * Math.cos(rad2);
+        const yB = vy + len * Math.sin(rad2);
+
+        // Vẽ cung góc nhỏ
+        ctx.beginPath();
+        ctx.arc(vx, vy, 38, rad2, rad1);
+        ctx.fillStyle = 'rgba(255, 193, 7, 0.25)';
+        ctx.fill();
+        ctx.strokeStyle = '#f59f00';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Vẽ 2 tia OA và OB
+        ctx.strokeStyle = '#1864ab';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(vx, vy); ctx.lineTo(xA, yA);
+        ctx.moveTo(vx, vy); ctx.lineTo(xB, yB);
+        ctx.stroke();
+
+        // Điểm đỉnh O, A, B
+        ctx.fillStyle = '#e03131';
+        ctx.beginPath(); ctx.arc(vx, vy, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillStyle = '#c92a2a';
+        ctx.fillText('O (Đỉnh góc)', vx - 35, vy + 26);
+        ctx.fillStyle = '#1864ab';
+        ctx.fillText('A', xA + 10, yA + 5);
+        ctx.fillText('B', xB + 10, yB - 8);
+
+    } else if (currentMode === 'segment') {
+        const { x1, y1, x2, y2 } = problem;
+        ctx.strokeStyle = '#2b8a3e';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Hai đầu mút A và B
+        ctx.fillStyle = '#e03131';
+        ctx.beginPath(); ctx.arc(x1, y1, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x2, y2, 6, 0, Math.PI * 2); ctx.fill();
+
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillStyle = '#1b4332';
+        ctx.fillText('A', x1 - 10, y1 - 12);
+        ctx.fillText('B', x2 + 8, y2 - 12);
+
+    } else if (currentMode === 'triangle') {
+        const { xA, yA, xB, yB, xC, yC, xH, yH } = problem;
+        ctx.fillStyle = 'rgba(116, 192, 252, 0.2)';
+        ctx.strokeStyle = '#1971c2';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(xA, yA); ctx.lineTo(xB, yB); ctx.lineTo(xC, yC); ctx.closePath();
+        ctx.fill(); ctx.stroke();
+
+        // Đường cao CH nét đứt
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.strokeStyle = '#e03131';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(xC, yC); ctx.lineTo(xH, yH);
+        ctx.stroke();
+        ctx.restore();
+
+        // Ký hiệu vuông góc tại H
+        ctx.strokeStyle = '#e03131';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(xH, yH - 12, 12, 12);
+
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillStyle = '#1864ab';
+        ctx.fillText('A', xA - 18, yA + 6);
+        ctx.fillText('B', xB + 8, yB + 6);
+        ctx.fillText('C', xC - 6, yC - 10);
+        ctx.fillStyle = '#e03131';
+        ctx.fillText('H', xH - 6, yH + 22);
+    }
+    ctx.restore();
+}
+
+// ==================== 1. VẼ THƯỚC ĐO ĐỘ ẢO (PROTRACTOR) ====================
+function drawProtractor() {
+    if (!tools.protractor.active) return;
+    const { x, y, angle, radius } = tools.protractor;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle * Math.PI / 180);
+
+    // Thân thước bán nguyệt trong suốt
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, Math.PI, 0, false);
+    ctx.lineTo(radius, 22);
+    ctx.lineTo(-radius, 22);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255, 243, 191, 0.72)';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#f08c00';
+    ctx.stroke();
+
+    // Khoét lỗ bán nguyệt nhỏ bên trong cho dễ nhìn
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.42, Math.PI, 0, false);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fill();
+    ctx.strokeStyle = '#fcc419';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Đường chuẩn 0° - 180°
+    ctx.beginPath();
+    ctx.moveTo(-radius, 0); ctx.lineTo(radius, 0);
+    ctx.strokeStyle = '#d9480f';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Vạch chia độ từ 0° đến 180°
+    for (let deg = 0; deg <= 180; deg += 1) {
+        const rad = -deg * Math.PI / 180;
+        let tickLen = 5;
+        if (deg % 10 === 0) tickLen = 15;
+        else if (deg % 5 === 0) tickLen = 10;
+
+        const rOuter = radius;
+        const rInner = radius - tickLen;
+        ctx.beginPath();
+        ctx.moveTo(rOuter * Math.cos(rad), rOuter * Math.sin(rad));
+        ctx.lineTo(rInner * Math.cos(rad), rInner * Math.sin(rad));
+        ctx.strokeStyle = deg % 10 === 0 ? '#c92a2a' : '#495057';
+        ctx.lineWidth = deg % 10 === 0 ? 1.5 : 0.7;
+        ctx.stroke();
+
+        // Ghi số đo góc vòng ngoài (ngược chiều kim đồng hồ: 0 -> 180)
+        if (deg % 10 === 0) {
+            const rText = radius - 26;
+            ctx.save();
+            ctx.translate(rText * Math.cos(rad), rText * Math.sin(rad));
+            ctx.rotate(rad + Math.PI / 2);
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = '#c92a2a';
+            ctx.textAlign = 'center';
+            ctx.fillText(deg.toString(), 0, 0);
+            ctx.restore();
+        }
+    }
+
+    // Tâm thước đo độ (Crosshair đỏ)
+    ctx.beginPath();
+    ctx.arc(0, 0, 7, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(224, 49, 49, 0.9)';
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Nút nắm xoay thước bên phải
+    ctx.beginPath();
+    ctx.arc(radius - 16, 12, 10, 0, Math.PI * 2);
+    ctx.fillStyle = '#1971c2';
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('↻', radius - 16, 16);
+
+    ctx.restore();
+}
+
+// ==================== 2. VẼ THƯỚC THẲNG ẢO (VIRTUAL RULER CM) ====================
+function drawRuler() {
+    if (!tools.ruler.active) return;
+    const { x, y, angle, lengthCm } = tools.ruler;
+    const widthPx = lengthCm * PX_PER_CM;
+    const heightPx = 54;
+
+    ctx.save();
+    ctx.translate(x, y); // Gốc (0,0) của thước chính là vạch số 0 cm!
+    ctx.rotate(angle * Math.PI / 180);
+
+    // Thân thước nhựa trong suốt màu xanh nhạt (vẽ dư 15px bên trái vạch 0)
+    ctx.fillStyle = 'rgba(208, 235, 255, 0.8)';
+    ctx.strokeStyle = '#1971c2';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(-15, 0, widthPx + 35, heightPx, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Vạch chia cm và mm
+    for (let mm = 0; mm <= lengthCm * 10; mm++) {
+        const px = (mm / 10) * PX_PER_CM;
+        let tickH = 7;
+        if (mm % 10 === 0) tickH = 18;
+        else if (mm % 5 === 0) tickH = 12;
+
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, tickH);
+        ctx.strokeStyle = mm % 10 === 0 ? '#0b7285' : '#495057';
+        ctx.lineWidth = mm % 10 === 0 ? 1.8 : 0.8;
+        ctx.stroke();
+
+        if (mm % 10 === 0) {
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillStyle = '#0b7285';
+            ctx.textAlign = 'center';
+            ctx.fillText((mm / 10).toString(), px, 33);
+        }
+    }
+    ctx.font = 'italic bold 11px sans-serif';
+    ctx.fillStyle = '#1864ab';
+    ctx.fillText('THƯỚC THẲNG LỚP 5/2 (Đơn vị: cm)', widthPx / 2, 48);
+
+    // Chấm đỏ đánh dấu vạch 0 cm
+    ctx.beginPath();
+    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#e03131';
+    ctx.fill();
+
+    // Nút xoay ở đầu phải của thước
+    ctx.beginPath();
+    ctx.arc(widthPx + 8, heightPx / 2, 11, 0, Math.PI * 2);
+    ctx.fillStyle = '#f08c00';
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('↻', widthPx + 8, heightPx / 2 + 4);
+
+    ctx.restore();
+}
+
+// ==================== 3. VẼ THƯỚC Ê-KE VUÔNG GÓC ====================
+function drawEke() {
+    if (!tools.eke.active) return;
+    const { x, y, angle, sizeCm } = tools.eke;
+    const sidePx = sizeCm * PX_PER_CM;
+
+    ctx.save();
+    ctx.translate(x, y); // Góc vuông của Ê-ke nằm tại (0,0)
+    ctx.rotate(angle * Math.PI / 180);
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(sidePx, 0);
+    ctx.lineTo(0, -sidePx);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(211, 249, 216, 0.78)';
+    ctx.fill();
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = '#2b8a3e';
+    ctx.stroke();
+
+    // Vạch chia cm dọc theo cạnh đứng của Ê-ke (để đo chiều cao tam giác/hình thang!)
+    for (let cm = 0; cm <= sizeCm; cm++) {
+        const py = -cm * PX_PER_CM;
+        ctx.beginPath();
+        ctx.moveTo(0, py);
+        ctx.lineTo(12, py);
+        ctx.strokeStyle = '#1b4332';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        if (cm > 0 && cm < sizeCm) {
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillStyle = '#1b4332';
+            ctx.fillText(cm + 'cm', 16, py + 4);
+        }
+    }
+
+    // Chấm góc vuông Ê-ke
+    ctx.beginPath();
+    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#2b8a3e';
+    ctx.fill();
+
+    ctx.restore();
+}
+
+// ==================== CẢM BIẾN AI KIỂM TRA ĐẶT THƯỚC ====================
+function updateAISensor() {
+    const sensorBar = document.getElementById('aiSensor');
+    if (currentMode === 'angle' && tools.protractor.active) {
+        const dist = Math.hypot(tools.protractor.x - problem.vx, tools.protractor.y - problem.vy);
+        const angleDiff = Math.abs(tools.protractor.angle - problem.baseRot);
+        if (dist < 18 && angleDiff < 5) {
+            sensorBar.className = 'ai-sensor-bar aligned';
+            sensorBar.innerHTML = `✅ <b>Cảm biến AI: Tuyệt vời!</b> Tâm thước đã trùng khít <b>Đỉnh O</b> và vạch 0° đã thẳng hàng cạnh OA. Em hãy nhìn xem cạnh OB chỉ vào vạch bao nhiêu độ nhé!`;
+        } else if (dist < 18) {
+            sensorBar.className = 'ai-sensor-bar';
+            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Tâm thước đã đặt đúng Đỉnh O! Hãy chỉnh thanh <b>Xoay thước (${problem.baseRot}°)</b> để vạch số 0° trùng khít với cạnh OA nhé!`;
+        } else {
+            sensorBar.className = 'ai-sensor-bar';
+            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Hãy kéo <b>chấm đỏ Tâm thước</b> lại gần <b>Đỉnh O</b> (còn cách khoảng ${Math.round(dist)} px) hoặc bấm nút <b>"🧲 AI Đặt Thước Mẫu"</b>.`;
+        }
+    } else if (currentMode === 'segment' && tools.ruler.active) {
+        const dist = Math.hypot(tools.ruler.x - problem.x1, tools.ruler.y - problem.y1);
+        const angleDiff = Math.abs(tools.ruler.angle - problem.rotDeg);
+        if (dist < 18 && angleDiff < 5) {
+            sensorBar.className = 'ai-sensor-bar aligned';
+            sensorBar.innerHTML = `✅ <b>Cảm biến AI: Chính xác!</b> Vạch 0 cm đã đặt trùng khít điểm A và thước nằm dọc theo đoạn AB. Hãy đọc số cm tại điểm B!`;
+        } else {
+            sensorBar.className = 'ai-sensor-bar';
+            sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Hãy kéo <b>chấm đỏ vạch 0 cm</b> của Thước thẳng trùng vào điểm <b>A</b> và xoay thước góc <b>${problem.rotDeg}°</b> theo đoạn AB.`;
+        }
+    } else if (currentMode === 'triangle') {
+        sensorBar.className = 'ai-sensor-bar';
+        sensorBar.innerHTML = `🤖 <b>Trợ lý AI:</b> Dùng <b>Thước thẳng</b> đo cạnh đáy AB và dùng <b>Thước Ê-ke</b> đo đường cao CH (màu đỏ nét đứt), sau đó lấy <b>(Đáy × Cao) : 2</b> nhé!`;
+    }
+}
+
+function drawAll() {
+    drawGrid();
+    drawProblem();
+    drawRuler();
+    drawEke();
+    drawProtractor();
+    updateAISensor();
+}
+
+// ==================== XỬ LÝ KÉO THẢ CHUỘT & CẢM ỨNG ====================
+function getPointerPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+    };
+}
+
+function onPointerDown(e) {
+    const pos = getPointerPos(e);
+
+    // Ưu tiên kiểm tra từ thước trên cùng
+    const order = ['protractor', 'eke', 'ruler'];
+    for (let name of order) {
+        const t = tools[name];
+        if (!t.active) continue;
+
+        const dx = pos.x - t.x;
+        const dy = pos.y - t.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (name === 'protractor' && dist <= t.radius + 15) {
+            lastSelectedTool = name;
+            dragging = { name, offsetX: dx, offsetY: dy };
+            e.preventDefault();
+            return;
+        }
+        if (name === 'ruler' && dist <= t.lengthCm * PX_PER_CM + 30) {
+            lastSelectedTool = name;
+            dragging = { name, offsetX: dx, offsetY: dy };
+            e.preventDefault();
+            return;
+        }
+        if (name === 'eke' && dist <= t.sizeCm * PX_PER_CM + 20) {
+            lastSelectedTool = name;
+            dragging = { name, offsetX: dx, offsetY: dy };
+            e.preventDefault();
+            return;
+        }
+    }
+}
+
+function onPointerMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    const pos = getPointerPos(e);
+    const t = tools[dragging.name];
+    t.x = pos.x - dragging.offsetX;
+    t.y = pos.y - dragging.offsetY;
+
+    // Tự động hút nhẹ (Magnetic Snap) khi kéo gần trúng đỉnh góc hoặc điểm A
+    if (dragging.name === 'protractor' && currentMode === 'angle') {
+        if (Math.hypot(t.x - problem.vx, t.y - problem.vy) < 15) {
+            t.x = problem.vx;
+            t.y = problem.vy;
+        }
+    }
+    if (dragging.name === 'ruler' && currentMode === 'segment') {
+        if (Math.hypot(t.x - problem.x1, t.y - problem.y1) < 15) {
+            t.x = problem.x1;
+            t.y = problem.y1;
+        }
+    }
+    drawAll();
+}
+
+function onPointerUp() {
+    dragging = null;
+}
+
+canvas.addEventListener('mousedown', onPointerDown);
+canvas.addEventListener('mousemove', onPointerMove);
+window.addEventListener('mouseup', onPointerUp);
+
+canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+window.addEventListener('touchend', onPointerUp);
+
+// ==================== KIỂM TRA ĐÁP ÁN & CẬP NHẬT NHẬN XÉT TT27 ====================
+function updateStudentName() {
+    const name = document.getElementById('studentName').value || 'Học sinh 5/2';
+    document.getElementById('stNameDisplay').innerText = name;
+}
+
+function checkAnswer() {
+    const fb = document.getElementById('feedbackMsg');
+    const stName = document.getElementById('studentName').value || 'Học sinh 5/2';
+
+    if (currentMode === 'angle') {
+        const userDeg = parseFloat(document.getElementById('ansAngle').value);
+        const userType = document.getElementById('ansAngleType').value;
+        if (isNaN(userDeg)) {
+            fb.style.color = '#e03131';
+            fb.innerText = "⚠️ Em hãy nhập số đo góc mà em đọc được trên thước nhé!";
+            return;
+        }
+        // Cho phép sai số +/- 2 độ khi đọc mắt thường
+        if (Math.abs(userDeg - problem.deg) <= 2 && userType === problem.type) {
+            playSound(true);
+            stars += 10; solved += 1;
+            fb.style.color = '#2b8a3e';
+            fb.innerHTML = `🎉 Chính xác tuyệt đối! Góc AOB = <b>${problem.deg}°</b> (${problem.type === 'nhon' ? 'Góc nhọn' : problem.type === 'vuong' ? 'Góc vuông' : 'Góc tù'}). Thưởng +10 Sao!`;
+            document.getElementById('tt27Text').innerText = `Em ${stName} thao tác thành thạo thước đo góc, đặt đúng tâm thước và nhận diện chính xác góc nhọn, góc vuông, góc tù (Mức: Hoàn thành tốt - TT27).`;
+        } else {
+            playSound(false);
+            fb.style.color = '#d9480f';
+            fb.innerHTML = `💡 Chưa chính xác! Hãy bấm nút <b>"🧲 AI Đặt Thước Mẫu"</b> để kiểm tra lại số đo và loại góc nhé!`;
+        }
+    } else if (currentMode === 'segment') {
+        const userLen = parseFloat(document.getElementById('ansSegment').value);
+        if (isNaN(userLen)) {
+            fb.style.color = '#e03131';
+            fb.innerText = "⚠️ Em hãy nhập độ dài đoạn thẳng AB (cm) nhé!";
+            return;
+        }
+        if (Math.abs(userLen - problem.lenCm) <= 0.2) {
+            playSound(true);
+            stars += 10; solved += 1;
+            fb.style.color = '#2b8a3e';
+            fb.innerHTML = `🎉 Xuất sắc! Đoạn thẳng AB dài chính xác <b>${problem.lenCm} cm</b>. Thưởng +10 Sao!`;
+            document.getElementById('tt27Text').innerText = `Em ${stName} biết sử dụng thước thẳng chia vạch cm để đo chính xác độ dài đoạn thẳng trong mặt phẳng (Mức: Hoàn thành tốt - TT27).`;
+        } else {
+            playSound(false);
+            fb.style.color = '#d9480f';
+            fb.innerHTML = `💡 Gợi ý AI: Nhớ đặt vạch số <b>0 cm</b> (chấm đỏ) ngay tại điểm A nhé!`;
+        }
+    } else if (currentMode === 'triangle') {
+        const uBase = parseFloat(document.getElementById('ansBase').value);
+        const uHeight = parseFloat(document.getElementById('ansHeight').value);
+        const uArea = parseFloat(document.getElementById('ansArea').value);
+        if (uBase === problem.baseCm && uHeight === problem.heightCm && uArea === problem.area) {
+            playSound(true);
+            stars += 15; solved += 1;
+            fb.style.color = '#2b8a3e';
+            fb.innerHTML = `🎉 Quá giỏi! Đáy = ${problem.baseCm}cm, Cao = ${problem.heightCm}cm => Diện tích S = (${problem.baseCm} × ${problem.heightCm}) : 2 = <b>${problem.area} cm²</b>! (+15 Sao)`;
+            document.getElementById('tt27Text').innerText = `Em ${stName} biết phối hợp thước thẳng và ê-ke để đo độ dài đáy, đường cao và vận dụng đúng công thức tính diện tích hình tam giác (Mức: Hoàn thành tốt - TT27).`;
+        } else {
+            playSound(false);
+            fb.style.color = '#d9480f';
+            fb.innerHTML = `💡 Gợi ý AI: Hãy bấm <b>"🧲 AI Đặt Thước Mẫu"</b> để đọc số đo Đáy AB và Chiều cao CH trên 2 thước, rồi tính S = (a × h) : 2 nhé!`;
+        }
+    }
+
+    document.getElementById('starCount').innerText = stars;
+    document.getElementById('correctCount').innerText = solved;
+}
+
+// Khởi chạy lần đầu
+generateNewProblem();
+</script>
+</body>
+</html>
+"""
+
+components.html(geometry_app_html, height=650, scrolling=True)
