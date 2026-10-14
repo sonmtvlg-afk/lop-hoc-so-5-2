@@ -174,13 +174,13 @@ geometry_app_html = """
         padding: 6px 10px;
         border-radius: 8px;
     }
-    .tt27-box {
-        background: #f8f9fa;
-        border: 1px dashed #868e96;
+    .skill-box {
+        background: #ebfbee;
+        border: 1px dashed #40c057;
         border-radius: 10px;
         padding: 10px;
-        font-size: 0.86rem;
-        color: #495057;
+        font-size: 0.88rem;
+        color: #2b8a3e;
     }
 </style>
 </head>
@@ -212,16 +212,16 @@ geometry_app_html = """
         </div>
     </div>
 
-    <!-- CỘT PHẢI: NHIỆM VỤ, KIỂM TRA ĐÁP ÁN & ĐÁNH GIÁ TT27 -->
+    <!-- CỘT PHẢI: NHIỆM VỤ & KIỂM TRA ĐÁP ÁN -->
     <div class="control-panel">
         <div class="score-card">
-            <div>👤 <span id="stNameDisplay">Học sinh 5/2</span></div>
+            <div>👤 <span id="stNameDisplay">Hiểu Minh</span></div>
             <div>⭐ <span id="starCount">50</span> Sao</div>
             <div>🏆 Đúng: <span id="correctCount">0</span> bài</div>
         </div>
 
         <div style="display:flex; gap:6px;">
-            <input type="text" id="studentName" placeholder="Nhập tên học sinh..." value="Minh Khôi (Tổ 1)" oninput="updateStudentName()">
+            <input type="text" id="studentName" placeholder="Nhập tên học sinh..." value="Hiểu Minh" oninput="updateStudentName()">
         </div>
 
         <div>
@@ -278,10 +278,10 @@ geometry_app_html = """
 
         <div id="feedbackMsg" style="font-weight:bold; font-size:0.95rem; min-height:24px;"></div>
 
-        <div class="tt27-box">
-            <b>📋 Nhận xét Kĩ năng Hình học (Thông tư 27):</b>
-            <div id="tt27Text" style="margin-top:4px;">
-                Học sinh biết sử dụng thước đo góc và thước thẳng có chia vạch cm để đo đại lượng hình học; rèn luyện tính cẩn thận, chính xác.
+        <div class="skill-box">
+            <b>🌟 Góc Ghi Nhận Kỹ Năng Hình Học:</b>
+            <div id="skillText" style="margin-top:4px;">
+                Em Hiểu Minh hãy kéo thả thước ảo trên bảng vẽ để rèn kỹ năng đo góc và đo độ dài thật chính xác nhé!
             </div>
         </div>
     </div>
@@ -299,7 +299,7 @@ let tools = {
     eke: { active: false, x: 450, y: 280, angle: 0, sizeCm: 6 }
 };
 let lastSelectedTool = 'protractor';
-let dragging = null; // { toolName, mode: 'move' | 'rotate', offsetX, offsetY }
+let dragging = null;
 
 // Trạng thái bài tập
 let currentMode = 'angle';
@@ -434,7 +434,6 @@ function rotateActiveTool(val) {
     drawAll();
 }
 
-// Nút AI Đặt Thước Mẫu tự động khớp
 function autoAlignTool() {
     if (currentMode === 'angle') {
         tools.protractor.active = true;
@@ -492,7 +491,6 @@ function drawProblem() {
         const xB = vx + len * Math.cos(rad2);
         const yB = vy + len * Math.sin(rad2);
 
-        // Vẽ cung góc nhỏ
         ctx.beginPath();
         ctx.arc(vx, vy, 38, rad2, rad1);
         ctx.fillStyle = 'rgba(255, 193, 7, 0.25)';
@@ -501,7 +499,6 @@ function drawProblem() {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Vẽ 2 tia OA và OB
         ctx.strokeStyle = '#1864ab';
         ctx.lineWidth = 4;
         ctx.lineCap = 'round';
@@ -510,7 +507,6 @@ function drawProblem() {
         ctx.moveTo(vx, vy); ctx.lineTo(xB, yB);
         ctx.stroke();
 
-        // Điểm đỉnh O, A, B
         ctx.fillStyle = '#e03131';
         ctx.beginPath(); ctx.arc(vx, vy, 6, 0, Math.PI * 2); ctx.fill();
         ctx.font = 'bold 18px sans-serif';
@@ -528,7 +524,6 @@ function drawProblem() {
         ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        // Hai đầu mút A và B
         ctx.fillStyle = '#e03131';
         ctx.beginPath(); ctx.arc(x1, y1, 6, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(x2, y2, 6, 0, Math.PI * 2); ctx.fill();
@@ -547,7 +542,6 @@ function drawProblem() {
         ctx.moveTo(xA, yA); ctx.lineTo(xB, yB); ctx.lineTo(xC, yC); ctx.closePath();
         ctx.fill(); ctx.stroke();
 
-        // Đường cao CH nét đứt
         ctx.save();
         ctx.setLineDash([6, 5]);
         ctx.strokeStyle = '#e03131';
@@ -557,7 +551,6 @@ function drawProblem() {
         ctx.stroke();
         ctx.restore();
 
-        // Ký hiệu vuông góc tại H
         ctx.strokeStyle = '#e03131';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(xH, yH - 12, 12, 12);
@@ -582,7 +575,6 @@ function drawProtractor() {
     ctx.translate(x, y);
     ctx.rotate(angle * Math.PI / 180);
 
-    // Thân thước bán nguyệt trong suốt
     ctx.beginPath();
     ctx.arc(0, 0, radius, Math.PI, 0, false);
     ctx.lineTo(radius, 22);
@@ -594,7 +586,6 @@ function drawProtractor() {
     ctx.strokeStyle = '#f08c00';
     ctx.stroke();
 
-    // Khoét lỗ bán nguyệt nhỏ bên trong cho dễ nhìn
     ctx.beginPath();
     ctx.arc(0, 0, radius * 0.42, Math.PI, 0, false);
     ctx.closePath();
@@ -604,14 +595,12 @@ function drawProtractor() {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Đường chuẩn 0° - 180°
     ctx.beginPath();
     ctx.moveTo(-radius, 0); ctx.lineTo(radius, 0);
     ctx.strokeStyle = '#d9480f';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Vạch chia độ từ 0° đến 180°
     for (let deg = 0; deg <= 180; deg += 1) {
         const rad = -deg * Math.PI / 180;
         let tickLen = 5;
@@ -627,7 +616,6 @@ function drawProtractor() {
         ctx.lineWidth = deg % 10 === 0 ? 1.5 : 0.7;
         ctx.stroke();
 
-        // Ghi số đo góc vòng ngoài (ngược chiều kim đồng hồ: 0 -> 180)
         if (deg % 10 === 0) {
             const rText = radius - 26;
             ctx.save();
@@ -641,7 +629,6 @@ function drawProtractor() {
         }
     }
 
-    // Tâm thước đo độ (Crosshair đỏ)
     ctx.beginPath();
     ctx.arc(0, 0, 7, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(224, 49, 49, 0.9)';
@@ -650,7 +637,6 @@ function drawProtractor() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Nút nắm xoay thước bên phải
     ctx.beginPath();
     ctx.arc(radius - 16, 12, 10, 0, Math.PI * 2);
     ctx.fillStyle = '#1971c2';
@@ -671,10 +657,9 @@ function drawRuler() {
     const heightPx = 54;
 
     ctx.save();
-    ctx.translate(x, y); // Gốc (0,0) của thước chính là vạch số 0 cm!
+    ctx.translate(x, y);
     ctx.rotate(angle * Math.PI / 180);
 
-    // Thân thước nhựa trong suốt màu xanh nhạt (vẽ dư 15px bên trái vạch 0)
     ctx.fillStyle = 'rgba(208, 235, 255, 0.8)';
     ctx.strokeStyle = '#1971c2';
     ctx.lineWidth = 2;
@@ -683,7 +668,6 @@ function drawRuler() {
     ctx.fill();
     ctx.stroke();
 
-    // Vạch chia cm và mm
     for (let mm = 0; mm <= lengthCm * 10; mm++) {
         const px = (mm / 10) * PX_PER_CM;
         let tickH = 7;
@@ -708,13 +692,11 @@ function drawRuler() {
     ctx.fillStyle = '#1864ab';
     ctx.fillText('THƯỚC THẲNG LỚP 5/2 (Đơn vị: cm)', widthPx / 2, 48);
 
-    // Chấm đỏ đánh dấu vạch 0 cm
     ctx.beginPath();
     ctx.arc(0, 0, 6, 0, Math.PI * 2);
     ctx.fillStyle = '#e03131';
     ctx.fill();
 
-    // Nút xoay ở đầu phải của thước
     ctx.beginPath();
     ctx.arc(widthPx + 8, heightPx / 2, 11, 0, Math.PI * 2);
     ctx.fillStyle = '#f08c00';
@@ -734,7 +716,7 @@ function drawEke() {
     const sidePx = sizeCm * PX_PER_CM;
 
     ctx.save();
-    ctx.translate(x, y); // Góc vuông của Ê-ke nằm tại (0,0)
+    ctx.translate(x, y);
     ctx.rotate(angle * Math.PI / 180);
 
     ctx.beginPath();
@@ -748,7 +730,6 @@ function drawEke() {
     ctx.strokeStyle = '#2b8a3e';
     ctx.stroke();
 
-    // Vạch chia cm dọc theo cạnh đứng của Ê-ke (để đo chiều cao tam giác/hình thang!)
     for (let cm = 0; cm <= sizeCm; cm++) {
         const py = -cm * PX_PER_CM;
         ctx.beginPath();
@@ -764,7 +745,6 @@ function drawEke() {
         }
     }
 
-    // Chấm góc vuông Ê-ke
     ctx.beginPath();
     ctx.arc(0, 0, 6, 0, Math.PI * 2);
     ctx.fillStyle = '#2b8a3e';
@@ -827,8 +807,6 @@ function getPointerPos(e) {
 
 function onPointerDown(e) {
     const pos = getPointerPos(e);
-
-    // Ưu tiên kiểm tra từ thước trên cùng
     const order = ['protractor', 'eke', 'ruler'];
     for (let name of order) {
         const t = tools[name];
@@ -867,7 +845,6 @@ function onPointerMove(e) {
     t.x = pos.x - dragging.offsetX;
     t.y = pos.y - dragging.offsetY;
 
-    // Tự động hút nhẹ (Magnetic Snap) khi kéo gần trúng đỉnh góc hoặc điểm A
     if (dragging.name === 'protractor' && currentMode === 'angle') {
         if (Math.hypot(t.x - problem.vx, t.y - problem.vy) < 15) {
             t.x = problem.vx;
@@ -895,15 +872,15 @@ canvas.addEventListener('touchstart', onPointerDown, { passive: false });
 canvas.addEventListener('touchmove', onPointerMove, { passive: false });
 window.addEventListener('touchend', onPointerUp);
 
-// ==================== KIỂM TRA ĐÁP ÁN & CẬP NHẬT NHẬN XÉT TT27 ====================
+// ==================== KIỂM TRA ĐÁP ÁN & LỜI KHEN ====================
 function updateStudentName() {
-    const name = document.getElementById('studentName').value || 'Học sinh 5/2';
+    const name = document.getElementById('studentName').value || 'Hiểu Minh';
     document.getElementById('stNameDisplay').innerText = name;
 }
 
 function checkAnswer() {
     const fb = document.getElementById('feedbackMsg');
-    const stName = document.getElementById('studentName').value || 'Học sinh 5/2';
+    const stName = document.getElementById('studentName').value || 'Hiểu Minh';
 
     if (currentMode === 'angle') {
         const userDeg = parseFloat(document.getElementById('ansAngle').value);
@@ -913,13 +890,12 @@ function checkAnswer() {
             fb.innerText = "⚠️ Em hãy nhập số đo góc mà em đọc được trên thước nhé!";
             return;
         }
-        // Cho phép sai số +/- 2 độ khi đọc mắt thường
         if (Math.abs(userDeg - problem.deg) <= 2 && userType === problem.type) {
             playSound(true);
             stars += 10; solved += 1;
             fb.style.color = '#2b8a3e';
             fb.innerHTML = `🎉 Chính xác tuyệt đối! Góc AOB = <b>${problem.deg}°</b> (${problem.type === 'nhon' ? 'Góc nhọn' : problem.type === 'vuong' ? 'Góc vuông' : 'Góc tù'}). Thưởng +10 Sao!`;
-            document.getElementById('tt27Text').innerText = `Em ${stName} thao tác thành thạo thước đo góc, đặt đúng tâm thước và nhận diện chính xác góc nhọn, góc vuông, góc tù (Mức: Hoàn thành tốt - TT27).`;
+            document.getElementById('skillText').innerText = `Hoan hô ${stName}! Em sử dụng thước đo độ rất khéo léo, đặt đúng tâm thước và nhận biết chính xác các loại góc.`;
         } else {
             playSound(false);
             fb.style.color = '#d9480f';
@@ -937,7 +913,7 @@ function checkAnswer() {
             stars += 10; solved += 1;
             fb.style.color = '#2b8a3e';
             fb.innerHTML = `🎉 Xuất sắc! Đoạn thẳng AB dài chính xác <b>${problem.lenCm} cm</b>. Thưởng +10 Sao!`;
-            document.getElementById('tt27Text').innerText = `Em ${stName} biết sử dụng thước thẳng chia vạch cm để đo chính xác độ dài đoạn thẳng trong mặt phẳng (Mức: Hoàn thành tốt - TT27).`;
+            document.getElementById('skillText').innerText = `Tuyệt vời lắm ${stName}! Em biết đặt vạch số 0 của thước thẳng đúng vị trí để đo chính xác độ dài đoạn thẳng.`;
         } else {
             playSound(false);
             fb.style.color = '#d9480f';
@@ -952,7 +928,7 @@ function checkAnswer() {
             stars += 15; solved += 1;
             fb.style.color = '#2b8a3e';
             fb.innerHTML = `🎉 Quá giỏi! Đáy = ${problem.baseCm}cm, Cao = ${problem.heightCm}cm => Diện tích S = (${problem.baseCm} × ${problem.heightCm}) : 2 = <b>${problem.area} cm²</b>! (+15 Sao)`;
-            document.getElementById('tt27Text').innerText = `Em ${stName} biết phối hợp thước thẳng và ê-ke để đo độ dài đáy, đường cao và vận dụng đúng công thức tính diện tích hình tam giác (Mức: Hoàn thành tốt - TT27).`;
+            document.getElementById('skillText').innerText = `Xuất sắc quá ${stName} ơi! Em biết kết hợp thước thẳng và ê-ke để đo đáy, đường cao và tính diện tích tam giác rất chuẩn xác.`;
         } else {
             playSound(false);
             fb.style.color = '#d9480f';
