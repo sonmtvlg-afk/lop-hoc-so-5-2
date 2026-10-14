@@ -1,355 +1,566 @@
 import streamlit as st
+import streamlit.components.v1 as components
+import random
 
-# ==================== CẤU HÌNH TRANG (TỐI ƯU CHO ĐIỆN THOẠI & MÁY TÍNH) ====================
+# ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Ngôi Nhà Số Lớp 5/2 - Trường Tiểu học Bình Phước",
-    page_icon="🌟",
+    page_title="Vương Quốc Tri Thức Lớp 5/2 - TH Bình Phước",
+    page_icon="🐉",
     layout="centered"
 )
 
-# Giao diện CSS tối giản, chữ to, nút bấm lớn, màu sắc tươi sáng
+# ==================== HÀM PHÁT ÂM THANH TRÒ CHƠI (KHÔNG CẦN FILE MP3) ====================
+def play_sound(sound_type="win"):
+    if sound_type == "win":
+        js = """
+        <script>
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + idx * 0.1);
+            osc.stop(ctx.currentTime + idx * 0.1 + 0.25);
+        });
+        </script>
+        """
+    else:
+        js = """
+        <script>
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, ctx.currentTime);
+        osc.frequency.setValueAtTime(160, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+        </script>
+        """
+    components.html(js, height=0)
+
+# ==================== GIAO DIỆN CSS GAME HÓA RỰC RỠ ====================
 st.markdown("""
 <style>
-    .header-box {
-        background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+    .game-header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
         color: white;
-        padding: 20px;
-        border-radius: 16px;
+        padding: 22px;
+        border-radius: 20px;
         text-align: center;
+        box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
         margin-bottom: 15px;
-        box-shadow: 0 4px 12px rgba(0, 114, 255, 0.25);
     }
-    .header-box h1 {
-        font-size: 1.8rem;
+    .game-header h1 {
+        font-size: 1.85rem;
         margin: 0;
-        color: white;
-        font-weight: 800;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .header-box p {
-        font-size: 1.05rem;
-        margin: 6px 0 0 0;
-        color: #e6f7ff;
-        font-weight: 600;
-    }
-    .score-banner {
-        background: #fff9db;
-        border: 2px solid #ffd43b;
-        border-radius: 14px;
-        padding: 12px;
-        text-align: center;
-        font-size: 1.15rem;
-        font-weight: bold;
-        color: #d9480f;
-        margin-bottom: 18px;
-    }
-    .visual-card {
-        background: #f8f9fa;
-        border: 2px solid #dee2e6;
-        border-radius: 14px;
-        padding: 18px;
-        margin: 12px 0;
-    }
-    .ai-helper {
-        background: #e7f5ff;
-        border-left: 6px solid #1c7ed6;
-        padding: 15px;
-        border-radius: 10px;
-        font-size: 1.05rem;
-        color: #1864ab;
-        margin: 12px 0;
-    }
-    .parent-card {
-        background: #ebfbee;
-        border-left: 6px solid #2b8a3e;
+    .pet-arena {
+        background: linear-gradient(135deg, #fff6e5 0%, #ffe8cc 100%);
+        border: 3px solid #ffa94d;
+        border-radius: 18px;
         padding: 16px;
-        border-radius: 10px;
-        font-size: 1.05rem;
-        color: #1b4332;
-        margin: 12px 0;
-    }
-    .cert-box {
-        background: linear-gradient(135deg, #fffdf0 0%, #fff3bf 100%);
-        border: 3px dashed #f59f00;
-        border-radius: 16px;
-        padding: 20px;
         text-align: center;
-        margin-top: 15px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 12px rgba(255, 169, 77, 0.2);
+    }
+    .pet-avatar {
+        font-size: 4.2rem;
+        margin: 5px 0;
+        animation: bounce 1.5s infinite alternate;
+    }
+    @keyframes bounce {
+        from { transform: translateY(0px); }
+        to { transform: translateY(-8px); }
+    }
+    .quest-card {
+        background: #ffffff;
+        border: 3px solid #74c0fc;
+        border-radius: 18px;
+        padding: 20px;
+        margin: 12px 0;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+    .ai-bubble {
+        background: #e3fafc;
+        border-left: 6px solid #15aabf;
+        padding: 15px;
+        border-radius: 12px;
+        color: #0b7285;
+        font-size: 1.05rem;
+        margin-top: 12px;
+    }
+    .item-badge {
+        display: inline-block;
+        background: #f3f0ff;
+        border: 2px solid #845ef7;
+        color: #5f3dc4;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin: 4px;
+        font-size: 0.9rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ==================== KHỞI TẠO DỮ LIỆU ĐƠN GIẢN ====================
-if "name" not in st.session_state:
-    st.session_state.name = "Minh Khôi"
+# ==================== MÁY SINH ĐỀ AI VÔ HẠN (INFINITE GENERATOR) ====================
+def generate_infinite_question(topic_choice):
+    friends = ["Minh Khôi", "Bảo Ngọc", "Gia Huy", "Thanh Thảo", "Tuấn Kiệt", "Phương Anh"]
+    friend = random.choice(friends)
+
+    if topic_choice == "🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)":
+        topic = random.choice(["thap_phan", "phan_tram", "hinh_hoc", "thuc_te", "tieng_viet"])
+    elif "Số thập phân" in topic_choice:
+        topic = "thap_phan"
+    elif "Tỉ số phần trăm" in topic_choice:
+        topic = "phan_tram"
+    elif "Hình học" in topic_choice:
+        topic = "hinh_hoc"
+    elif "Toán Thực tế" in topic_choice:
+        topic = "thuc_te"
+    else:
+        topic = "tieng_viet"
+
+    # 1. CHỦ ĐỀ SỐ THẬP PHÂN (SINH TỰ ĐỘNG VÔ HẠN)
+    if topic == "thap_phan":
+        a = round(random.uniform(2.5, 25.5), 1)
+        b = round(random.uniform(1.25, 14.75), 2)
+        op = random.choice(["+", "-"])
+        if op == "+" or a < b:
+            ans = round(a + b, 2)
+            q_text = f"⚡ **Thử thách Tia Chớp:** Bạn {friend} thực hiện phép tính cộng hai số thập phân: **{a} + {b}**. Kết quả đúng là bao nhiêu?"
+            hint = f"💡 **AI gợi ý:** Đặt dấu phẩy thẳng cột! Viết **{a:.2f} + {b:.2f}**, cộng từ phải sang trái nhé!"
+            explain = f"🌟 **AI Giải chi tiết:** Ta có {a:.2f} + {b:.2f} = **{ans}**."
+        else:
+            ans = round(a - b, 2)
+            q_text = f"⚡ **Thử thách Tia Chớp:** Bạn {friend} có sợi dây dài **{a} m**, cắt bớt đi **{b} m**. Hỏi sợi dây còn lại dài bao nhiêu mét?"
+            hint = f"💡 **AI gợi ý:** Viết thêm chữ số 0 vào phần thập phân để trừ: **{a:.2f} - {b:.2f}**."
+            explain = f"🌟 **AI Giải chi tiết:** Độ dài còn lại là: {a:.2f} - {b:.2f} = **{ans} m**."
+
+        wrongs = [round(ans + 1.1, 2), round(abs(ans - 0.5), 2), round(ans + 0.25, 2)]
+        opts = [f"{ans}", f"{wrongs[0]}", f"{wrongs[1]}", f"{wrongs[2]}"]
+        random.shuffle(opts)
+        return {"title": "🧮 Toán 5: Số Thập Phân", "q": q_text, "opts": opts, "ans": f"{ans}", "hint": hint, "exp": explain}
+
+    # 2. CHỦ ĐỀ TỈ SỐ PHẦN TRĂM (SINH TỰ ĐỘNG VÔ HẠN)
+    elif topic == "phan_tram":
+        total = random.choice([40, 50, 80, 100, 120, 200, 300, 400, 500])
+        pct = random.choice([10, 15, 20, 25, 30, 40, 50, 75])
+        ans = int(total * pct / 100)
+        q_text = f"🌱 **Chiến dịch Xanh:** Trường Tiểu học Bình Phước trồng **{total} cây xanh**, trong đó lớp 5/2 chăm sóc **{pct}%** số cây. Hỏi lớp 5/2 chăm sóc bao nhiêu cây xanh?"
+        hint = f"💡 **AI gợi ý:** Muốn tìm **{pct}%** của **{total}**, em lấy **{total} : 100 × {pct}** nhé!"
+        explain = f"🌟 **AI Giải chi tiết:** Số cây lớp 5/2 chăm sóc là: {total} : 100 × {pct} = **{ans} (cây)**."
+        wrongs = [ans + 5, max(1, ans - 4), ans + 10]
+        opts = [f"{ans} cây", f"{wrongs[0]} cây", f"{wrongs[1]} cây", f"{wrongs[2]} cây"]
+        random.shuffle(opts)
+        return {"title": "🌱 Toán 5: Tỉ Số Phần Trăm", "q": q_text, "opts": opts, "ans": f"{ans} cây", "hint": hint, "exp": explain}
+
+    # 3. CHỦ ĐỀ HÌNH HỌC LỚP 5 (TAM GIÁC, HÌNH THANG)
+    elif topic == "hinh_hoc":
+        shape = random.choice(["tam_giac", "hinh_thang"])
+        if shape == "tam_giac":
+            day = random.choice([6, 8, 10, 12, 14, 16])
+            cao = random.choice([4, 5, 7, 9, 10])
+            ans = int(day * cao / 2)
+            q_text = f"📐 **Kiến trúc sư Nhí:** Một bồn hoa hình tam giác ở sân trường Tiểu học Bình Phước có độ dài đáy là **{day} m** và chiều cao là **{cao} m**. Diện tích bồn hoa đó là:"
+            hint = f"💡 **AI gợi ý:** Diện tích hình tam giác = **(Đáy × Chiều cao) : 2** = ({day} × {cao}) : 2."
+            explain = f"🌟 **AI Giải chi tiết:** Diện tích bồn hoa là: ({day} × {cao}) : 2 = **{ans} m²**."
+        else:
+            day_lon = random.choice([10, 12, 15, 18])
+            day_be = day_lon - random.choice([2, 4, 6])
+            cao = random.choice([4, 6, 8, 10])
+            ans = int((day_lon + day_be) * cao / 2)
+            q_text = f"📐 **Kiến trúc sư Nhí:** Một mảnh vườn hình thang có đáy lớn **{day_lon} m**, đáy bé **{day_be} m** và chiều cao **{cao} m**. Diện tích mảnh vườn là:"
+            hint = f"💡 **AI gợi ý:** Muốn tính diện tích hình thang, đáy lớn đáy nhỏ ta mang cộng vào, thế rồi nhân với chiều cao, chia đôi lấy nửa: **({day_lon} + {day_be}) × {cao} : 2**."
+            explain = f"🌟 **AI Giải chi tiết:** Diện tích hình thang là: ({day_lon} + {day_be}) × {cao} : 2 = **{ans} m²**."
+        wrongs = [ans * 2, ans + 6, max(2, ans - 5)]
+        opts = [f"{ans} m²", f"{wrongs[0]} m²", f"{wrongs[1]} m²", f"{wrongs[2]} m²"]
+        random.shuffle(opts)
+        return {"title": "📐 Toán 5: Hình Học Trực Quan", "q": q_text, "opts": opts, "ans": f"{ans} m²", "hint": hint, "exp": explain}
+
+    # 4. TOÁN THỰC TẾ ĐI CHỢ & TIẾT KIỆM
+    elif topic == "thuc_te":
+        price = random.choice([40, 60, 80, 100, 120, 150, 200])
+        discount = random.choice([10, 20, 25, 50])
+        saved = int(price * discount / 100)
+        pay = price - saved
+        q_text = f"🛒 **Siêu thị Thông minh:** Bạn {friend} cùng mẹ đi mua một quyển sách giá **{price}.000 đồng**. Nhân dịp lễ, nhà sách giảm giá **{discount}%**. Hỏi mẹ phải trả bao nhiêu tiền?"
+        hint = f"💡 **AI gợi ý:** Bước 1: Tìm số tiền được giảm ({price} × {discount} : 100 = {saved} nghìn). Bước 2: Lấy giá gốc trừ đi số tiền được giảm!"
+        explain = f"🌟 **AI Giải chi tiết:** Số tiền được giảm là {saved}.000đ. Số tiền mẹ phải trả là: {price}.000 - {saved}.000 = **{pay}.000 đồng**."
+        wrongs = [f"{saved}.000 đồng", f"{pay + 10}.000 đồng", f"{max(10, pay - 10)}.000 đồng"]
+        opts = [f"{pay}.000 đồng"] + wrongs
+        random.shuffle(opts)
+        return {"title": "🛒 Toán Thực Tế Cuộc Sống", "q": q_text, "opts": opts, "ans": f"{pay}.000 đồng", "hint": hint, "exp": explain}
+
+    # 5. KHO TRÒ CHƠI VUA TIẾNG VIỆT ĐA DẠNG
+    else:
+        tv_bank = [
+            {
+                "q": "📚 **Vua Tiếng Việt:** Câu ca dao *'Có công mài sắt, có ngày nên kim'* khuyên chúng ta rèn luyện đức tính gì?",
+                "ans": "Kiên trì, nhẫn nại, không ngại khó",
+                "w": ["Làm việc thật nhanh", "Thích sưu tầm kim loại", "Chỉ làm việc khi có người nhắc"],
+                "hint": "💡 **AI gợi ý:** Từ một thanh sắt to mài thành chiếc kim nhỏ đòi hỏi sự bền bỉ giống như khi các em rèn chữ đẹp mỗi ngày!",
+                "exp": "🌟 **AI Giải thích:** Câu tục ngữ khuyên chúng ta kiên trì, nhẫn nại thì việc khó đến mấy cũng sẽ thành công."
+            },
+            {
+                "q": "📚 **Thám tử Ngôn từ:** Trong câu *'Những chú ong chăm chỉ bay đi tìm mật ngọt'*, tác giả đã dùng biện pháp nghệ thuật gì?",
+                "ans": "Nhân hóa (gọi ong là 'chú', tả tính nết 'chăm chỉ')",
+                "w": ["So sánh", "Điệp từ", "Đảo ngữ"],
+                "hint": "💡 **AI gợi ý:** 'Chú' và 'chăm chỉ' vốn là từ dùng cho con người nhưng lại được dùng để tả con ong!",
+                "exp": "🌟 **AI Giải thích:** Biện pháp nhân hóa giúp hình ảnh chú ong trở nên sinh động, gần gũi với học sinh."
+            },
+            {
+                "q": "📚 **Mở rộng Vốn từ:** Dòng nào dưới đây gồm toàn các **từ đồng nghĩa** với từ *'Hạnh phúc'*?",
+                "ans": "Sungk sướng, viên mãn, phúc hậu (niềm vui lớn)",
+                "w": ["Buồn bã, ủ rũ, lo âu", "Nhanh nhẹn, tháo vát, hoạt bát", "Cao ráo, mảnh mai, vạm vỡ"],
+                "hint": "💡 **AI gợi ý:** Hãy tìm những từ cùng chỉ trạng thái vui vẻ, mãn nguyện trong cuộc sống!",
+                "exp": "🌟 **AI Giải thích:** Từ đồng nghĩa là những từ có nghĩa giống hoặc gần giống nhau."
+            },
+            {
+                "q": "📚 **Từ đa nghĩa:** Từ **'chân'** trong câu nào dưới đây được dùng theo **nghĩa gốc**?",
+                "ans": "Bạn Nam chạy nhanh nên đôi chân rất khỏe.",
+                "w": ["Chân bàn học lớp 5/2 làm bằng sắt rất chắc chắn.", "Đám mây trắng bồng bềnh dưới chân núi.", "Chân tường lớp học được sơn màu xanh sạch đẹp."],
+                "hint": "💡 **AI gợi ý:** Nghĩa gốc của từ 'chân' là bộ phận cơ thể của người hoặc động vật dùng để đi, đứng!",
+                "exp": "🌟 **AI Giải thích:** 'Đôi chân' của bạn Nam là nghĩa gốc, còn chân bàn, chân núi, chân tường là nghĩa chuyển."
+            },
+            {
+                "q": "📚 **Điền từ Tinh tế:** Điền từ thích hợp vào câu tục ngữ: *'Một cây làm chẳng nên non / Ba cây chụm lại nên ... cao'*?",
+                "ans": "hòn núi",
+                "w": ["cánh rừng", "bầu trời", "biển rộng"],
+                "hint": "💡 **AI gợi ý:** Từ nào đồng nghĩa với từ 'non' (núi) ở câu trên và tạo vần lưng với từ 'non'?",
+                "exp": "🌟 **AI Giải thích:** 'Ba cây chụm lại nên hòn núi cao' ca ngợi sức mạnh của tinh thần đoàn kết trong tập thể lớp 5/2!"
+            },
+            {
+                "q": "📚 **Luyện câu Lớp 5:** Cặp quan hệ từ nào phù hợp nhất để nối câu chỉ **Nguyên nhân - Kết quả**: *'... bạn Lan chịu khó rèn chữ mỗi ngày ... vở của bạn ấy rất sạch đẹp.'*?",
+                "ans": "Nhờ ... nên ...",
+                "w": ["Tuy ... nhưng ...", "Nếu ... thì ...", "Không những ... mà còn ..."],
+                "hint": "💡 **AI gợi ý:** Việc chịu khó rèn chữ mang lại kết quả tốt đẹp, ta dùng cặp từ nào để khen ngợi?",
+                "exp": "🌟 **AI Giải thích:** Cặp quan hệ từ 'Nhờ... nên...' biểu thị quan hệ nguyên nhân dẫn đến kết quả tích cực."
+            }
+        ]
+        item = random.choice(tv_bank)
+        opts = [item["ans"]] + item["w"]
+        random.shuffle(opts)
+        return {"title": "📚 Đấu Trường Vua Tiếng Việt 5", "q": item["q"], "opts": opts, "ans": item["ans"], "hint": item["hint"], "exp": item["exp"]}
+
+# ==================== KHỞI TẠO TRẠNG THÁI GAME ====================
+if "student" not in st.session_state:
+    st.session_state.student = "Minh Khôi"
 if "group" not in st.session_state:
     st.session_state.group = "Tổ 1"
-if "stars" not in st.session_state:
-    st.session_state.stars = 50
-if "trees" not in st.session_state:
-    st.session_state.trees = 2
-if "q_idx" not in st.session_state:
-    st.session_state.q_idx = 0
-if "hint_on" not in st.session_state:
-    st.session_state.hint_on = False
-if "group_points" not in st.session_state:
-    st.session_state.group_points = {"Tổ 1": 150, "Tổ 2": 140, "Tổ 3": 160, "Tổ 4": 130}
+if "xp" not in st.session_state:
+    st.session_state.xp = 40
+if "streak" not in st.session_state:
+    st.session_state.streak = 0
+if "chests" not in st.session_state:
+    st.session_state.chests = 1
+if "inventory" not in st.session_state:
+    st.session_state.inventory = ["🌟 Huy hiệu Tân Binh 5/2"]
+if "current_q" not in st.session_state:
+    st.session_state.current_q = generate_infinite_question("🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)")
+if "show_hint" not in st.session_state:
+    st.session_state.show_hint = False
+if "answered" not in st.session_state:
+    st.session_state.answered = False
+if "group_scores" not in st.session_state:
+    st.session_state.group_scores = {"Tổ 1": 210, "Tổ 2": 190, "Tổ 3": 220, "Tổ 4": 180}
 
-# ==================== TIÊU ĐỀ CHÍNH ====================
+# ==================== TÍNH CẤP ĐỘ TIẾN HÓA LINH VẬT ====================
+def get_pet_stage(xp):
+    if xp < 60:
+        return "🥚", "Cấp 1: Trứng Thần Kỳ", 60
+    elif xp < 120:
+        return "🐣", "Cấp 2: Rồng Con Hiếu Học", 120
+    elif xp < 200:
+        return "🦖", "Cấp 3: Chiến Binh Rồng Xanh", 200
+    elif xp < 300:
+        return "🐉", "Cấp 4: Rồng Lửa Tri Thức", 300
+    else:
+        return "👑🐉", "Cấp Tối Thượng: Thần Rồng Bình Phước", 500
+
+pet_icon, pet_title, next_xp = get_pet_stage(st.session_state.xp)
+
+# ==================== HEADER & HỒ SƠ NHANH ====================
 st.markdown("""
-<div class="header-box">
-    <h1>🌟 NGÔI NHÀ SỐ LỚP 5/2</h1>
+<div class="game-header">
+    <h1>🐉 VƯƠNG QUỐC TRI THỨC LỚP 5/2</h1>
     <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== BƯỚC 1: NHẬP TÊN NHANH TRÊN MÀN HÌNH CHÍNH ====================
-col_info1, col_info2 = st.columns([1.5, 1])
-with col_info1:
-    st.session_state.name = st.text_input("👦👧 Họ và tên học sinh:", st.session_state.name)
-with col_info2:
-    st.session_state.group = st.selectbox("🚩 Tổ thi đua:", ["Tổ 1", "Tổ 2", "Tổ 3", "Tổ 4"])
+c_info1, c_info2 = st.columns([1.5, 1])
+with c_info1:
+    st.session_state.student = st.text_input("👦👧 Tên nhà thám hiểm nhí:", st.session_state.student)
+with c_info2:
+    st.session_state.group = st.selectbox("🚩 Chiến đội:", ["Tổ 1", "Tổ 2", "Tổ 3", "Tổ 4"])
 
+# ==================== KHU VỰC NUÔI LINH VẬT (PET ARENA) ====================
 st.markdown(f"""
-<div class="score-banner">
-    👤 Học sinh: {st.session_state.name} ({st.session_state.group}) &nbsp;|&nbsp; 
-    ⭐ {st.session_state.stars} Sao chăm ngoan &nbsp;|&nbsp; 
-    🌱 {st.session_state.trees} Cây xanh
+<div class="pet-arena">
+    <div style="font-weight:bold; color:#d9480f;">LINH VẬT ĐỒNG HÀNH CỦA {st.session_state.student.upper()} ({st.session_state.group})</div>
+    <div class="pet-avatar">{pet_icon}</div>
+    <h3 style="margin:4px 0; color:#e67700;">{pet_title}</h3>
+    <p style="margin:4px 0; font-size:1.05rem;">
+        ⚡ Năng lượng: <b>{st.session_state.xp}/{next_xp} XP</b> &nbsp;|&nbsp;
+        🔥 Chuỗi thắng: <b>{st.session_state.streak} liên tiếp</b> &nbsp;|&nbsp;
+        🎁 Rương kho báu: <b>{st.session_state.chests} rương</b>
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== MENU CHÍNH DẠNG 3 TAB LỚN DỄ BẤM ====================
-tab_hs, tab_ph, tab_bv = st.tabs([
-    "🎒 1. GÓC HỌC SINH",
-    "👨‍👩‍👧 2. GÓC PHỤ HUYNH",
-    "🏆 3. BẢNG VÀNG & NHẬN XÉT"
+st.progress(min(st.session_state.xp / next_xp, 1.0))
+
+# Nút mở Rương Kho Báu Ngẫu Nhiên
+if st.session_state.chests > 0:
+    if st.button(f"🎁 MỞ RƯƠNG KHO BÁU BÍ MẬT ({st.session_state.chests} rương đang chờ!)", use_container_width=True):
+        rewards = [
+            "🗡️ Kiếm Ánh Sáng Toán Học",
+            "🛡️ Khiên Tiếng Việt Bất Bại",
+            "💎 Viên Ngọc Kiên Trì (Rèn Chữ Đẹp)",
+            "🌱 Chồi Non Bảo Vệ Môi Trường",
+            "🦉 Cú Mèo Thông Thái AI",
+            "👑 Vương Miện Sao Chăm Ngoan"
+        ]
+        avail = [r for r in rewards if r not in st.session_state.inventory]
+        new_item = random.choice(avail) if avail else "🌟 Siêu Cúp Vinh Quang (+30 XP)"
+        if new_item not in st.session_state.inventory:
+            st.session_state.inventory.append(new_item)
+        st.session_state.chests -= 1
+        st.session_state.xp += 15
+        play_sound("win")
+        st.balloons()
+        st.success(f"🎉 Chúc mừng! Em mở rương nhận được vật phẩm quý hiếm: **{new_item}** và **+15 XP**!")
+
+# Hiển thị bộ sưu tập vật phẩm
+inv_html = "".join([f'<span class="item-badge">{item}</span>' for item in st.session_state.inventory])
+st.markdown(f"**🎒 Túi đồ Sưu tầm:** {inv_html}", unsafe_allow_html=True)
+st.write("")
+
+# ==================== 4 TAB TRẢI NGHIỆM SỐNG ĐỘNG ====================
+tab1, tab2, tab3, tab4 = st.tabs([
+    "⚔️ 1. ĐẤU TRƯỜNG VÔ HẠN",
+    "🤖 2. HỎI ĐÁP AI MỌI BÀI TOÁN",
+    "🎨 3. TRỰC QUAN HÓA",
+    "🏆 4. GÓC PHỤ HUYNH & GV"
 ])
 
 # ==============================================================================
-# TAB 1: GÓC HỌC SINH (TRỰC QUAN & TRÒ CHƠI AI)
+# TAB 1: ĐẤU TRƯỜNG SINH ĐỀ VÔ HẠN (KHÔNG BAO GIỜ LẶP LẠI)
 # ==============================================================================
-with tab_hs:
-    st.subheader("🍕 Phần 1: Nhìn Hình Hiểu Ngay (Toán Lớp 5)")
-    st.write("Kéo thanh trượt để xem mối liên hệ giữa **Phân số – Số thập phân – Phần trăm**:")
+with tab1:
+    st.subheader("⚔️ Máy Sinh Đề Thông Minh Vô Hạn (Mỗi lần bấm 1 đề mới!)")
 
-    example_type = st.radio(
-        "Chọn mô hình gần gũi:",
-        ["🍕 Chia bánh Pizza (Hiểu Phân số)", "🔋 Sạc Pin Năng Lượng Mặt Trời (Hiểu Phần trăm %)"],
-        horizontal=True
+    topic_sel = st.selectbox(
+        "🎯 Chọn vùng đất thử thách:",
+        [
+            "🎲 Ngẫu nhiên tổng hợp (Thú vị nhất)",
+            "🧮 Chuyên đề 1: Cộng, trừ Số thập phân (Vô hạn đề)",
+            "🌱 Chuyên đề 2: Tỉ số phần trăm % (Vô hạn đề)",
+            "📐 Chuyên đề 3: Hình học Lớp 5 - Tam giác, Hình thang (Vô hạn đề)",
+            "🛒 Chuyên đề 4: Toán Thực tế Đi chợ & Tiết kiệm (Vô hạn đề)",
+            "📚 Chuyên đề 5: Đấu trường Vua Tiếng Việt 5"
+        ]
     )
 
-    if "Pizza" in example_type:
-        total_slices = st.slider("Chia chiếc bánh thành mấy phần bằng nhau (Mẫu số)?", 2, 10, 4)
-        eaten_slices = st.slider("Em lấy mấy phần bánh (Tử số)?", 1, total_slices, 3)
+    if st.button("🔄 Sinh Câu Hỏi Mới Tinh Ngay Lập Tức!", use_container_width=True):
+        st.session_state.current_q = generate_infinite_question(topic_sel)
+        st.session_state.show_hint = False
+        st.session_state.answered = False
+        st.rerun()
 
-        pizza_visual = "🍕 " * eaten_slices + "⚪ " * (total_slices - eaten_slices)
-        decimal_val = eaten_slices / total_slices
-        percent_val = decimal_val * 100
+    q_data = st.session_state.current_q
 
+    st.markdown(f"""
+    <div class="quest-card">
+        <div style="color:#1971c2; font-weight:bold; margin-bottom:6px;">{q_data['title']}</div>
+        <div style="font-size:1.18rem;">{q_data['q']}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    user_ans = st.radio("👉 Chọn đáp án để giúp Linh Vật tiến hóa:", q_data["opts"], key=f"q_{q_data['q']}")
+
+    col_b1, col_b2, col_b3 = st.columns(3)
+    with col_b1:
+        if st.button("⚡ Tung Chiêu (Nộp bài)", use_container_width=True):
+            if user_ans == q_data["ans"]:
+                play_sound("win")
+                st.balloons()
+                st.session_state.xp += 20
+                st.session_state.streak += 1
+                st.session_state.group_scores[st.session_state.group] += 20
+                st.session_state.answered = True
+                if st.session_state.streak % 3 == 0:
+                    st.session_state.chests += 1
+                    st.toast("🎁 Chuỗi 3 câu đúng liên tiếp! Em được thưởng +1 Rương Kho Báu!", icon="🎉")
+                st.success(f"🎉 Chính xác! Linh vật nhận +20 XP! (Chuỗi thắng: {st.session_state.streak})")
+                st.markdown(f'<div class="ai-bubble">{q_data["exp"]}</div>', unsafe_allow_html=True)
+            else:
+                play_sound("lose")
+                st.session_state.streak = 0
+                st.session_state.show_hint = True
+                st.warning("Chưa trúng mục tiêu rồi! Hãy xem Trợ lý AI mách nước ở dưới nhé!")
+
+    with col_b2:
+        if st.button("💡 AI Mách Nước", use_container_width=True):
+            st.session_state.show_hint = True
+
+    with col_b3:
+        if st.button("➡️ Sang Câu Mới", use_container_width=True):
+            st.session_state.current_q = generate_infinite_question(topic_sel)
+            st.session_state.show_hint = False
+            st.session_state.answered = False
+            st.rerun()
+
+    if st.session_state.show_hint:
+        st.markdown(f'<div class="ai-bubble">{q_data["hint"]}</div>', unsafe_allow_html=True)
+
+# ==============================================================================
+# TAB 2: TRỢ LÝ AI GIẢI ĐÁP MỌI BÀI TOÁN TỰ NHẬP
+# ==============================================================================
+with tab2:
+    st.subheader("🤖 Trợ Lý AI Lớp 5/2: Em Hỏi Bất Kỳ – AI Hướng Dẫn Từng Bước")
+    st.write("Không giới hạn câu hỏi! Học sinh và phụ huynh có thể tự nhập số liệu bài toán ở nhà để AI giảng bài ngay:")
+
+    ai_mode = st.selectbox(
+        "📌 Chọn dạng bài em muốn AI giảng giải chi tiết:",
+        [
+            "1. Tìm Tỉ số phần trăm của hai số bất kỳ (Ví dụ: 15 và 60)",
+            "2. Tính diện tích Hình thang / Hình tam giác / Hình tròn với số đo bất kỳ",
+            "3. Giải bài toán Giảm giá % khi đi siêu thị",
+            "4. Tra cứu nhanh Từ đồng nghĩa, Trái nghĩa & Mẹo Rèn chữ đẹp"
+        ]
+    )
+
+    if "1." in ai_mode:
+        c1, c2 = st.columns(2)
+        with c1:
+            so_a = st.number_input("Nhập số thứ nhất (a):", value=18.0, step=1.0)
+        with c2:
+            so_b = st.number_input("Nhập số thứ hai (b - khác 0):", value=72.0, min_value=0.1, step=1.0)
+        if st.button("🤖 AI Hướng dẫn từng bước giải"):
+            thuong = so_a / so_b
+            ty_so = thuong * 100
+            st.markdown(f"""
+            <div class="ai-bubble">
+                🤖 <b>Trợ lý AI Lớp 5/2 hướng dẫn giải bài toán tìm tỉ số phần trăm của {so_a:g} và {so_b:g}:</b><br><br>
+                • <b>Bước 1 (Tìm thương):</b> Lấy {so_a:g} chia cho {so_b:g} ta được: <b>{so_a:g} : {so_b:g} = {thuong:.4f}</b><br>
+                • <b>Bước 2 (Nhân nhẩm với 100 và viết ký hiệu %):</b> Lấy {thuong:.4f} × 100 = <b>{ty_so:.2f}%</b>.<br>
+                👉 <b>Đáp số: {ty_so:.2f}%</b>
+            </div>
+            """, unsafe_allow_html=True)
+
+    elif "2." in ai_mode:
+        hinh = st.radio("Chọn hình cần tính:", ["Hình thang", "Hình tam giác", "Hình tròn"], horizontal=True)
+        if hinh == "Hình thang":
+            d1 = st.number_input("Đáy lớn:", value=12.0)
+            d2 = st.number_input("Đáy bé:", value=8.0)
+            h = st.number_input("Chiều cao:", value=5.0)
+            dt = (d1 + d2) * h / 2
+            st.markdown(f"""
+            <div class="ai-bubble">
+                🤖 <b>Lời giải chi tiết từ AI:</b><br>
+                • Tổng độ dài hai đáy là: {d1:g} + {d2:g} = {d1+d2:g}<br>
+                • Diện tích hình thang là: ({d1:g} + {d2:g}) × {h:g} : 2 = <b>{dt:g} (đơn vị diện tích)</b>
+            </div>
+            """, unsafe_allow_html=True)
+        elif hinh == "Hình tam giác":
+            d = st.number_input("Độ dài đáy:", value=10.0)
+            h = st.number_input("Chiều cao:", value=6.0)
+            st.markdown(f"""
+            <div class="ai-bubble">
+                🤖 <b>Lời giải chi tiết từ AI:</b><br>
+                • Diện tích hình tam giác là: ({d:g} × {h:g}) : 2 = <b>{d*h/2:g} (đơn vị diện tích)</b>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            r = st.number_input("Bán kính hình tròn (r):", value=5.0)
+            st.markdown(f"""
+            <div class="ai-bubble">
+                🤖 <b>Lời giải chi tiết từ AI:</b><br>
+                • <b>Chu vi hình tròn:</b> {r:g} × 2 × 3,14 = <b>{r*2*3.14:.2f}</b><br>
+                • <b>Diện tích hình tròn:</b> {r:g} × {r:g} × 3,14 = <b>{r*r*3.14:.2f}</b>
+            </div>
+            """, unsafe_allow_html=True)
+
+    elif "3." in ai_mode:
+        gia = st.number_input("Giá gốc món hàng (nghìn đồng):", value=150.0, step=10.0)
+        giam = st.slider("Mức giảm giá (%):", 5, 80, 20, step=5)
+        tien_giam = gia * giam / 100
+        con_lai = gia - tien_giam
         st.markdown(f"""
-        <div class="visual-card" style="text-align:center;">
-            <div style="font-size: 2.2rem; margin-bottom: 10px;">{pizza_visual}</div>
-            <h4>Phân số: <b>{eaten_slices}/{total_slices}</b> chiếc bánh &nbsp;=&nbsp; Số thập phân: <b>{decimal_val:.2f}</b> &nbsp;=&nbsp; Tỉ số phần trăm: <b>{percent_val:.0f}%</b></h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class="ai-helper">
-            🤖 <b>Trợ lý AI Lớp 5/2 giải thích cực dễ:</b><br>
-            Chiếc bánh được cắt thành <b>{total_slices} phần bằng nhau</b>. Em lấy <b>{eaten_slices} phần</b>, ta viết là phân số <b>{eaten_slices}/{total_slices}</b>. Nếu đổi ra phần trăm, phần bánh của em chiếm <b>{percent_val:.0f}%</b> cả chiếc bánh!
+        <div class="ai-bubble">
+            🤖 <b>Trợ lý AI giải bài toán thực tế:</b><br>
+            • Số tiền được giảm ({giam}%) là: {gia:g} × {giam} : 100 = <b>{tien_giam:g} nghìn đồng</b><br>
+            • Số tiền thực tế cần trả là: {gia:g} - {tien_giam:g} = <b>{con_lai:g} nghìn đồng</b>
         </div>
         """, unsafe_allow_html=True)
 
     else:
-        battery = st.slider("Kéo để sạc Pin Năng lượng xanh (%):", 10, 100, 75, step=5)
-        filled_blocks = battery // 10
-        battery_bar = "🟩" * filled_blocks + "⬜" * (10 - filled_blocks)
-
-        st.markdown(f"""
-        <div class="visual-card" style="text-align:center;">
-            <div style="font-size: 2rem; letter-spacing: 3px; margin-bottom: 10px;">{battery_bar} ⚡</div>
-            <h4>Mức Pin: <b>{battery}%</b> &nbsp;=&nbsp; Phân số thập phân: <b>{battery}/100</b> &nbsp;=&nbsp; Số thập phân: <b>{battery/100:.2f}</b></h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <div class="ai-helper">
-            🤖 <b>Trợ lý AI Lớp 5/2 giải thích cực dễ:</b><br>
-            Cứ thấy ký hiệu <b>%</b> nghĩa là chia cho 100! Vậy <b>{battery}%</b> chính là <b>{battery} phần trên 100 phần</b> ({battery}/100), hay viết gọn dưới dạng số thập phân là <b>{battery/100:.2f}</b>.
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.subheader("🎮 Phần 2: Đố Vui Thông Minh Cùng Trợ Lý AI")
-
-    QUESTIONS = [
-        {
-            "mon": "Toán 5",
-            "cau_hoi": "Câu 1: Phân số 3/4 khi chuyển sang tỉ số phần trăm sẽ bằng bao nhiêu?",
-            "dap_an": ["A. 34%", "B. 75%", "C. 25%", "D. 43%"],
-            "dung": "B. 75%",
-            "goi_y": "💡 Mẹo từ AI: 1/4 chiếc bánh là 25%. Vậy 3 phần như thế (3 × 25%) là bao nhiêu nhỉ?",
-            "giai_thich": "Hoan hô! 3/4 = 75/100 = 75%. Em tính nhẩm rất nhanh!"
-        },
-        {
-            "mon": "Toán 5 (Gắn với Thực tế)",
-            "cau_hoi": "Câu 2: Mẹ đi chợ mua 1,5 kg cam và 2,25 kg xoài. Hỏi túi trái cây của mẹ nặng tất cả bao nhiêu ki-lô-gam?",
-            "dap_an": ["A. 3,75 kg", "B. 3,30 kg", "C. 2,40 kg", "D. 4,25 kg"],
-            "dung": "A. 3,75 kg",
-            "goi_y": "💡 Mẹo từ AI: Đặt dấu phẩy thẳng cột nhau: 1,50 + 2,25 rồi cộng từ phải sang trái nhé!",
-            "giai_thich": "Chính xác! 1,5 + 2,25 = 3,75 kg. Em đã biết giúp mẹ tính toán khi đi chợ rồi đấy!"
-        },
-        {
-            "mon": "Tiếng Việt 5",
-            "cau_hoi": "Câu 3: Từ nào dưới đây đồng nghĩa với từ 'Kiên trì'?",
-            "dap_an": ["A. Nhút nhát", "B. Bền bỉ", "C. Vội vàng", "D. Lười biếng"],
-            "dung": "B. Bền bỉ",
-            "goi_y": "💡 Mẹo từ AI: Khi rèn chữ đẹp mỗi ngày, chúng ta cần sự nhẫn nại, không bỏ cuộc. Từ nào mang ý nghĩa đó?",
-            "giai_thich": "Tuyệt vời! 'Kiên trì' và 'Bền bỉ' đều chỉ đức tính nhẫn nại, cố gắng đến cùng."
-        },
-        {
-            "mon": "Giáo dục Môi trường Xanh",
-            "cau_hoi": "Câu 4: Lớp 5/2 Trường Tiểu học Bình Phước thu gom được 20 kg giấy vụn. Biết cứ 10 kg giấy tái chế giúp cứu được 1 cây xanh. Hỏi lớp mình đã cứu được mấy cây xanh?",
-            "dap_an": ["A. 1 cây xanh", "B. 2 cây xanh", "C. 5 cây xanh", "D. 10 cây xanh"],
-            "dung": "B. 2 cây xanh",
-            "goi_y": "💡 Mẹo từ AI: Lấy 20 kg chia cho 10 kg em sẽ tìm ra số cây xanh được cứu nhé!",
-            "giai_thich": "Xuất sắc! 20 : 10 = 2 cây xanh. Tiết kiệm giấy là bảo vệ thiên nhiên!"
+        tu_khoa = st.selectbox("Chọn chủ đề từ vựng cần tra cứu:", ["Chăm chỉ / Kiên trì", "Bảo vệ môi trường", "Đoàn kết yêu thương", "Bí quyết Rèn chữ đẹp Lớp 5/2"])
+        tu_dien = {
+            "Chăm chỉ / Kiên trì": "• **Từ đồng nghĩa:** Siêng năng, cần cù, chịu khó, bền bỉ, nhẫn nại.\n• **Từ trái nghĩa:** Lười biếng, biếng nhác, nản lòng.\n• **Đặt câu mẫu:** *Nhờ kiên trì rèn chữ mỗi ngày, nét chữ của em ngày càng thanh thoát.*",
+            "Bảo vệ môi trường": "• **Từ ngữ mở rộng:** Sinh thái, phủ xanh, năng lượng sạch, tái chế, trong lành.\n• **Đặt câu mẫu:** *Chúng em phân loại rác thải nhựa để góp phần bảo vệ môi trường xanh - sạch - đẹp.*",
+            "Đoàn kết yêu thương": "• **Thành ngữ - Tục ngữ:** *Lá lành đùm lá rách; Một con ngựa đau cả tàu bỏ cỏ; Đoàn kết là sức mạnh.*\n• **Đặt câu mẫu:** *Tập thể lớp 5/2 luôn đoàn kết, giúp đỡ nhau cùng tiến bộ.*",
+            "Bí quyết Rèn chữ đẹp Lớp 5/2": "• **Quy tắc vàng:** Lưng thẳng, mắt cách vở 25-30cm. Chữ cái cao 2,5 ô li (h, k, l, b, g, y) viết đều nét, khoảng cách giữa các chữ bằng 1 con chữ *o*."
         }
-    ]
-
-    q = QUESTIONS[st.session_state.q_idx]
-    st.markdown(f"**Chủ đề: {q['mon']}**")
-    st.info(f"##### {q['cau_hoi']}")
-
-    choice = st.radio("👉 Chọn đáp án của em:", q["dap_an"], key=f"ans_{st.session_state.q_idx}")
-
-    b1, b2, b3 = st.columns(3)
-    with b1:
-        if st.button("✅ Kiểm tra", use_container_width=True):
-            if choice == q["dung"]:
-                st.balloons()
-                st.success(f"🎉 {q['giai_thich']} (+10 Sao ⭐, +1 Cây xanh 🌱)")
-                st.session_state.stars += 10
-                st.session_state.trees += 1
-                st.session_state.group_points[st.session_state.group] += 10
-                st.session_state.hint_on = False
-            else:
-                st.session_state.hint_on = True
-                st.warning("Chưa đúng rồi! Em xem gợi ý của Trợ lý AI ở dưới để chọn lại nhé!")
-
-    with b2:
-        if st.button("💡 Xem gợi ý AI", use_container_width=True):
-            st.session_state.hint_on = True
-
-    with b3:
-        if st.button("➡️ Câu tiếp theo", use_container_width=True):
-            st.session_state.q_idx = (st.session_state.q_idx + 1) % len(QUESTIONS)
-            st.session_state.hint_on = False
-            st.rerun()
-
-    if st.session_state.hint_on:
-        st.markdown(f'<div class="ai-helper">{q["goi_y"]}</div>', unsafe_allow_html=True)
+        st.info(tu_dien[tu_khoa])
 
 # ==============================================================================
-# TAB 2: GÓC PHỤ HUYNH (ĐỒNG HÀNH CÙNG CON ĐƠN GIẢN, DỄ HIỂU)
+# TAB 3: TRỰC QUAN HÓA TOÁN HỌC SINH ĐỘNG
 # ==============================================================================
-with tab_ph:
-    st.subheader("👨‍👩‍👧 Cẩm Nang AI: 5 Phút Đồng Hành Cùng Con Mỗi Tối")
-    st.write("Giúp quý phụ huynh lớp 5/2 (Trường Tiểu học Bình Phước) nắm bắt nhanh nội dung con đang học và cách đố vui cùng con tại nhà.")
+with tab3:
+    st.subheader("🎨 Phòng Thí Nghiệm Trực Quan (Nhìn Hình Hiểu Bản Chất)")
+    tu = st.slider("🍕 Chọn số phần bánh em có (Tử số):", 1, 10, 3)
+    mau = st.slider("🍽️ Tổng số phần bánh bằng nhau (Mẫu số):", tu, 10, 4)
 
-    topic_ph = st.selectbox(
-        "📌 Chọn nội dung con đang học trong tuần:",
-        [
-            "1. Toán: Cộng, trừ và nhân nhẩm Số thập phân",
-            "2. Toán: Hiểu nhanh về Tỉ số phần trăm (%)",
-            "3. Tiếng Việt: Đọc hiểu & Mở rộng vốn từ, Luyện câu",
-            "4. Rèn chữ - Giữ nết: Rèn tính cẩn thận, kiên trì cho con"
-        ]
-    )
-
-    guides = {
-        "1. Toán: Cộng, trừ và nhân nhẩm Số thập phân": {
-            "meo": "Chỉ cần nhắc con câu thần chú: <b>'Cộng trừ số thập phân: Dấu phẩy phải thẳng hàng!'</b>",
-            "ung_dung": "Khi đi chợ hoặc xem hóa đơn tiền điện/nước, ba mẹ hãy nhờ con cộng nhẩm giúp 2 món hàng lẻ (ví dụ: 12,5 nghìn đồng + 5,5 nghìn đồng) để con thấy Toán học rất gần gũi.",
-            "khen": "Khi con tính đúng, ba mẹ hãy khen: <i>'Con tính nhẩm nhanh quá, mai mốt đi siêu thị làm trợ lý cho mẹ nhé!'</i>"
-        },
-        "2. Toán: Hiểu nhanh về Tỉ số phần trăm (%)": {
-            "meo": "Giải thích cho con: <b>100% là toàn bộ</b>, <b>50% là một nửa (1/2)</b>, còn <b>25% là một phần tư (1/4)</b>.",
-            "ung_dung": "Chỉ vào phần trăm pin điện thoại của ba mẹ hoặc biển 'Giảm giá 50%' ngoài cửa hàng và hỏi con: <i>'Áo này 100 ngàn mà giảm 50% thì mẹ phải trả bao nhiêu tiền?'</i>",
-            "khen": "Khích lệ sự tự tin của con bằng những câu hỏi thực tế nhẹ nhàng trong bữa cơm gia đình."
-        },
-        "3. Tiếng Việt: Đọc hiểu & Mở rộng vốn từ, Luyện câu": {
-            "meo": "Khuyến khích con đọc to 1 đoạn văn ngắn mỗi tối (khoảng 3-5 phút) và hỏi con: <i>'Câu nào trong bài làm con thích nhất?'</i>",
-            "ung_dung": "Tập cho con thói quen nói trọn câu, dùng từ ngữ lễ phép và giàu hình ảnh khi kể chuyện ở trường cho ông bà, cha mẹ nghe.",
-            "khen": "Ghi nhận sự tiến bộ khi con đọc trôi chảy hơn hoặc biết dùng từ hay."
-        },
-        "4. Rèn chữ - Giữ nết: Rèn tính cẩn thận, kiên trì cho con": {
-            "meo": "Rèn chữ không phải để đi thi viết chữ đẹp, mà là để <b>rèn tính kiên nhẫn, tỉ mỉ và chỉn chu</b> trong mọi việc.",
-            "ung_dung": "Ba mẹ chỉ cần nhắc con ngồi thẳng lưng, nơi học tập đủ ánh sáng và viết nắn nót từng con số, chữ cái trong bài tập hàng ngày.",
-            "khen": "Khen ngợi ngay khi thấy trang vở hôm nay của con sạch sẽ, ít tẩy xóa hơn hôm qua."
-        }
-    }
-
-    g = guides[topic_ph]
+    icons = "🍕 " * tu + "⚪ " * (mau - tu)
     st.markdown(f"""
-    <div class="parent-card">
-        💡 <b>1. Cách nhắc bài cực dễ cho con:</b><br>{g['meo']}<br><br>
-        🏠 <b>2. Gợi ý trò chuyện cùng con ở nhà:</b><br>{g['ung_dung']}<br><br>
-        ❤️ <b>3. Lời khen khích lệ con (Theo tinh thần Thông tư 27):</b><br>{g['khen']}
+    <div class="quest-card" style="text-align:center;">
+        <div style="font-size:2.3rem;">{icons}</div>
+        <h3>Phân số: <b>{tu}/{mau}</b> &nbsp;=&nbsp; Số thập phân: <b>{tu/mau:.2f}</b> &nbsp;=&nbsp; Phần trăm: <b>{tu/mau*100:.1f}%</b></h3>
     </div>
     """, unsafe_allow_html=True)
 
+# ==============================================================================
+# TAB 4: BẢNG THI ĐUA TỔ & PHIẾU NHẬN XÉT THÔNG TƯ 27
+# ==============================================================================
+with tab4:
+    st.subheader("🏆 Bảng Thi Đua Các Tổ - Lớp 5/2 (Trường Tiểu học Bình Phước)")
+    for g_name, g_score in sorted(st.session_state.group_scores.items(), key=lambda x: x[1], reverse=True):
+        st.write(f"**{g_name}**: `{g_score} XP` 🔥")
+        st.progress(min(g_score / 400, 1.0))
+
     st.markdown("---")
-    st.subheader("✅ Góc Phối Hợp Gia Đình & Nhà Trường")
-    st.write("Quý phụ huynh cùng con đánh dấu những thói quen tốt con đã thực hiện tại nhà hôm nay để cộng Sao cho Tổ của con:")
-
-    hab1 = st.checkbox("📖 Tự giác hoàn thành bài tập và chuẩn bị sách vở cho ngày mai (+5 Sao)")
-    hab2 = st.checkbox("✍️ Trình bày vở sạch đẹp, chữ viết rõ ràng, cẩn thận (+5 Sao)")
-    hab3 = st.checkbox("🌱 Phụ giúp ông bà, cha mẹ việc nhà vừa sức (quét nhà, nhặt rau, tắt điện quạt khi không dùng) (+5 Sao)")
-
-    if st.button("💌 Gửi Xác Nhận & Cộng Sao Cho Con", use_container_width=True):
-        added = (5 if hab1 else 0) + (5 if hab2 else 0) + (5 if hab3 else 0)
-        if added > 0:
-            st.session_state.stars += added
-            st.session_state.group_points[st.session_state.group] += added
+    st.subheader("👨‍👩‍👧 Góc Phụ Huynh Phối Hợp & Đánh Giá Thông Tư 27")
+    c_ph1 = st.checkbox("📖 Con tự giác hoàn thành bài và chuẩn bị sách vở (+15 XP)")
+    c_ph2 = st.checkbox("✍️ Con rèn chữ cẩn thận, giữ vở sạch đẹp (+15 XP)")
+    if st.button("💌 Phụ huynh Xác nhận & Thưởng Năng lượng cho Linh vật", use_container_width=True):
+        bonus = (15 if c_ph1 else 0) + (15 if c_ph2 else 0)
+        if bonus > 0:
+            play_sound("win")
+            st.session_state.xp += bonus
+            st.session_state.group_scores[st.session_state.group] += bonus
             st.balloons()
-            st.success(f"Cảm ơn quý phụ huynh! Hệ thống đã cộng thêm +{added} Sao chăm ngoan cho em {st.session_state.name} và {st.session_state.group}!")
-        else:
-            st.info("Hãy đánh dấu ít nhất 1 việc tốt con đã làm hôm nay nhé!")
+            st.success(f"Đã cộng +{bonus} XP giúp Linh vật của {st.session_state.student} mau tiến hóa!")
 
-# ==============================================================================
-# TAB 3: BẢNG VÀNG LỚP 5/2 & NHẬN XÉT THÔNG TƯ 27
-# ==============================================================================
-with tab_bv:
-    st.subheader("🏆 Bảng Theo Dõi Thi Đua Tổ - Lớp 5/2")
-    st.write("Điểm số của các Tổ tự động tăng lên mỗi khi học sinh giải đúng bài tập hoặc làm việc tốt ở nhà:")
-
-    for grp_name, pts in sorted(st.session_state.group_points.items(), key=lambda x: x[1], reverse=True):
-        st.write(f"**{grp_name}**: `{pts} Sao thi đua` ⭐")
-        st.progress(min(pts / 250, 1.0))
-
-    st.markdown("---")
-    st.subheader("📜 Phiếu Khen Thưởng & Nhận Xét Tự Động (Chuẩn Thông Tư 27)")
-
-    danh_hieu = "CHIẾN BINH HỌC TẬP XUẤT SẮC 🌟" if st.session_state.stars >= 60 else "CHÁU NGOAN CHĂM HỌC 🌱"
-    muc_tt27 = "Hoàn thành tốt (HTT)" if st.session_state.stars >= 60 else "Hoàn thành (HT)"
-
-    st.markdown(f"""
-    <div class="cert-box">
-        <h4>TRƯỜNG TIỂU HỌC BÌNH PHƯỚC</h4>
-        <h3>🏅 GIẤY KHEN ĐIỆN TỬ LỚP 5/2</h3>
-        <p>Giáo viên chủ nhiệm <b>Huỳnh Minh Sơn</b> khen tặng em:</p>
-        <h2 style="color:#d9480f; margin: 5px 0;">{st.session_state.name} ({st.session_state.group})</h2>
-        <p>Đã đạt danh hiệu: <b>{danh_hieu}</b></p>
-        <p>Thành tích: Tích lũy <b>{st.session_state.stars} Sao chăm ngoan</b> và đóng góp <b>{st.session_state.trees} Cây xanh</b> cho lớp học số.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("")
-    nhan_xet_tt27 = (
-        f"📋 TRƯỜNG TIỂU HỌC BÌNH PHƯỚC - LỚP 5/2 (GVCN: Huỳnh Minh Sơn)\n"
-        f"NHẬN XÉT ĐÁNH GIÁ THƯỜNG XUYÊN (THÔNG TƯ 27) - EM {st.session_state.name.upper()} ({st.session_state.group}):\n"
-        f"• Mức độ đạt được: {muc_tt27}\n"
-        f"• Kiến thức & Kỹ năng: Nắm vững kiến thức Toán và Tiếng Việt lớp 5 thông qua mô hình trực quan; biết vận dụng tính toán vào tình huống thực tế.\n"
-        f"• Năng lực & Phẩm chất: Có ý thức tự học trên không gian số, rèn luyện tính kiên trì, cẩn thận và tích cực phối hợp tốt giữa gia đình và nhà trường."
+    muc_tt27 = "Hoàn thành tốt (HTT)" if st.session_state.xp >= 80 else "Hoàn thành (HT)"
+    nhan_xet = (
+        f"TRƯỜNG TIỂU HỌC BÌNH PHƯỚC - LỚP 5/2 (GVCN: Huỳnh Minh Sơn)\n"
+        f"• Học sinh: {st.session_state.student} ({st.session_state.group}) | Cấp độ: {pet_title}\n"
+        f"• Đánh giá Thông tư 27: {muc_tt27}\n"
+        f"• Nhận xét: Tích cực tham gia giải toán và rèn luyện Tiếng Việt trên hệ thống AI thích ứng; nắm vững kiến thức số thập phân, tỉ số phần trăm và hình học; có ý thức rèn chữ, giữ vở và phối hợp tốt giữa gia đình - nhà trường."
     )
-    st.text_area("📌 Nội dung nhận xét (Giáo viên & Phụ huynh có thể sao chép gửi qua Zalo):", nhan_xet_tt27, height=150)
+    st.text_area("📋 Bản nhận xét tự động (Sao chép gửi Zalo Phụ huynh):", nhan_xet, height=135)
