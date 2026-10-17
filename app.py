@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Giao diện CSS tươi sáng, chữ to rõ ràng cho học sinh tiểu học
+# Giao diện CSS tươi sáng, chữ to rõ ràng, chuẩn font tiếng Việt
 st.markdown("""
 <style>
     .main-banner {
@@ -183,7 +183,7 @@ CHALLENGES_BY_LEVEL = {
     ]
 }
 
-# ==================== KHO TRÒ CHƠI THỬ THÁCH TỪ NGỮ (TAB 4) ====================
+# ==================== KHO TRÒ CHƠI THỬ THÁCH TỪ NGỮ (TAB 1) ====================
 MINI_GAMES = {
     "🎯 Dạng 1: Phân Biệt Từ Láy Miêu tả Thiên Nhiên": {
         "cau_hoi": "Đâu là từ láy dùng để miêu tả vẻ đẹp long lanh, trong suốt của giọt sương sớm?",
@@ -305,18 +305,95 @@ with col_n2:
 
 st.write("")
 
-# ==================== 4 TAB CHỨC NĂNG CHÍNH ====================
+# ==================== 4 TAB CHỨC NĂNG CHÍNH (ĐÚNG THỨ TỰ YÊU CẦU) ====================
 tab1, tab2, tab3, tab4 = st.tabs([
-    "📖 1. Kho Từ Láy & Biện Pháp Tu Từ",
-    "🩺 2. Trạm 'Bác Sĩ Sửa Câu'",
-    "🏆 3. Thử Thách Sáng Tác Nhanh",
-    "🎮 4. Thử Thách Tương Tác Từ Ngữ"
+    "🎮 1. Thử Thách Tương Tác Từ Ngữ",
+    "📖 2. Kho Từ Láy & Biện Pháp Tu Từ",
+    "🩺 3. Trạm 'Bác Sĩ Sửa Câu'",
+    "🏆 4. Thử Thách Sáng Tác Đoạn Văn Nhanh"
 ])
 
 # ------------------------------------------------------------------------------
-# TAB 1: KHO TỪ VỰNG & BIỆN PHÁP TU TỪ
+# TAB 1: THỬ THÁCH TƯƠNG TÁC TỪ NGỮ (ÔN TẬP THẺ ĐÚNG/SAI, TUYÊN DƯƠNG/BÁO ĐỘNG ĐỎ)
 # ------------------------------------------------------------------------------
 with tab1:
+    st.subheader("🎮 Thử Thách Tương Tác: Ôn Tập Từ Ngữ & Biện Pháp Tu Từ")
+    st.write("Em hãy thử tài lựa chọn thẻ đáp án chính xác cho các câu hỏi ôn tập dưới đây[cite: 1]. Chọn đúng sẽ nhận được hoa tươi và lời tuyên dương[cite: 1], chọn sai sẽ kích hoạt báo động đỏ và yêu cầu làm lại[cite: 1]!")
+
+    if "game_key" not in st.session_state:
+        st.session_state.game_key = list(MINI_GAMES.keys())[0]
+    if "game_status" not in st.session_state:
+        st.session_state.game_status = "playing"
+
+    chosen_game_key = st.selectbox(
+        "🗂️ Chọn dạng bài tập tương tác:",
+        list(MINI_GAMES.keys()),
+        key="select_game_type"
+    )
+
+    if chosen_game_key != st.session_state.game_key:
+        st.session_state.game_key = chosen_game_key
+        st.session_state.game_status = "playing"
+        current_data = MINI_GAMES[chosen_game_key]
+        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
+        random.shuffle(all_opts)
+        st.session_state.shuffled_options = all_opts
+
+    if "shuffled_options" not in st.session_state:
+        current_data = MINI_GAMES[chosen_game_key]
+        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
+        random.shuffle(all_opts)
+        st.session_state.shuffled_options = all_opts
+
+    current_data = MINI_GAMES[st.session_state.game_key]
+
+    st.markdown(f"""
+    <div style="background:#e7f5ff; border:2px solid #74c0fc; border-radius:12px; padding:16px; margin:10px 0; font-size:1.1rem; color:#1864ab; font-weight:bold;">
+        ❓ {current_data['cau_hoi']}
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("👇 **Hãy bấm chọn thẻ đáp án bên dưới:**")
+
+    cols = st.columns(len(st.session_state.shuffled_options))
+    for idx, opt in enumerate(st.session_state.shuffled_options):
+        with cols[idx]:
+            if st.button(f"🏷️ {opt}", key=f"btn_opt_{idx}", use_container_width=True):
+                if opt == current_data["dap_an_dung"]:
+                    st.session_state.game_status = "success"
+                    st.session_state.stars += 10
+                else:
+                    st.session_state.game_status = "fail"
+
+    if st.session_state.game_status == "success":
+        st.markdown(f"""
+        <div class="success-flower-box">
+            🌸🌺🌷 TUYỆT VỜI! XUẤT SẮC QUÁ BẠN {st.session_state.student_name.upper()}! 🌷🌺🌸<br>
+            Bạn đã chọn thẻ đáp án <b>CHÍNH XÁC</b>[cite: 1]! Nhận ngay <b>+10 Sao Ngôn Từ ⭐</b> và những đóa hoa tươi thắm từ thầy cô[cite: 1]!
+        </div>
+        """, unsafe_allow_html=True)
+        st.balloons()
+        if st.button("🔄 Chơi Thử Thách Khác Ngay", use_container_width=True):
+            st.session_state.game_status = "playing"
+            random.shuffle(st.session_state.shuffled_options)
+            st.rerun()
+
+    elif st.session_state.game_status == "fail":
+        st.markdown(f"""
+        <div class="alert-red-box">
+            🚨 BÁO ĐỘNG ĐỎ! CHƯA CHÍNH XÁC RỒI BẠN {st.session_state.student_name.upper()}! 🚨<br>
+            Thẻ đáp án vừa chọn chưa đúng[cite: 1]. Hệ thống kích hoạt chế độ báo động đỏ[cite: 1], yêu cầu bạn hít thở sâu và suy nghĩ kỹ để <b>làm lại từ đầu</b> nhé[cite: 1]!
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🔄 Thử Lại Ngay Lập Tức", use_container_width=True):
+            st.session_state.game_status = "playing"
+            random.shuffle(st.session_state.shuffled_options)
+            st.rerun()
+
+# ------------------------------------------------------------------------------
+# TAB 2: KHO TỪ VỰNG & BIỆN PHÁP TU TỪ
+# ------------------------------------------------------------------------------
+with tab2:
     st.subheader("📖 Kho Từ Vựng & Hình Ảnh So Sánh - Nhân Hóa Tiếng Việt 5")
     st.write("Em hãy lựa chọn các từ ngữ giàu hình ảnh dưới đây để làm cho bài tập làm văn (tả cảnh, tả người, tả đồ vật) trở nên sinh động hơn:")
 
@@ -335,9 +412,9 @@ with tab1:
     st.info(f"Khi viết văn miêu tả (tả dòng sông quê hương, cánh đồng lúa, hay mái trường Bình Phước), việc kết hợp **{selected_topic}** sẽ giúp câu văn của em có hồn, giàu cảm xúc và hay hơn rất nhiều!")
 
 # ------------------------------------------------------------------------------
-# TAB 2: TRẠM BÁC SĨ SỬA CÂU (SMART SENTENCE DOCTOR)
+# TAB 3: TRẠM BÁC SĨ SỬA CÂU (SMART SENTENCE DOCTOR)
 # ------------------------------------------------------------------------------
-with tab2:
+with tab3:
     st.subheader("🩺 Trạm 'Bác Sĩ Sửa Câu'")
     st.write("Em hãy nhập một câu văn đơn giản hoặc câu văn bị lặp từ của mình vào đây. Trợ lý Học sinh lớp 5 sẽ giúp em 'gọt giũa' thành một câu văn giàu hình ảnh hơn!")
 
@@ -362,9 +439,9 @@ with tab2:
             st.warning("Bạn hãy nhập câu văn vào ô trống trước khi bấm nút nhé!")
 
 # ------------------------------------------------------------------------------
-# TAB 3: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH
+# TAB 4: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH
 # ------------------------------------------------------------------------------
-with tab3:
+with tab4:
     st.subheader("🏆 Thử Thách Sáng Tác Đoạn Văn Nhanh (Từ 3 đến 5 câu)")
     st.write("Hãy chọn mức độ thử thách từ dễ đến khó và viết một đoạn văn đúng **từ 3 đến 5 câu** (nhớ chấm câu cuối mỗi câu nhé!).")
 
@@ -438,85 +515,3 @@ with tab3:
                 </div>
             </div>
             """, unsafe_allow_html=True)
-
-# ------------------------------------------------------------------------------
-# TAB 4: THỬ THÁCH TƯƠNG TÁC TỪ NGỮ (ÔN TẬP THẺ ĐÚNG/SAI, TUYÊN DƯƠNG/BÁO ĐỘNG ĐỎ)
-# ------------------------------------------------------------------------------
-with tab4:
-    st.subheader("🎮 Thử Thách Tương Tác: Ôn Tập Từ Ngữ & Biện Pháp Tu Từ")
-    st.write("Em hãy thử tài lựa chọn thẻ đáp án chính xác cho các câu hỏi ôn tập dưới đây[cite: 1]. Chọn đúng sẽ nhận được hoa tươi và lời tuyên dương[cite: 1], chọn sai sẽ kích hoạt báo động đỏ và yêu cầu làm lại[cite: 1]!")
-
-    # Khởi tạo trạng thái trò chơi tương tác
-    if "game_key" not in st.session_state:
-        st.session_state.game_key = list(MINI_GAMES.keys())[0]
-    if "game_status" not in st.session_state:
-        st.session_state.game_status = "playing" # playing, success, fail
-
-    # Chọn dạng bài tập tương tác
-    chosen_game_key = st.selectbox(
-        "🗂️ Chọn dạng bài tập tương tác:",
-        list(MINI_GAMES.keys()),
-        key="select_game_type"
-    )
-
-    if chosen_game_key != st.session_state.game_key:
-        st.session_state.game_key = chosen_game_key
-        st.session_state.game_status = "playing"
-        # Xáo trộn lại danh sách thẻ đáp án khi đổi dạng bài
-        current_data = MINI_GAMES[chosen_game_key]
-        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
-        random.shuffle(all_opts)
-        st.session_state.shuffled_options = all_opts
-
-    if "shuffled_options" not in st.session_state:
-        current_data = MINI_GAMES[chosen_game_key]
-        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
-        random.shuffle(all_opts)
-        st.session_state.shuffled_options = all_opts
-
-    current_data = MINI_GAMES[st.session_state.game_key]
-
-    st.markdown(f"""
-    <div style="background:#e7f5ff; border:2px solid #74c0fc; border-radius:12px; padding:16px; margin:10px 0; font-size:1.1rem; color:#1864ab; font-weight:bold;">
-        ❓ {current_data['cau_hoi']}
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("👇 **Hãy bấm chọn thẻ đáp án bên dưới:**")
-
-    # Hiển thị các thẻ lựa chọn tương tác
-    cols = st.columns(len(st.session_state.shuffled_options))
-    for idx, opt in enumerate(st.session_state.shuffled_options):
-        with cols[idx]:
-            if st.button(f"🏷️ {opt}", key=f"btn_opt_{idx}", use_container_width=True):
-                if opt == current_data["dap_an_dung"]:
-                    st.session_state.game_status = "success"
-                    st.session_state.stars += 10
-                else:
-                    st.session_state.game_status = "fail"
-
-    # Phản hồi tương tác: Hoa tươi/Tuyên dương hoặc Báo động đỏ
-    if st.session_state.game_status == "success":
-        st.markdown(f"""
-        <div class="success-flower-box">
-            🌸🌺🌷 TUYỆT VỜI! XUẤT SẮC QUÁ BẠN {st.session_state.student_name.upper()}! 🌷🌺🌸<br>
-            Bạn đã chọn thẻ đáp án <b>CHÍNH XÁC</b>[cite: 1]! Nhận ngay <b>+10 Sao Ngôn Từ ⭐</b> và những đóa hoa tươi thắm từ thầy cô[cite: 1]!
-        </div>
-        """, unsafe_allow_html=True)
-        st.balloons()
-        if st.button("🔄 Chơi Thử Thách Khác Ngay", use_container_width=True):
-            st.session_state.game_status = "playing"
-            random.shuffle(st.session_state.shuffled_options)
-            st.rerun()
-
-    elif st.session_state.game_status == "fail":
-        st.markdown(f"""
-        <div class="alert-red-box">
-            🚨 BÁO ĐỘNG ĐỎ! CHƯA CHÍNH XÁC RỒI BẠN {st.session_state.student_name.upper()}! 🚨<br>
-            Thẻ đáp án vừa chọn chưa đúng[cite: 1]. Hệ thống kích hoạt chế độ báo động đỏ[cite: 1], yêu cầu bạn hít thở sâu và suy nghĩ kỹ để <b>làm lại từ đầu</b> nhé[cite: 1]!
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("🔄 Thử Lại Ngay Lập Tức", use_container_width=True):
-            st.session_state.game_status = "playing"
-            random.shuffle(st.session_state.shuffled_options)
-            st.rerun()
