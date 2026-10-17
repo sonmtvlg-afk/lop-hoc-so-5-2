@@ -1,7 +1,3 @@
-<ElicitationsGroup>
-Dưới đây là mã nguồn Python đã được cập nhật. Em đã bổ sung định dạng **in đậm kết hợp màu tím nổi bật (`**<span style="color:#7048e8;">...</span>**`)** cho các từ ngữ, hình ảnh so sánh và nhân hóa được Trợ lý AI nâng cấp trong **Trạm "Bác Sĩ Sửa Câu"**, giúp học sinh dễ dàng nhận ra phần được cải tiến so với câu gốc:
-
-```python
 import streamlit as st
 import random
 
@@ -187,5 +183,3 @@ with tab3:
         if st.button("🎲 Đổi Thử Thách Khác", use_container_width=True):
             st.session_state.current_challenge = random.choice(challenges)
             st.rerun()
-```
-</ElicitationsGroup>
