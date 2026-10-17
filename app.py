@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Phòng Thí Nghiệm Khoa Học Lớp 5 - TH Bình Phước",
+    page_title="Phòng Thí Nghiệm Khoa Học 6 Chủ Đề - Lớp 5/2",
     page_icon="🔬",
     layout="wide"
 )
@@ -40,12 +40,12 @@ st.markdown("""
 
 st.markdown("""
 <div class="sci-banner">
-    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC LỚP 5 - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Chủ đề: Năng lượng, Vi khuẩn & Sức khỏe, Sinh vật & Môi trường</p>
+    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC 6 CHỦ ĐỀ - LỚP 5/2</h1>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Chương trình Khoa học Lớp 5</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== MÔ PHỎNG KHOA HỌC TƯƠNG TÁC HTML5 CANVAS ====================
+# ==================== MÔ PHỎNG TƯƠNG TÁC HTML5 CANVAS ====================
 science_lab_html = """
 <!DOCTYPE html>
 <html lang="vi">
@@ -213,15 +213,15 @@ science_lab_html = """
     <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG -->
     <div class="stage-panel">
         <div class="station-tabs">
-            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Năng Lượng & Mạch Điện</button>
-            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🦠 Trạm 2: Vi Khuẩn & Sức Khỏe</button>
-            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌿 Trạm 3: Sinh Vật & Chuỗi Thức Ăn</button>
+            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Chủ đề 2: Trạm Điện</button>
+            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🧪 Chủ đề 1 & 4: Chất & Vi Khuẩn</button>
+            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌿 Chủ đề 3 & 6: Sinh Vật & Môi Trường</button>
         </div>
 
         <canvas id="labCanvas" width="760" height="420"></canvas>
 
         <div id="aiExplain" class="ai-explain-box">
-            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b> (Lớp 5/2 - TH Bình Phước)! Hãy chọn trạm thí nghiệm để bắt đầu khám phá nhé!
+            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b> (Lớp 5/2 - TH Bình Phước)! Hãy chọn trạm thí nghiệm bám sát 6 chủ đề sách giáo khoa Khoa học 5 để bắt đầu nhé!
         </div>
     </div>
 
@@ -229,23 +229,23 @@ science_lab_html = """
     <div class="control-panel">
         <div class="user-bar">
             <div>👩‍🔬 Nhà khoa học: <span id="scientistName">Hiểu Minh</span></div>
-            <div>🌟 <span id="expScore">80</span> Điểm</div>
+            <div>🌟 <span id="expScore">90</span> Điểm</div>
         </div>
 
         <div>
             <input type="text" id="nameInput" value="Hiểu Minh" placeholder="Nhập tên học sinh..." oninput="updateName()">
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 1: NĂNG LƯỢNG & MẠCH ĐIỆN -->
+        <!-- ĐIỀU KHIỂN TRẠM 1: CHỦ ĐỀ 2 - NĂNG LƯỢNG ĐIỆN -->
         <div id="ctrlStation1" class="ctrl-group">
-            <div class="ctrl-title">⚡ Trạm 1: Năng Lượng Điện</div>
-            <label style="font-size:0.85rem; font-weight:bold;">1. Nguồn Điện:</label>
+            <div class="ctrl-title">⚡ Chủ đề 2: Mạch Điện Đơn Giản & Vật Dẫn Điện</div>
+            <label style="font-size:0.85rem; font-weight:bold;">1. Nguồn Điện (Bài 8, 9, 11):</label>
             <select id="powerSource" onchange="updateCircuit()" style="margin-bottom:8px; margin-top:4px;">
-                <option value="battery">🔋 Pin tiểu (Hóa năng -> Điện năng)</option>
-                <option value="solar">☀️ Tấm Pin Mặt Trời (Quang năng -> Điện năng)</option>
+                <option value="battery">🔋 Pin tiểu (Năng lượng điện hóa)</option>
+                <option value="solar">☀️ Năng lượng Mặt trời (Bài 11)</option>
             </select>
 
-            <label style="font-size:0.85rem; font-weight:bold;">2. Thử nghiệm vật liệu:</label>
+            <label style="font-size:0.85rem; font-weight:bold;">2. Thử nghiệm vật liệu (Bài 9):</label>
             <div class="btn-grid" style="margin-top:4px;">
                 <button class="act-btn selected" id="mat_copper" onclick="selectMaterial('copper')">🪙 Thanh Đồng</button>
                 <button class="act-btn" id="mat_iron" onclick="selectMaterial('iron')">🔩 Đinh Sắt</button>
@@ -259,29 +259,29 @@ science_lab_html = """
             </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 2: VI KHUẨN & SỨC KHỎE -->
+        <!-- ĐIỀU KHIỂN TRẠM 2: CHỦ ĐỀ 1 & 4 - CHẤT & VI KHUẨN -->
         <div id="ctrlStation2" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🦠 Trạm 2: Vi Khuẩn Có Lợi & Có Hại</div>
-            <label style="font-size:0.85rem; font-weight:bold;">Chọn nhóm vi khuẩn quan sát dưới kính hiển vi:</label>
+            <div class="ctrl-title">🧪 Chủ đề 1 & 4: Trạng Thái Chất & Vi Khuẩn</div>
+            <label style="font-size:0.85rem; font-weight:bold;">Chọn nội dung thí nghiệm:</label>
             <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
-                <button class="act-btn selected" id="bac_good" onclick="selectBacteria('good')">🛡️ Vi khuẩn Lên men (Có lợi)</button>
-                <button class="act-btn" id="bac_bad" onclick="selectBacteria('bad')">🦠 Vi khuẩn Gây bệnh (Có hại)</button>
-            </div>
-
-            <button class="act-btn" style="width:100%; background:#e7f5ff; color:#1864ab; border-color:#74c0fc;" onclick="triggerDisinfect()">🧼 Thao tác Rửa tay diệt khuẩn / Vệ sinh an toàn</button>
-        </div>
-
-        <!-- ĐIỀU KHIỂN TRẠM 3: SINH VẬT & MÔI TRƯỜNG (CHUỖI THỨC ĂN) -->
-        <div id="ctrlStation3" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🌿 Trạm 3: Sinh Vật & Chuỗi Thức Ăn Tự Nhiên</div>
-            <label style="font-size:0.85rem; font-weight:bold;">Chọn mắt xích trong hệ sinh thái:</label>
-            <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
-                <button class="act-btn selected" id="eco_grass" onclick="selectEco('grass')">🌱 Thực vật (Sản xuất)</button>
-                <button class="act-btn" id="eco_rabbit" onclick="selectEco('rabbit')">🐇 Thỏ (Ăn thực vật)</button>
-                <button class="act-btn" id="eco_fox" onclick="selectEco('fox')">🦊 Cáo / Diều hâu (Ăn thịt)</button>
+                <button class="act-btn selected" id="exp_state" onclick="selectStateExp('state')">🧊 Bài 4: Thể Rắn - Lỏng - Khí</button>
+                <button class="act-btn" id="exp_bac" onclick="selectStateExp('bac')">🦠 Bài 19: Vi khuẩn Lên men có ích</button>
             </div>
             <div style="font-size:0.85rem; color:#087f5b; font-weight:bold;">
-                👉 Chuỗi thức ăn mẫu: Cỏ ➡️ Thỏ ➡️ Cáo (Năng lượng truyền từ mặt trời qua sinh vật).
+                👉 Khám phá tính chất của chất và vai trò vi khuẩn trong đời sống.
+            </div>
+        </div>
+
+        <!-- ĐIỀU KHIỂN TRẠM 3: CHỦ ĐỀ 3 & 6 - SINH VẬT & MÔI TRƯỜNG -->
+        <div id="ctrlStation3" class="ctrl-group" style="display:none;">
+            <div class="ctrl-title">🌿 Chủ đề 3 & 6: Sinh Vật, Môi Trường & Đất[cite: 9]</div>
+            <label style="font-size:0.85rem; font-weight:bold;">Chọn nội dung tìm hiểu:</label>
+            <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
+                <button class="act-btn selected" id="eco_soil" onclick="selectEcoExp('soil')">🌱 Bài 1 & 2: Vai trò & Bảo vệ Đất</button>
+                <button class="act-btn" id="eco_food" onclick="selectEcoExp('food')">🐇 Bài 13 & 28: Chuỗi thức ăn tự nhiên</button>
+            </div>
+            <div style="font-size:0.85rem; color:#087f5b; font-weight:bold;">
+                👉 Tìm hiểu về môi trường sống và mối quan hệ giữa các sinh vật[cite: 9].
             </div>
         </div>
 
@@ -289,7 +289,7 @@ science_lab_html = """
         <div class="quiz-card">
             <div style="font-weight:800; color:#d9480f; margin-bottom:4px;">🧠 Thử Thách Khoa Học Lớp 5:</div>
             <div id="quizQuestion" style="font-size:0.9rem; font-weight:600; margin-bottom:6px;">
-                Vật liệu nào dưới đây là VẬT DẪN ĐIỆN giúp bóng đèn phát sáng ở Trạm 1?
+                Theo Bài 9 (Chủ đề 2), vật liệu nào dẫn điện giúp bóng đèn sáng?[cite: 9]
             </div>
             <div class="btn-grid" id="quizOptions">
                 <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
@@ -305,7 +305,7 @@ const canvas = document.getElementById('labCanvas');
 const ctx = canvas.getContext('2d');
 
 let currentStation = 1;
-let expScore = 80;
+let expScore = 90;
 let tick = 0;
 
 // Trạm 1
@@ -318,15 +318,10 @@ let circuit = {
 };
 
 // Trạm 2
-let bacteriaLab = {
-    type: 'good',
-    disinfected: false
-};
+let stateBacMode = 'state';
 
 // Trạm 3
-let ecoLab = {
-    selected: 'grass'
-};
+let ecoMode = 'soil';
 
 function playTone(win) {
     try {
@@ -364,16 +359,16 @@ function switchStation(stNum) {
 
     if (stNum === 1) {
         updateCircuitExplanation();
-        qText.innerText = "Vật liệu nào dưới đây là VẬT DẪN ĐIỆN giúp bóng đèn phát sáng?";
+        qText.innerText = "Theo Bài 9 (Chủ đề 2), vật liệu nào dẫn điện giúp bóng đèn sáng?[cite: 9]";
         qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button><button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>`;
     } else if (stNum === 2) {
-        document.getElementById('aiExplain').innerHTML = `🦠 <b>Trợ lý AI:</b> Vi khuẩn có ở khắp mọi nơi! Vi khuẩn có lợi giúp làm sữa chua, lên men thức ăn; vi khuẩn có hại gây bệnh tiêu hóa và truyền nhiễm.`;
-        qText.innerText = "Vi khuẩn nào dưới đây có lợi được ứng dụng để làm sữa chua?";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🛡️ Vi khuẩn lên men (Lactic)</button><button class="act-btn" onclick="answerQuiz(false)">🦠 Vi khuẩn tả / lỵ</button>`;
+        document.getElementById('aiExplain').innerHTML = `🧪 <b>Chủ đề 1 & 4:</b> Khám phá tính chất thể rắn, lỏng, khí của chất (Bài 4) và vi khuẩn lên men có ích trong thực phẩm (Bài 19)[cite: 9].`;
+        qText.innerText = "Theo Bài 19 (Chủ đề 4), vi khuẩn nào được ứng dụng để làm sữa chua?[cite: 9]";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🛡️ Vi khuẩn lên men (Lactic)</button><button class="act-btn" onclick="answerQuiz(false)">🦠 Vi khuẩn gây bệnh tả</button>`;
     } else {
-        document.getElementById('aiExplain').innerHTML = `🌿 <b>Trợ lý AI:</b> Trong chuỗi thức ăn, thực vật là sinh vật sản xuất tự tổng hợp chất dinh dưỡng nhờ ánh sáng mặt trời để nuôi động vật!`;
-        qText.innerText = "Trong chuỗi thức ăn (Cỏ ➡️ Thỏ ➡️ Cáo), sinh vật nào đóng vai trò là sinh vật sản xuất?";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🌱 Thực vật (Cỏ)</button><button class="act-btn" onclick="answerQuiz(false)">🦊 Cáo</button>`;
+        document.getElementById('aiExplain').innerHTML = `🌿 <b>Chủ đề 3 & 6:</b> Tìm hiểu vai trò của đất đối với cây trồng (Bài 1) và chuỗi thức ăn trong tự nhiên (Bài 13, 28)[cite: 9].`;
+        qText.innerText = "Theo Chủ đề 3, sinh vật nào là sinh vật sản xuất trong chuỗi thức ăn?[cite: 9]";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🌱 Thực vật (Cỏ xanh)</button><button class="act-btn" onclick="answerQuiz(false)">🦊 Động vật ăn thịt</button>`;
     }
 }
 
@@ -385,7 +380,7 @@ function answerQuiz(isCorrect) {
         expScore += 10;
         document.getElementById('expScore').innerText = expScore;
         fb.style.color = '#2b8a3e';
-        fb.innerText = `🎉 Chính xác tuyệt vời, em ${stName} rất am hiểu khoa học! (+10 Điểm)`;
+        fb.innerText = `🎉 Chính xác tuyệt vời, em ${stName} nắm rất chắc bài học! (+10 Điểm)`;
     } else {
         playTone(false);
         fb.style.color = '#e03131';
@@ -393,7 +388,7 @@ function answerQuiz(isCorrect) {
     }
 }
 
-// ==================== TRẠM 1 LOGIC ====================
+// Trạm 1 logic
 function selectMaterial(mat) {
     circuit.material = mat;
     ['copper', 'iron', 'plastic', 'wood'].forEach(m => {
@@ -428,59 +423,47 @@ function updateCircuitExplanation() {
     const mName = circuit.matNames[circuit.material];
 
     if (!circuit.switchClosed) {
-        box.innerHTML = `🤖 <b>Trợ lý AI:</b> Công tắc đang <b>Mở</b>. Hãy chọn <b>${mName}</b> và bấm nút công tắc màu xanh để đóng mạch điện!`;
+        box.innerHTML = `🤖 <b>Trạm Điện (Chủ đề 2):</b> Công tắc đang <b>Mở</b>[cite: 9]. Hãy chọn <b>${mName}</b> và bấm nút công tắc màu xanh để đóng mạch điện (Bài 9)[cite: 9]!`;
     } else if (isCond) {
-        box.innerHTML = `✅ <b>Đèn Sáng!</b> <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho dòng điện chạy qua làm sáng bóng đèn.`;
+        box.innerHTML = `✅ <b>Đèn Sáng (Bài 9)!</b> <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho dòng điện chạy qua làm sáng bóng đèn[cite: 9].`;
     } else {
-        box.innerHTML = `⚠️ <b>Đèn Tắt!</b> <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, không cho dòng điện chạy qua.`;
+        box.innerHTML = `⚠️ <b>Đèn Tắt (Bài 9)!</b> <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, không cho dòng điện chạy qua[cite: 9].`;
     }
 }
 
-// ==================== TRẠM 2 LOGIC (VI KHUẨN) ====================
-function selectBacteria(type) {
-    bacteriaLab.type = type;
-    bacteriaLab.disinfected = false;
-    document.getElementById('bac_good').className = 'act-btn' + (type === 'good' ? ' selected' : '');
-    document.getElementById('bac_bad').className = 'act-btn' + (type === 'bad' ? ' selected' : '');
-    
+// Trạm 2 logic
+function selectStateExp(mode) {
+    stateBacMode = mode;
+    document.getElementById('exp_state').className = 'act-btn' + (mode === 'state' ? ' selected' : '');
+    document.getElementById('exp_bac').className = 'act-btn' + (mode === 'bac' ? ' selected' : '');
     const box = document.getElementById('aiExplain');
-    if (type === 'good') {
-        box.innerHTML = `🛡️ <b>Vi khuẩn có lợi:</b> Thường dùng trong chế biến thực phẩm như lên men sữa chua, muối dưa cà, giúp ích cho hệ tiêu hóa của con người.`;
+    if (mode === 'state') {
+        box.innerHTML = `🧊 <b>Bài 4 (Chủ đề 1):</b> Mô phỏng các trạng thái Rắn (Nước đá), Lỏng (Nước) và Khí (Hơi nước)[cite: 9].`;
     } else {
-        box.innerHTML = `🦠 <b>Vi khuẩn có hại:</b> Gây ôi thiu thức ăn và các bệnh truyền nhiễm đường ruột. Cần ăn chín uống sôi và rửa tay sạch sẽ!`;
+        box.innerHTML = `🦠 <b>Bài 19 (Chủ đề 4):</b> Vi khuẩn lên men (Lactic) có ích giúp muối dưa chua và làm sữa chua thơm ngon[cite: 9].`;
     }
 }
 
-function triggerDisinfect() {
-    bacteriaLab.disinfected = true;
-    playTone(true);
-    document.getElementById('aiExplain').innerHTML = `🧼 <b>Đã Vệ Sinh Sạch Sẽ!</b> Xà phòng và nước sạch tiêu diệt phần lớn vi khuẩn có hại trên tay, bảo vệ sức khỏe cơ thể.`;
-    setTimeout(() => { bacteriaLab.disinfected = false; }, 4000);
-}
-
-// ==================== TRẠM 3 LOGIC (SINH VẬT & MÔI TRƯỜNG) ====================
-function selectEco(item) {
-    ecoLab.selected = item;
-    ['grass', 'rabbit', 'fox'].forEach(i => {
-        document.getElementById('eco_' + i).className = 'act-btn' + (i === item ? ' selected' : '');
-    });
+// Trạm 3 logic
+function selectEcoExp(mode) {
+    ecoMode = mode;
+    document.getElementById('eco_soil').className = 'act-btn' + (mode === 'soil' ? ' selected' : '');
+    document.getElementById('eco_food').className = 'act-btn' + (mode === 'food' ? ' selected' : '');
     const box = document.getElementById('aiExplain');
-    if (item === 'grass') {
-        box.innerHTML = `🌱 <b>Thực vật (Cỏ):</b> Là sinh vật sản xuất, tự tổng hợp chất hữu cơ từ ánh sáng mặt trời, nước và chất khoáng.`;
-    } else if (item === 'rabbit') {
-        box.innerHTML = `🐇 <b>Động vật ăn cỏ (Thỏ):</b> Là sinh vật tiêu thụ bậc 1, sử dụng năng lượng tích lũy từ thực vật để sinh trưởng.`;
+    if (mode === 'soil') {
+        box.innerHTML = `🌱 <b>Bài 1 & 2 (Chủ đề 1 & 6):</b> Đất cung cấp chất dinh dưỡng, nước và không khí cho cây trồng. Cần chống xói mòn và ô nhiễm đất[cite: 9].`;
     } else {
-        box.innerHTML = `🦊 <b>Động vật ăn thịt (Cáo/Diều hâu):</b> Là sinh vật tiêu thụ bậc 2, đứng ở mắt xích cao hơn trong chuỗi thức ăn tự nhiên.`;
+        box.innerHTML = `🌿 <b>Bài 13 & 28 (Chủ đề 3 & 6):</b> Chuỗi thức ăn tự nhiên bắt đầu từ Thực vật (sản xuất) sang Động vật ăn cỏ và Động vật ăn thịt[cite: 9].`;
     }
 }
 
-// ==================== VẼ ĐỒ HỌA 60 FPS ====================
+// Render Canvas 60 FPS
 function drawStation1() {
     ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     const isFlowing = circuit.switchClosed && circuit.conductors.includes(circuit.material);
 
     ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText('⚡ TRẠM 1: MẠCH ĐIỆN & NĂNG LƯỢNG', 25, 32);
+    ctx.fillText('⚡ CHỦ ĐỀ 2: MẠCH ĐIỆN & VẬT DẪN ĐIỆN (BÀI 9)', 25, 32);
 
     ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b'; ctx.lineWidth = 6;
     ctx.strokeRect(120, 90, 520, 240);
@@ -541,66 +524,57 @@ function drawStation1() {
 
 function drawStation2() {
     ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText('🦠 TRẠM 2: VI KHUẨN DƯỚI KÍNH HIỂN VI & SỨC KHỎE', 25, 32);
+    ctx.fillText(stateBacMode === 'state' ? '🧊 CHỦ ĐỀ 1: TRẠNG THÁI RẮN - LỎNG - KHÍ (BÀI 4)[cite: 9]' : '🦠 CHỦ ĐỀ 4: VI KHUẨN CÓ ÍCH (BÀI 19)[cite: 9]', 25, 32);
 
-    // Thấu kính kính hiển vi
-    ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 8;
-    ctx.beginPath(); ctx.arc(380, 220, 140, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    if (stateBacMode === 'state') {
+        // Mô phỏng 3 trạng thái chất
+        ctx.fillStyle = 'rgba(186, 230, 253, 0.85)'; ctx.fillRect(100, 130, 150, 180);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('🧊 Thể Rắn (Đá)', 120, 220);
 
-    // Vẽ các vi khuẩn
-    for (let i = 0; i < 22; i++) {
-        let bx = 300 + Math.sin(i * 15 + tick * 0.05) * 80 + (i * 7) % 40;
-        let by = 180 + Math.cos(i * 12 + tick * 0.05) * 70 + (i * 9) % 35;
-        
-        ctx.fillStyle = bacteriaLab.type === 'good' ? '#4ade80' : '#f87171';
-        if (bacteriaLab.disinfected) ctx.fillStyle = '#94a3b8'; // Bị tiêu diệt
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.6)'; ctx.fillRect(305, 130, 150, 180);
+        ctx.fillStyle = 'white'; ctx.fillText('💧 Thể Lỏng (Nước)', 318, 220);
 
-        ctx.beginPath(); ctx.arc(bx, by, bacteriaLab.type === 'good' ? 10 : 8, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)'; ctx.fillRect(510, 130, 150, 180);
+        ctx.fillStyle = 'white'; ctx.fillText('♨️ Thể Khí (Hơi)', 525, 220);
+    } else {
+        // Mô phỏng vi khuẩn lên men
+        ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 6;
+        ctx.beginPath(); ctx.arc(380, 220, 120, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        for (let i = 0; i < 18; i++) {
+            let bx = 330 + Math.sin(i + tick * 0.05) * 60;
+            let by = 190 + Math.cos(i + tick * 0.05) * 50;
+            ctx.fillStyle = '#4ade80';
+            ctx.beginPath(); ctx.arc(bx, by, 9, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('🛡️ Vi khuẩn Lactic (Lên men sữa chua có ích)', 380, 370);
+        ctx.textAlign = 'left';
     }
-
-    ctx.fillStyle = 'white'; ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(bacteriaLab.type === 'good' ? '🛡️ Vi khuẩn Lên men (Lactic - Có lợi)' : '🦠 Vi khuẩn Gây bệnh đường ruột (Có hại)', 380, 385);
-    if (bacteriaLab.disinfected) {
-        ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 18px sans-serif';
-        ctx.fillText('🧼 Xà phòng đã tiêu diệt vi khuẩn có hại!', 380, 80);
-    }
-    ctx.textAlign = 'left';
 }
 
 function drawStation3() {
     ctx.fillStyle = '#0284c7'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Mặt trời
-    ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(620, 70, 35, 0, Math.PI * 2); ctx.fill();
-
-    // Mặt đất sinh thái
-    ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 310, canvas.width, 110);
-    ctx.fillStyle = '#15803d'; ctx.fillRect(0, 355, canvas.width, 65);
-
     ctx.fillStyle = 'white'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText('🌿 TRẠM 3: CHUỖI THỨC ĂN TRONG TỰ NHIÊN', 25, 32);
+    ctx.fillText(ecoMode === 'soil' ? '🌱 CHỦ ĐỀ 1 & 6: VAI TRÒ VÀ BẢO VỆ ĐẤT (BÀI 1 & 2)[cite: 9]' : '🌿 CHỦ ĐỀ 3 & 6: CHUỖI THỨC ĂN TỰ NHIÊN (BÀI 13 & 28)[cite: 9]', 25, 32);
 
-    // Vẽ các sinh vật minh họa chuỗi thức ăn: Cỏ -> Thỏ -> Cáo
-    // 1. Cỏ
-    ctx.fillStyle = ecoLab.selected === 'grass' ? '#fde047' : '#22c55e';
-    ctx.font = 'bold 45px sans-serif'; ctx.fillText('🌱', 150, 300);
-    ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('Thực vật (Cỏ)', 125, 335);
-
-    ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 290, 275);
-
-    // 2. Thỏ
-    ctx.fillStyle = ecoLab.selected === 'rabbit' ? '#fde047' : 'white';
-    ctx.font = 'bold 45px sans-serif'; ctx.fillText('🐇', 380, 295);
-    ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('Động vật ăn cỏ (Thỏ)', 340, 335);
-
-    ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 510, 275);
-
-    // 3. Cáo
-    ctx.fillStyle = ecoLab.selected === 'fox' ? '#fde047' : '#f97316';
-    ctx.font = 'bold 45px sans-serif'; ctx.fillText('🦊', 590, 295);
-    ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('Động vật ăn thịt (Cáo)', 550, 335);
+    if (ecoMode === 'soil') {
+        // Mô phỏng đất trồng cây
+        ctx.fillStyle = '#b45309'; ctx.fillRect(0, 280, canvas.width, 140);
+        ctx.fillStyle = '#78350f'; ctx.fillRect(0, 340, canvas.width, 80);
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('☀️', 620, 90);
+        ctx.fillStyle = '#22c55e'; ctx.font = 'bold 50px sans-serif'; ctx.fillText('🌳', 350, 275);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 15px sans-serif';
+        ctx.fillText('Đất cung cấp chất dinh dưỡng, nước và không khí cho cây phát triển xanh tốt!', 100, 380);
+    } else {
+        // Chuỗi thức ăn
+        ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 310, canvas.width, 110);
+        ctx.fillStyle = '#22c55e'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🌱 Cỏ', 160, 285);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 300, 260);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🐇 Thỏ', 390, 285);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 530, 260);
+        ctx.fillStyle = '#f97316'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🦊 Cáo', 610, 285);
+    }
 }
 
 function animate() {
