@@ -3,8 +3,8 @@ import streamlit.components.v1 as components
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Phòng Thí Nghiệm Khoa Học Lớp 5 - TH Bình Phước",
-    page_icon="🔬",
+    page_title="Phòng Thí Nghiệm Mạch Điện Lớp 5 - TH Bình Phước",
+    page_icon="⚡",
     layout="wide"
 )
 
@@ -15,12 +15,12 @@ st.markdown("""
         padding-bottom: 1rem;
     }
     .sci-banner {
-        background: linear-gradient(135deg, #099268 0%, #0ca678 50%, #1098ad 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #00b4db 100%);
         color: white;
         padding: 16px 20px;
         border-radius: 16px;
         text-align: center;
-        box-shadow: 0 6px 18px rgba(12, 166, 120, 0.28);
+        box-shadow: 0 6px 18px rgba(0, 180, 219, 0.3);
         margin-bottom: 10px;
     }
     .sci-banner h1 {
@@ -32,7 +32,7 @@ st.markdown("""
     .sci-banner p {
         font-size: 0.95rem;
         margin: 4px 0 0 0;
-        color: #e6fcf5;
+        color: #e0f7fa;
         font-weight: 600;
     }
 </style>
@@ -40,13 +40,13 @@ st.markdown("""
 
 st.markdown("""
 <div class="sci-banner">
-    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC TRỌNG TÂM - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Đồ họa sắc nét, trực quan cho học sinh</p>
+    <h1>⚡ PHÒNG THÍ NGHIỆM MẠCH ĐIỆN CHI TIẾT - LỚP 5/2</h1>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Mô hình Mạch điện & Vật dẫn điện (Bài 9)</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================== MÔ PHỎNG TƯƠNG TÁC HTML5 CANVAS SẮC NÉT ====================
-science_lab_html = """
+# ==================== MÔ PHỎNG MẠCH ĐIỆN 60 FPS CỰC KỲ CHI TIẾT ====================
+circuit_lab_html = """
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -80,31 +80,7 @@ science_lab_html = """
         border: 2px solid #dee2e6;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-    }
-    .station-tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-    .tab-btn {
-        flex: 1;
-        padding: 12px;
-        border: 2px solid #96f2d7;
-        background: #e6fcf5;
-        color: #087f5b;
-        font-weight: 800;
-        font-size: 0.95rem;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-    }
-    .tab-btn.active {
-        background: #0ca678;
-        color: white;
-        border-color: #087f5b;
-        box-shadow: 0 4px 10px rgba(12, 166, 120, 0.3);
+        gap: 14px;
     }
     canvas {
         width: 100%;
@@ -145,7 +121,7 @@ science_lab_html = """
     }
     .ctrl-title {
         font-weight: 800;
-        color: #087f5b;
+        color: #1e3c72;
         margin-bottom: 10px;
         font-size: 1.05rem;
     }
@@ -162,29 +138,29 @@ science_lab_html = """
         font-weight: 700;
         cursor: pointer;
         transition: 0.15s;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
     }
     .act-btn:hover { background: #f1f3f5; transform: translateY(-1px); }
     .act-btn.selected {
-        background: #0ca678;
+        background: #00b4db;
         color: white;
-        border-color: #087f5b;
+        border-color: #0072ff;
     }
     .switch-box {
-        margin-top: 10px;
+        margin-top: 12px;
         background: #fff3bf;
         border: 2px dashed #f59f00;
         border-radius: 12px;
-        padding: 12px;
+        padding: 14px;
         text-align: center;
     }
     .big-switch {
         width: 100%;
-        padding: 14px;
+        padding: 16px;
         border: none;
         border-radius: 12px;
         font-weight: 900;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         cursor: pointer;
         color: white;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -211,74 +187,59 @@ science_lab_html = """
 <body>
 
 <div class="lab-wrapper">
-    <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG SẮC NÉT -->
+    <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG MẠCH ĐIỆN -->
     <div class="stage-panel">
-        <div class="station-tabs">
-            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Năng Lượng Điện</button>
-            <button id="tab2" class="tab-btn" onclick="switchStation(2)">👶 Trạm 2: Phát Triển & Sức Khỏe</button>
-        </div>
+        <canvas id="circuitCanvas" width="760" height="420"></canvas>
 
-        <canvas id="labCanvas" width="760" height="420"></canvas>
-
-        <div id="aiExplain" class="ai-explain-box">
-            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b>! Hãy chọn trạm thí nghiệm để quan sát hình ảnh mô phỏng trực quan và sắc nét nhất nhé!
+        <div id="aiциони" class="ai-explain-box">
+            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b>! Hãy chọn nguồn điện, chọn vật liệu thử nghiệm và bấm nút công tắc lớn bên dưới để quan sát bóng đèn phát sáng nhé!
         </div>
     </div>
 
-    <!-- CỘT PHẢI: ĐIỀU KHIỂN RÕ RÀNG -->
+    <!-- CỘT PHẢI: ĐIỀU KHIỂN CHI TIẾT -->
     <div class="control-panel">
         <div class="user-bar">
             <div>👩‍🔬 Học sinh: <span id="scientistName">Hiểu Minh</span></div>
-            <div>🌟 <span id="expScore">95</span> Điểm</div>
+            <div>⭐ <span id="expScore">100</span> Điểm</div>
         </div>
 
         <div>
             <input type="text" id="nameInput" value="Hiểu Minh" placeholder="Nhập tên học sinh..." oninput="updateName()">
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 1: NĂNG LƯỢNG ĐIỆN -->
-        <div id="ctrlStation1" class="ctrl-group">
-            <div class="ctrl-title">⚡ Chủ đề 2: Mạch Điện Đơn Giản (Bài 9)</div>
-            <label style="font-size:0.92rem; font-weight:bold;">1. Chọn Nguồn Điện:</label>
+        <!-- BẢNG ĐIỀU KHIỂN MẠCH ĐIỆN CHI TIẾT -->
+        <div class="ctrl-group">
+            <div class="ctrl-title">⚡ Bảng Điều Khiển Mạch Điện (Bài 9)</div>
+            
+            <label style="font-size:0.92rem; font-weight:bold;">1. Chọn Nguồn Cấp Điện:</label>
             <select id="powerSource" onchange="updateCircuit()" style="margin-bottom:10px; margin-top:4px;">
-                <option value="battery">🔋 Pin tiểu 1,5V - 3V</option>
+                <option value="battery">🔋 Pin tiểu 1,5V (Nguồn điện hóa học)</option>
                 <option value="solar">☀️ Tấm Pin Năng lượng Mặt trời (Bài 11)</option>
             </select>
 
-            <label style="font-size:0.92rem; font-weight:bold;">2. Chọn vật liệu thử nghiệm (Bài 9)[cite: 9]:</label>
+            <label style="font-size:0.92rem; font-weight:bold;">2. Thả Vật Liệu Vào Khe Thử Nghiệm:</label>
             <div class="btn-grid" style="margin-top:6px;">
                 <button class="act-btn selected" id="mat_copper" onclick="selectMaterial('copper')">🪙 Thanh Đồng</button>
                 <button class="act-btn" id="mat_iron" onclick="selectMaterial('iron')">🔩 Đinh Sắt</button>
+                <button class="act-btn" id="mat_saltwater" onclick="selectMaterial('saltwater')">🧂 Nước Muối</button>
                 <button class="act-btn" id="mat_plastic" onclick="selectMaterial('plastic')">📏 Thước Nhựa</button>
                 <button class="act-btn" id="mat_wood" onclick="selectMaterial('wood')">🪵 Gỗ Khô</button>
+                <button class="act-btn" id="mat_rubber" onclick="selectMaterial('rubber')">🧤 Cục Tẩy Cao Su</button>
             </div>
 
             <div class="switch-box">
-                <div style="font-size:0.88rem; font-weight:bold; margin-bottom:6px; color:#5c940d;">BẤM ĐỂ ĐÓNG/MỞ MẠCH ĐIỆN:</div>
+                <div style="font-size:0.88rem; font-weight:bold; margin-bottom:6px; color:#5c940d;">BẤM ĐỂ ĐÓNG/MỞ CÔNG TẮC:</div>
                 <button id="bigSwitchBtn" class="big-switch off" onclick="toggleSwitch()">🔴 CÔNG TẮC: ĐANG MỞ (Hở mạch)</button>
             </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 2: PHÁT TRIỂN & SỨC KHỎE -->
-        <div id="ctrlStation2" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">👶 Chủ đề 5: Con Người & Sức Khỏe (Bài 23 & 25)[cite: 9]</div>
-            <label style="font-size:0.92rem; font-weight:bold;">Chọn nội dung tìm hiểu:</label>
-            <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
-                <button class="act-btn selected" id="health_dev" onclick="selectHealthMode('dev')">👶 Giai Đoạn Phát Triển (Bài 23)[cite: 9]</button>
-                <button class="act-btn" id="health_care" onclick="selectHealthMode('care')">💪 Chăm Sức Khỏe Tuổi Dậy Thì (Bài 25)[cite: 9]</button>
-            </div>
-            <div style="font-size:0.9rem; color:#087f5b; font-weight:bold;" id="healthSubDesc">
-                👉 Quan sát các mốc phát triển chiều cao và thể chất con người.
-            </div>
-        </div>
-
-        <!-- CÂU HỎI TRỌNG TÂM -->
+        <!-- CÂU HỎI TRỌNG TÂM MẠCH ĐIỆN -->
         <div class="quiz-card">
-            <div style="font-weight:800; color:#d9480f; margin-bottom:6px; font-size:1rem;">🧠 Thử Thách Khoa Học Trọng Tâm:</div>
-            <div id="quizQuestion" style="font-size:0.95rem; font-weight:600; margin-bottom:8px;">
-                Theo Bài 9 (Chủ đề 2), vật liệu nào dẫn điện giúp bóng đèn sáng?[cite: 9]
+            <div style="font-weight:800; color:#d9480f; margin-bottom:6px; font-size:1rem;">🧠 Thử Thách Mạch Điện Đơn Giản:</div>
+            <div style="font-size:0.92rem; font-weight:600; margin-bottom:8px;">
+                Theo Bài 9, vật liệu nào là vật dẫn điện giúp bóng đèn phát sáng?
             </div>
-            <div class="btn-grid" id="quizOptions">
+            <div class="btn-grid">
                 <button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button>
                 <button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>
             </div>
@@ -288,24 +249,26 @@ science_lab_html = """
 </div>
 
 <script>
-const canvas = document.getElementById('labCanvas');
+const canvas = document.getElementById('circuitCanvas');
 const ctx = canvas.getContext('2d');
 
-let currentStation = 1;
-let expScore = 95;
+let expScore = 100;
 let tick = 0;
 
-// Trạm 1
 let circuit = {
     source: 'battery',
     material: 'copper',
     switchClosed: false,
-    conductors: ['copper', 'iron'],
-    matNames: { copper: 'Thanh Đồng', iron: 'Đinh Sắt', plastic: 'Thước Nhựa', wood: 'Gỗ Khô' }
+    conductors: ['copper', 'iron', 'saltwater'],
+    matNames: {
+        copper: 'Thanh Đồng (Kim loại)',
+        iron: 'Đinh Sắt (Kim loại)',
+        saltwater: 'Cốc Nước Muối',
+        plastic: 'Thước Nhựa',
+        wood: 'Gỗ Khô',
+        rubber: 'Cục Tẩy Cao Su'
+    }
 };
-
-// Trạm 2
-let healthMode = 'dev'; // 'dev' hoặc 'care'
 
 function playTone(win) {
     try {
@@ -330,48 +293,9 @@ function updateName() {
     document.getElementById('scientistName').innerText = val;
 }
 
-function switchStation(stNum) {
-    currentStation = stNum;
-    [1, 2].forEach(n => {
-        document.getElementById('tab' + n).className = 'tab-btn' + (n === stNum ? ' active' : '');
-        document.getElementById('ctrlStation' + n).style.display = (n === stNum ? 'block' : 'none');
-    });
-    document.getElementById('quizFeedback').innerText = '';
-
-    const qText = document.getElementById('quizQuestion');
-    const qOpts = document.getElementById('quizOptions');
-
-    if (stNum === 1) {
-        updateCircuitExplanation();
-        qText.innerText = "Theo Bài 9 (Chủ đề 2), vật liệu nào dẫn điện giúp bóng đèn sáng?[cite: 9]";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button><button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>`;
-    } else {
-        updateHealthExplanation();
-        qText.innerText = "Theo Chủ đề 5, việc làm nào cần thiết để chăm sóc sức khỏe tuổi dậy thì (Bài 25)?[cite: 9]";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🧼 Vệ sinh sạch sẽ & dinh dưỡng đủ chất</button><button class="act-btn" onclick="answerQuiz(false)">🍕 Ăn đồ mỡ & thức khuya</button>`;
-    }
-}
-
-function answerQuiz(isCorrect) {
-    const fb = document.getElementById('quizFeedback');
-    const stName = document.getElementById('nameInput').value || 'Hiểu Minh';
-    if (isCorrect) {
-        playTone(true);
-        expScore += 10;
-        document.getElementById('expScore').innerText = expScore;
-        fb.style.color = '#2b8a3e';
-        fb.innerText = `🎉 Chính xác tuyệt vời, em ${stName} rất am hiểu kiến thức trọng tâm! (+10 Điểm)`;
-    } else {
-        playTone(false);
-        fb.style.color = '#e03131';
-        fb.innerText = `💡 Chưa đúng rồi! Em quan sát kĩ hình minh họa để thử lại nhé!`;
-    }
-}
-
-// Trạm 1 logic
 function selectMaterial(mat) {
     circuit.material = mat;
-    ['copper', 'iron', 'plastic', 'wood'].forEach(m => {
+    ['copper', 'iron', 'saltwater', 'plastic', 'wood', 'rubber'].forEach(m => {
         document.getElementById('mat_' + m).className = 'act-btn' + (m === mat ? ' selected' : '');
     });
     if (circuit.switchClosed) playTone(circuit.conductors.includes(mat));
@@ -398,162 +322,139 @@ function updateCircuit() {
 }
 
 function updateCircuitExplanation() {
-    const box = document.getElementById('aiExplain');
+    const box = document.getElementById('aiциони');
     const isCond = circuit.conductors.includes(circuit.material);
     const mName = circuit.matNames[circuit.material];
 
     if (!circuit.switchClosed) {
-        box.innerHTML = `🤖 <b>Trạm Điện (Trọng tâm Chủ đề 2):</b> Công tắc đang <b>Mở</b>[cite: 9]. Hãy chọn <b>${mName}</b> và bấm nút công tắc màu xanh lớn để đóng mạch điện (Bài 9)[cite: 9]!`;
+        box.innerHTML = `🤖 <b>Trợ lý AI:</b> Công tắc đang <b>Mở (Hở mạch)</b>. Hãy chọn <b>${mName}</b> và bấm nút công tắc lớn màu xanh để đóng mạch điện nhé!`;
     } else if (isCond) {
-        box.innerHTML = `✅ <b>Đèn Sáng Rực (Bài 9)!</b> <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho dòng điện chạy qua làm sáng bóng đèn[cite: 9].`;
+        box.innerHTML = `✅ <b>ĐÈN SÁNG RỰC & QUAY TÍT!</b> <b>${mName}</b> là <b>VẬT DẪN ĐIỆN</b>, cho phép dòng điện (các hạt electron vàng) chạy qua mạch kín từ nguồn đến bóng đèn!`;
     } else {
-        box.innerHTML = `⚠️ <b>Đèn Tắt (Bài 9)!</b> <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, dòng điện không thể đi qua[cite: 9].`;
+        box.innerHTML = `⚠️ <b>BÓNG ĐÈN TẮT!</b> <b>${mName}</b> là <b>VẬT CÁCH ĐIỆN</b>, dòng điện không thể đi qua được. Nhựa, gỗ và cao su giúp cách điện an toàn cho con người.`;
     }
 }
 
-// Trạm 2 logic
-function selectHealthMode(mode) {
-    healthMode = mode;
-    document.getElementById('health_dev').className = 'act-btn' + (mode === 'dev' ? ' selected' : '');
-    document.getElementById('health_care').className = 'act-btn' + (mode === 'care' ? ' selected' : '');
-    updateHealthExplanation();
-}
-
-function updateHealthExplanation() {
-    const box = document.getElementById('aiExplain');
-    const subDesc = document.getElementById('healthSubDesc');
-    if (healthMode === 'dev') {
-        subDesc.innerText = "👉 Quan sát các mốc phát triển chiều cao và thể chất con người.";
-        box.innerHTML = `👶 <b>Bài 23 (Chủ đề 5):</b> Con người lớn lên qua các giai đoạn: Sơ sinh ➡️ Trẻ em ➡️ Tuổi dậy thì (phát triển mạnh mẽ về chiều cao, cân nặng) ➡️ Trưởng thành ➡️ Tuổi già[cite: 9].`;
+function answerQuiz(isCorrect) {
+    const fb = document.getElementById('quizFeedback');
+    const stName = document.getElementById('nameInput').value || 'Hiểu Minh';
+    if (isCorrect) {
+        playTone(true);
+        expScore += 10;
+        document.getElementById('expScore').innerText = expScore;
+        fb.style.color = '#2b8a3e';
+        fb.innerText = `🎉 Chính xác tuyệt vời, em ${stName} nắm rất chắc kiến thức Bài 9! (+10 Điểm)`;
     } else {
-        subDesc.innerText = "👉 Tìm hiểu cách giữ vệ sinh và dinh dưỡng tuổi dậy thì.";
-        box.innerHTML = `💪 <b>Bài 25 (Chủ đề 5):</b> Chăm sóc sức khỏe tuổi dậy thì: Vệ sinh cá nhân sạch sẽ, ăn uống đầy đủ chất dinh dưỡng (4 nhóm chất), tập thể thao và giữ tinh thần vui tươi[cite: 9].`;
+        playTone(false);
+        fb.style.color = '#e03131';
+        fb.innerText = `💡 Chưa đúng rồi! Em kiểm tra lại thí nghiệm xem vật nào làm đèn sáng nhé!`;
     }
 }
 
-// Render Canvas 60 FPS cực sắc nét
-function drawStation1() {
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+// ==================== VẼ ĐỒ HỌA MẠCH ĐIỆN CHI TIẾT 60 FPS ====================
+function drawCircuitLab() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     const isFlowing = circuit.switchClosed && circuit.conductors.includes(circuit.material);
 
-    ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 18px sans-serif';
-    ctx.fillText('⚡ MẠCH ĐIỆN ĐƠN GIẢN & VẬT DẪN ĐIỆN (BÀI 9)[cite: 9]', 25, 35);
+    // Tiêu đề trực quan trên Canvas
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN ĐƠN GIẢN & VẬT DẪN ĐIỆN (BÀI 9)', 25, 35);
 
-    ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b'; ctx.lineWidth = 6;
-    ctx.strokeRect(100, 90, 560, 240);
+    // Khung dây dẫn chính hình chữ nhật: (100, 90) -> (660, 340)
+    ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b';
+    ctx.lineWidth = 7;
+    ctx.strokeRect(100, 90, 560, 250);
 
+    // Hiệu ứng hạt điện động chạy quanh dây khi mạch kín
     if (isFlowing) {
         ctx.fillStyle = '#fef08a';
-        const perim = (560 + 240) * 2;
-        for (let i = 0; i < 18; i++) {
-            let d = ((i * (perim / 18)) + tick * 4) % perim;
+        const perim = (560 + 250) * 2;
+        for (let i = 0; i < 20; i++) {
+            let d = ((i * (perim / 20)) + tick * 4.5) % perim;
             let ex = 100, ey = 90;
             if (d < 560) { ex = 100 + d; ey = 90; }
-            else if (d < 560 + 240) { ex = 660; ey = 90 + (d - 560); }
-            else if (d < 560 * 2 + 240) { ex = 660 - (d - 800); ey = 330; }
-            else { ex = 100; ey = 330 - (d - 1360); }
-            ctx.beginPath(); ctx.arc(ex, ey, 5.5, 0, Math.PI * 2); ctx.fill();
+            else if (d < 560 + 250) { ex = 660; ey = 90 + (d - 560); }
+            else if (d < 560 * 2 + 250) { ex = 660 - (d - 810); ey = 340; }
+            else { ex = 100; ey = 340 - (d - 1370); }
+            ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2); ctx.fill();
         }
     }
 
-    // Nguồn
-    ctx.fillStyle = '#1e293b'; ctx.fillRect(60, 150, 90, 120);
+    // 1. Nguồn Điện bên trái (60, 150)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(55, 150, 90, 120);
     if (circuit.source === 'battery') {
-        ctx.fillStyle = '#f97316'; ctx.fillRect(77, 165, 56, 30);
-        ctx.fillStyle = '#334155'; ctx.fillRect(77, 195, 56, 60);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('+ PIN -', 82, 232);
+        ctx.fillStyle = '#f97316'; ctx.fillRect(72, 165, 56, 30);
+        ctx.fillStyle = '#334155'; ctx.fillRect(72, 195, 56, 60);
+        ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('+ PIN -', 78, 232);
     } else {
-        ctx.fillStyle = '#0284c7'; ctx.fillRect(65, 160, 80, 90);
-        ctx.fillStyle = '#fde047'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('☀️', 92, 215);
+        ctx.fillStyle = '#0284c7'; ctx.fillRect(60, 160, 80, 90);
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('☀️', 87, 215);
     }
 
-    // Công tắc
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(250, 70, 100, 40);
-    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.moveTo(255, 90);
-    if (circuit.switchClosed) ctx.lineTo(345, 90);
-    else ctx.lineTo(335, 50);
+    // 2. Công Tắc ở cạnh trên (240, 90)
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(230, 70, 120, 40);
+    ctx.fillStyle = circuit.switchClosed ? '#2f9e44' : '#e03131';
+    ctx.beginPath(); ctx.arc(242, 90, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(338, 90, 8, 0, Math.PI * 2); ctx.fill();
+
+    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(242, 90);
+    if (circuit.switchClosed) {
+        ctx.lineTo(338, 90);
+    } else {
+        ctx.lineTo(328, 48);
+    }
     ctx.stroke();
 
-    // Đèn
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(610, 145, 90, 120);
+    ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 13px sans-serif';
+    ctx.fillText(circuit.switchClosed ? 'Công tắc: ĐÓNG' : 'Công tắc: MỞ', 235, 45);
+
+    // 3. Bóng Đèn & Quạt bên phải (660, 150)
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(610, 145, 100, 130);
+
     if (isFlowing) {
-        const grad = ctx.createRadialGradient(655, 205, 12, 655, 205, 75);
-        grad.addColorStop(0, 'rgba(253, 224, 71, 0.95)'); grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
-        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(655, 205, 75, 0, Math.PI * 2); ctx.fill();
+        const grad = ctx.createRadialGradient(660, 200, 15, 660, 200, 85);
+        grad.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+        grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
+        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(660, 200, 85, 0, Math.PI * 2); ctx.fill();
     }
-    ctx.beginPath(); ctx.arc(655, 205, 30, 0, Math.PI * 2);
-    ctx.fillStyle = isFlowing ? '#fef08a' : '#475569'; ctx.fill(); ctx.stroke();
+
+    ctx.beginPath(); ctx.arc(660, 200, 34, 0, Math.PI * 2);
+    ctx.fillStyle = isFlowing ? '#fef08a' : '#475569';
+    ctx.fill(); ctx.lineWidth = 3;
+    ctx.strokeStyle = isFlowing ? '#facc15' : '#94a3b8'; ctx.stroke();
+
+    ctx.fillStyle = '#94a3b8'; ctx.fillRect(646, 234, 28, 22);
     ctx.fillStyle = isFlowing ? '#fde047' : '#cbd5e1'; ctx.font = 'bold 14px sans-serif';
-    ctx.fillText(isFlowing ? '💡 ĐÈN SÁNG' : '💡 Đèn tắt', 615, 275);
+    ctx.fillText(isFlowing ? '💡 ĐÈN SÁNG' : '💡 Đèn tắt', 620, 285);
 
-    // Vật liệu thử
-    ctx.fillStyle = '#1e293b'; ctx.fillRect(270, 300, 220, 60);
-    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.strokeRect(270, 300, 220, 60);
-    ctx.fillStyle = '#d97706'; ctx.fillRect(285, 316, 190, 28);
+    // 4. Khe Thử Nghiệm Vật Liệu ở cạnh dưới (380, 340)
+    ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+    ctx.fillRect(260, 305, 240, 70);
+    ctx.strokeRect(260, 305, 240, 70);
+
+    const matColors = {
+        copper: '#d97706', iron: '#64748b', saltwater: '#06b6d4',
+        plastic: '#38bdf8', wood: '#854d0e', rubber: '#f43f5e'
+    };
+    ctx.fillStyle = matColors[circuit.material];
+    ctx.fillRect(280, 323, 200, 34);
+
     ctx.fillStyle = 'white'; ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(circuit.matNames[circuit.material], 380, 335);
+    ctx.fillText(circuit.matNames[circuit.material], 380, 345);
+
+    ctx.fillStyle = isFlowing ? '#4ade80' : '#f87171'; ctx.font = 'bold 14px sans-serif';
+    ctx.fillText(isFlowing ? '👉 VẬT DẪN ĐIỆN' : '👉 VẬT CÁCH ĐIỆN', 380, 292);
     ctx.textAlign = 'left';
-}
-
-function drawStation2() {
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (healthMode === 'dev') {
-        ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-        ctx.fillText('👶 CHỦ ĐỀ 5: CÁC GIAI ĐOẠN PHÁT TRIỂN (BÀI 23)[cite: 9]', 25, 35);
-
-        const stages = [
-            { label: 'Sơ sinh', icon: '👶', x: 100 },
-            { label: 'Trẻ em', icon: '🧒', x: 250 },
-            { label: 'Tuổi dậy thì', icon: '🧑‍🎓', x: 400 },
-            { label: 'Trưởng thành', icon: '👨‍💼', x: 550 },
-            { label: 'Tuổi già', icon: '🧓', x: 680 }
-        ];
-
-        stages.forEach((s, idx) => {
-            let isHighlight = idx === 2; // Nhấn mạnh tuổi dậy thì lớp 5
-            ctx.fillStyle = isHighlight ? '#0ca678' : '#334155';
-            ctx.beginPath(); ctx.arc(s.x, 210, isHighlight ? 46 : 38, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = isHighlight ? '#fde047' : '#64748b'; ctx.lineWidth = isHighlight ? 4 : 2; ctx.stroke();
-
-            ctx.font = 'bold 30px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(s.icon, s.x, 221);
-
-            ctx.fillStyle = isHighlight ? '#fde047' : 'white'; ctx.font = 'bold 14px sans-serif';
-            ctx.fillText(s.label, s.x, 280);
-            ctx.textAlign = 'left';
-        });
-    } else {
-        ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-        ctx.fillText('💪 CHỦ ĐỀ 5: CHĂM SÓC SỨC KHỎE TUỔI DẬY THÌ (BÀI 25)[cite: 9]', 25, 35);
-
-        const cares = [
-            { title: '🧼 VỆ SINH SẠCH SẼ', desc: 'Tắm giặt, thay đồ hàng ngày', x: 180 },
-            { title: '🥗 DINH DƯỠNG ĐỦ CHẤT', desc: 'Ăn đủ 4 nhóm chất, uống nhiều nước', x: 380 },
-            { title: '⚽ THỂ THAO & TINH THẦN', desc: 'Tập thể dục, ngủ đủ giấc, vui tươi', x: 580 }
-        ];
-
-        cares.forEach(c => {
-            ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#0ca678'; ctx.lineWidth = 3;
-            ctx.fillRect(c.x - 85, 120, 170, 180);
-            ctx.strokeRect(c.x - 85, 120, 170, 180);
-
-            ctx.fillStyle = '#fde047'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(c.title, c.x, 155);
-
-            ctx.fillStyle = 'white'; ctx.font = '13px sans-serif';
-            ctx.fillText(c.desc.slice(0, 18), c.x, 195);
-            ctx.fillText(c.desc.slice(18), c.x, 220);
-            ctx.textAlign = 'left';
-        });
-    }
 }
 
 function animate() {
     tick++;
-    if (currentStation === 1) drawStation1();
-    else drawStation2();
+    drawCircuitLab();
     requestAnimationFrame(animate);
 }
 animate();
@@ -562,4 +463,4 @@ animate();
 </html>
 """
 
-components.html(science_lab_html, height=600, scrolling=True)
+components.html(circuit_lab_html, height=600, scrolling=True)
