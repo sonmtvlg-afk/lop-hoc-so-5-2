@@ -361,7 +361,7 @@ function drawCircuitLab() {
     // Tiêu đề trực quan trên Canvas
     ctx.fillStyle = '#38bdf8';
     ctx.font = 'bold 18px sans-serif';
-    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN ĐƠN GIẢN & VẬT DẪN ĐIỆN (BÀI 9)', 25, 35);
+    ctx.fillText('⚡ SƠ ĐỒ MẠCH ĐIỆN ĐƠN GIẢN & VẬT DẪN ĐIỆN', 25, 35);
 
     // Khung dây dẫn chính hình chữ nhật: (100, 90) -> (660, 340)
     ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b';
