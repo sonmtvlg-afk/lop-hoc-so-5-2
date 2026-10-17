@@ -41,7 +41,7 @@ st.markdown("""
 st.markdown("""
 <div class="sci-banner">
     <h1>⚡ PHÒNG THÍ NGHIỆM MẠCH ĐIỆN CHI TIẾT - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Mô hình Mạch điện & Vật dẫn điện (Bài 9)</p>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Mô hình Mạch điện & Vật dẫn điện</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -209,7 +209,7 @@ circuit_lab_html = """
 
         <!-- BẢNG ĐIỀU KHIỂN MẠCH ĐIỆN CHI TIẾT -->
         <div class="ctrl-group">
-            <div class="ctrl-title">⚡ Bảng Điều Khiển Mạch Điện (Bài 9)</div>
+            <div class="ctrl-title">⚡ Bảng Điều Khiển Mạch Điện</div>
             
             <label style="font-size:0.92rem; font-weight:bold;">1. Chọn Nguồn Cấp Điện:</label>
             <select id="powerSource" onchange="updateCircuit()" style="margin-bottom:10px; margin-top:4px;">
