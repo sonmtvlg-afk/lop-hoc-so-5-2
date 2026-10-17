@@ -369,7 +369,7 @@ with tab1:
         st.markdown(f"""
         <div class="success-flower-box">
             🌸🌺🌷 TUYỆT VỜI! XUẤT SẮC QUÁ BẠN {st.session_state.student_name.upper()}! 🌷🌺🌸<br>
-            Bạn đã chọn thẻ đáp án <b>CHÍNH XÁC</b>[cite: 1]! Nhận ngay <b>+10 Sao Ngôn Từ ⭐</b> và những đóa hoa tươi thắm từ thầy cô[cite: 1]!
+            Bạn đã chọn thẻ đáp án <b>CHÍNH XÁC</b>! Nhận ngay <b>+10 Sao Ngôn Từ ⭐</b> và những đóa hoa tươi thắm từ thầy cô!
         </div>
         """, unsafe_allow_html=True)
         st.balloons()
@@ -382,7 +382,7 @@ with tab1:
         st.markdown(f"""
         <div class="alert-red-box">
             🚨 BÁO ĐỘNG ĐỎ! CHƯA CHÍNH XÁC RỒI BẠN {st.session_state.student_name.upper()}! 🚨<br>
-            Thẻ đáp án vừa chọn chưa đúng[cite: 1]. Hệ thống kích hoạt chế độ báo động đỏ[cite: 1], yêu cầu bạn hít thở sâu và suy nghĩ kỹ để <b>làm lại từ đầu</b> nhé[cite: 1]!
+            Thẻ đáp án vừa chọn chưa đúng. Hệ thống kích hoạt chế độ báo động đỏ, yêu cầu bạn hít thở sâu và suy nghĩ kỹ để <b>làm lại từ đầu</b> nhé!
         </div>
         """, unsafe_allow_html=True)
         if st.button("🔄 Thử Lại Ngay Lập Tức", use_container_width=True):
