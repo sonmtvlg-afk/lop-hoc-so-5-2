@@ -4,7 +4,7 @@ import re
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Xưởng Sáng Tác & Luyện Câu Tiếng Việt Lớp 5/2 - TH Bình Phước",
+    page_title="Xưởng Sáng Tác & Thử Thách Tiếng Việt Lớp 5/2 - TH Bình Phước",
     page_icon="✍️",
     layout="centered"
 )
@@ -45,11 +45,11 @@ st.markdown("""
     .upgrade-paragraph-box {
         background: #ffffff;
         border: 2px dashed #ae3ec9;
-        padding: 14px 16px;
+        padding: 16px 18px;
         border-radius: 10px;
-        margin-top: 10px;
-        font-size: 1.06rem;
-        line-height: 1.75;
+        margin-top: 8px;
+        font-size: 1.08rem;
+        line-height: 1.8;
         color: #212529;
     }
     .warn-box {
@@ -61,6 +61,28 @@ st.markdown("""
         color: #d9480f;
         margin: 12px 0;
         line-height: 1.6;
+    }
+    .alert-red-box {
+        background: #fff5f5;
+        border: 2.5px solid #ff6b6b;
+        border-radius: 12px;
+        padding: 16px;
+        color: #c92a2a;
+        font-weight: bold;
+        text-align: center;
+        font-size: 1.1rem;
+        margin: 12px 0;
+    }
+    .success-flower-box {
+        background: #ebfbee;
+        border: 2.5px solid #51cf66;
+        border-radius: 12px;
+        padding: 16px;
+        color: #2b8a3e;
+        font-weight: bold;
+        text-align: center;
+        font-size: 1.15rem;
+        margin: 12px 0;
     }
     .vocab-badge {
         display: inline-block;
@@ -106,7 +128,7 @@ if "vocabulary_bank" not in st.session_state:
         "Biện pháp So sánh & Nhân hóa đắt giá": ["uốn lượn như dải lụa", "ôm ấp bờ bãi", "hát khúc ca vui tươi", "như người mẹ hiền", "vẫy tay chào đón", "mỉm cười trong nắng"]
     }
 
-# ==================== KHO ĐỀ BÀI TỪ DỄ ĐẾN KHÓ ====================
+# ==================== KHO ĐỀ BÀI TỪ DỄ ĐẾN KHÓ (TAB SÁNG TÁC) ====================
 CHALLENGES_BY_LEVEL = {
     "🌱 Mức 1: Khởi động (Dễ - Tả đồ vật, con vật, cây cối quen thuộc)": [
         {
@@ -161,32 +183,50 @@ CHALLENGES_BY_LEVEL = {
     ]
 }
 
-# ==================== HÀM TÁCH CÂU & NÂNG CẤP ĐOẠN VĂN DỰA TRÊN Ý HỌC SINH ====================
+# ==================== KHO TRÒ CHƠI THỬ THÁCH TỪ NGỮ (TAB 4) ====================
+MINI_GAMES = {
+    "🎯 Dạng 1: Phân Biệt Từ Láy Miêu tả Thiên Nhiên": {
+        "cau_hoi": "Đâu là từ láy dùng để miêu tả vẻ đẹp long lanh, trong suốt của giọt sương sớm?",
+        "dap_an_dung": "Long lanh",
+        "dap_an_sai": ["Rào rạt", "Ầm ĩ", "Vội vã"]
+    },
+    "🎯 Dạng 2: Giải Mã Biện Pháp So Sánh": {
+        "cau_hoi": "Trong câu: 'Dòng sông quê em hiền hòa uốn lượn như dải lụa mềm mại', tác giả sử dụng biện pháp nghệ thuật gì?",
+        "dap_an_dung": "So sánh",
+        "dap_an_sai": ["Nhân hóa", "Điệp từ", "Ẩn dụ"]
+    },
+    "🎯 Dạng 3: Truy Tìm Từ Gợi Tả Vẻ Đẹp Quê Hương": {
+        "cau_hoi": "Từ nào dưới đây là từ gợi tả sự bình yên, nhẹ nhàng của làng quê?",
+        "dap_an_dung": "Êm đềm",
+        "dap_an_sai": ["Náo nhiệt", "Hối hả", "Ồn ào"]
+    },
+    "🎯 Dạng 4: Nhận Diện Biện Pháp Nhân Hóa": {
+        "cau_hoi": "Câu thơ: 'Đàn gà con mới nở / Tìm mồi bên mẹ cha' kết hợp với hình ảnh 'gọi nhau', 'cục tác' thể hiện biện pháp gì?",
+        "dap_an_dung": "Nhân hóa (gọi vật như người)",
+        "dap_an_sai": ["So sánh ngang bằng", "Liệt kê đơn thuần", "Đảo ngữ"]
+    }
+}
+
+# ==================== HÀM HỖ TRỢ XỬ LÝ VĂN BẢN ====================
 def split_sentences(text):
     raw_parts = re.split(r'[.!?…]+', text.strip())
     sentences = [s.strip() for s in raw_parts if len(s.strip()) > 0]
     return sentences
 
 def upgrade_sentence_by_student_idea(sentence, idx, total_sentences, topic_type):
-    """
-    Giữ nguyên ý gốc trong câu của học sinh, tự động sửa viết hoa đầu câu,
-    nâng cấp các cụm từ khô khan ('rất đẹp', 'rất to', 'rất vui'...) và bổ sung từ nối/hình ảnh.
-    """
     s = sentence.strip()
     if not s:
         return ""
 
-    # 1. Tự động sửa lỗi viết hoa chữ cái đầu câu và đánh dấu nếu học sinh quên viết hoa
     if not s[0].isupper():
         s = f'<span class="hl-edit">{s[0].upper()}</span>' + s[1:]
     else:
         s = s[0] + s[1:]
 
-    # 2. Từ điển nâng cấp các cách diễn đạt đơn giản của học sinh thành từ gợi tả/so sánh
     replacements = [
         (r'\brất đẹp\b', '<span class="hl-edit">đẹp dịu dàng và rực rỡ biết bao</span>'),
         (r'\brất xinh\b', '<span class="hl-edit">xinh xắn và đáng yêu vô cùng</span>'),
-        (r'\brất to\b', '<span class="hl-edit">to lớn, vươn cao sừng sững</span>'),
+        (r'\brất to\b', '<span class="hl-edit">to lớn, vươn cao vững chãi</span>'),
         (r'\brất mát\b', '<span class="hl-edit">mát rượi, xua tan cái nắng trưa hè</span>'),
         (r'\brất vui\b', '<span class="hl-edit">vui tươi, rộn rã tiếng cười</span>'),
         (r'\brất hiền\b', '<span class="hl-edit">hiền từ và ấm áp</span>'),
@@ -207,14 +247,11 @@ def upgrade_sentence_by_student_idea(sentence, idx, total_sentences, topic_type)
             s = re.sub(pattern, repl, s, count=1, flags=re.IGNORECASE)
             modified = True
 
-    # 3. Nếu câu của học sinh chưa có từ nối hoặc còn ngắn, tự động bồi đắp thêm ý dựa vào vị trí câu
     s_lower = sentence.lower()
     if idx == 0 and not modified:
-        # Câu mở đoạn: Thêm cụm từ mở đầu giàu cảm xúc nếu câu ngắn
         if len(sentence.split()) < 10 and not any(s_lower.startswith(w) for w in ["vào", "buổi", "sáng", "trên", "ở", "trong", "nhìn"]):
             s = f'<span class="hl-edit">Mỗi khi ngắm nhìn,</span> {s[0].lower() + s[1:]}'
     elif idx == 1 and not modified:
-        # Câu thân đoạn 1: Thêm từ nối và hình ảnh so sánh/nhân hóa nhẹ nhàng theo chủ đề
         if "như" not in s_lower:
             if topic_type == "do_vat":
                 s = f'{s} <span class="hl-edit">trông thật xinh xắn như một người bạn nhỏ thân thiết</span>'
@@ -229,10 +266,9 @@ def upgrade_sentence_by_student_idea(sentence, idx, total_sentences, topic_type)
             else:
                 s = f'<span class="hl-edit">Nhìn từ xa,</span> {s[0].lower() + s[1:]} <span class="hl-edit">đẹp tựa như một bức tranh thiên nhiên tươi sáng</span>'
     elif idx == total_sentences - 1:
-        # Câu kết đoạn: Bổ sung/mở rộng cảm nghĩ của học sinh dựa trên câu cuối các em viết
         if any(k in s_lower for k in ["yêu", "thích", "quý", "nhớ", "tự hào", "vui", "hứa", "mong"]):
             if not modified:
-                s = f'{s} <span class="hl-edit">và em tự hứa sẽ luôn trân trọng những kỷ niệm đẹp đẽ này</span>'
+                s = f'{s} <span class="hl-edit">và luôn trân trọng những hình ảnh thân thương này</span>'
         else:
             if topic_type == "do_vat":
                 s = f'{s}. <span class="hl-edit">Em rất yêu quý và luôn giữ gìn người bạn nhỏ này thật cẩn thận</span>'
@@ -252,35 +288,6 @@ def build_upgraded_paragraph_from_student(text, challenge_info):
         upgraded_list.append(upgrade_sentence_by_student_idea(sent, i, total, topic_type))
     return " ".join(upgraded_list)
 
-def analyze_student_paragraph(text, challenge_info):
-    sentences = split_sentences(text)
-    num_sentences = len(sentences)
-    text_lower = text.lower()
-
-    good_words = [
-        "xanh biếc", "long lanh", "rì rào", "phấp phới", "hiền hòa", "êm đềm", "thơ mộng",
-        "trìu mến", "dạt dào", "tươi mát", "nhộn nhịp", "rộn rã", "tung tăng", "ấm áp",
-        "mượt mà", "tròn xoe", "xinh xắn", "ngay ngắn", "trong lành", "rực rỡ", "dịu dàng",
-        "ào ạt", "thướt tha", "chăm chỉ", "tận tụy", "lung linh", "ngào ngạt", "thơm phức"
-    ]
-    used_good_words = [w for w in good_words if w in text_lower]
-    has_simile = any(k in text_lower for k in [" như ", "tựa như", "giống như", "chẳng khác gì"])
-    missing_end_punct = not text.strip().endswith(('.', '!', '?', '…'))
-    not_capitalized = [idx + 1 for idx, s in enumerate(sentences) if len(s) > 0 and not s[0].isupper()]
-
-    first_words = [s.split()[0].lower() for s in sentences if len(s.split()) > 0]
-    repeated_start = len(first_words) != len(set(first_words)) and len(first_words) >= 3
-
-    return {
-        "sentences": sentences,
-        "count": num_sentences,
-        "used_good_words": used_good_words,
-        "has_simile": has_simile,
-        "missing_end_punct": missing_end_punct,
-        "not_capitalized": not_capitalized,
-        "repeated_start": repeated_start
-    }
-
 # ==================== TIÊU ĐỀ TRANG ====================
 st.markdown("""
 <div class="main-banner">
@@ -298,11 +305,12 @@ with col_n2:
 
 st.write("")
 
-# ==================== 3 TAB CHỨC NĂNG CHÍNH ====================
-tab1, tab2, tab3 = st.tabs([
+# ==================== 4 TAB CHỨC NĂNG CHÍNH ====================
+tab1, tab2, tab3, tab4 = st.tabs([
     "📖 1. Kho Từ Láy & Biện Pháp Tu Từ",
     "🩺 2. Trạm 'Bác Sĩ Sửa Câu'",
-    "🏆 3. Thử Thách Sáng Tác Nhanh"
+    "🏆 3. Thử Thách Sáng Tác Nhanh",
+    "🎮 4. Thử Thách Tương Tác Từ Ngữ"
 ])
 
 # ------------------------------------------------------------------------------
@@ -340,17 +348,13 @@ with tab2:
             st.session_state.stars += 5
             st.balloons()
             
-            # Tự động nâng cấp dựa trên chính câu học sinh nhập
             student_sents = split_sentences(user_sentence)
             upgraded_single = " ".join([upgrade_sentence_by_student_idea(s, idx, len(student_sents), "canh_vat") for idx, s in enumerate(student_sents)])
             
             st.markdown(f"""
             <div class="ai-box">
-                🤗 <b>Nhận xét từ Trợ lý Học sinh lớp 5 dành cho bạn {st.session_state.student_name}:</b><br><br>
-                • <b>Câu gốc của bạn:</b> <span style="color:#e03131;">"{user_sentence}"</span><br><br>
-                • <b>Câu văn sau khi được nâng cấp dựa theo ý của bạn <span style="color:#7048e8;">(Phần tô màu tím là từ ngữ được trau chuốt thêm)</span>:</b><br>
-                <div class="upgrade-paragraph-box">{upgraded_single}</div><br>
-                💡 <i><b>Mẹo nhỏ:</b> Bạn chỉ cần thay các từ chỉ mức độ như "rất đẹp, rất to..." bằng từ láy và thêm hình ảnh so sánh ("như...") là câu văn của bạn sẽ cuốn hút ngay!</i>
+                🤗 <b>Đoạn câu đã được chỉnh sửa hoàn chỉnh cho bạn {st.session_state.student_name}:</b>
+                <div class="upgrade-paragraph-box">{upgraded_single}</div>
             </div>
             """, unsafe_allow_html=True)
             st.success("Tuyệt vời! Em được thưởng +5 Sao Ngôn Từ ⭐")
@@ -358,7 +362,7 @@ with tab2:
             st.warning("Bạn hãy nhập câu văn vào ô trống trước khi bấm nút nhé!")
 
 # ------------------------------------------------------------------------------
-# TAB 3: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH (CÓ RÀNG BUỘC 3 - 5 CÂU & SỬA THEO Ý HS)
+# TAB 3: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH
 # ------------------------------------------------------------------------------
 with tab3:
     st.subheader("🏆 Thử Thách Sáng Tác Đoạn Văn Nhanh (Từ 3 đến 5 câu)")
@@ -394,81 +398,125 @@ with tab3:
 
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
-        submit_btn = st.button("✅ Nộp Bài & Xem Nhận Xét", use_container_width=True)
+        submit_btn = st.button("✅ Nộp Bài & Xem Đoạn Văn Hoàn Chỉnh", use_container_width=True)
     with col_btn2:
         if st.button("🎲 Đổi Đề Bài Khác Cùng Mức Độ", use_container_width=True):
             st.session_state.challenge_idx += 1
             st.rerun()
 
     if submit_btn:
-        result = analyze_student_paragraph(paragraph_input, current_item)
-        c_count = result["count"]
+        c_count = len(live_sentences)
 
-        # RÀNG BUỘC SỐ CÂU TỪ 3 - 5 CÂU
         if c_count < 3:
             st.markdown(f"""
             <div class="warn-box">
-                ⚠️ <b>Nhận xét từ Trợ lý Học sinh lớp 5:</b><br>
-                Bạn <b>{st.session_state.student_name}</b> ơi, đoạn văn của bạn hiện mới có <b>{c_count} câu</b> (chưa đủ yêu cầu từ <b>3 đến 5 câu</b>).<br><br>
-                👉 <b>Cách sửa cực dễ:</b> Bạn hãy viết thêm khoảng <b>{3 - c_count} câu nữa</b> để miêu tả thêm chi tiết hoặc nêu cảm nghĩ của bạn ở cuối đoạn, và nhớ đặt dấu chấm (<b>.</b>) để tách các câu nhé!
+                ⚠️ <b>Nhắc nhở từ Trợ lý Học sinh lớp 5:</b><br>
+                Bạn <b>{st.session_state.student_name}</b> ơi, đoạn văn của bạn hiện mới có <b>{c_count} câu</b> (chưa đủ yêu cầu từ <b>3 đến 5 câu</b>).<br>
+                👉 Bạn hãy viết thêm khoảng <b>{3 - c_count} câu nữa</b> và nhớ đặt dấu chấm (<b>.</b>) cuối mỗi câu nhé!
             </div>
             """, unsafe_allow_html=True)
         elif c_count > 5:
             st.markdown(f"""
             <div class="warn-box">
-                ⚠️ <b>Nhận xét từ Trợ lý Học sinh lớp 5:</b><br>
-                Bạn <b>{st.session_state.student_name}</b> viết rất nhiệt tình nhưng đoạn văn đang có tới <b>{c_count} câu</b> (vượt quá quy định <b>3 đến 5 câu</b> mất rồi!).<br><br>
-                👉 <b>Cách sửa cực dễ:</b> Bạn hãy rút gọn lại hoặc gộp các câu ngắn gần ý nhau lại sao cho cả đoạn chỉ gói gọn trong <b>3 đến 5 câu văn</b> thật súc tích nhé!
+                ⚠️ <b>Nhắc nhở từ Trợ lý Học sinh lớp 5:</b><br>
+                Đoạn văn của bạn <b>{st.session_state.student_name}</b> đang có <b>{c_count} câu</b> (vượt quá quy định <b>3 đến 5 câu</b>).<br>
+                👉 Bạn hãy rút gọn lại để đoạn văn chỉ gói gọn trong <b>3 đến 5 câu</b> thôi nhé!
             </div>
             """, unsafe_allow_html=True)
         else:
             st.session_state.stars += 15
             st.balloons()
-            st.success(f"🎉 Hoan hô bạn {st.session_state.student_name}! Bạn đã viết đúng yêu cầu ({c_count} câu văn) và nhận được +15 Sao Ngôn Từ ⭐!")
+            st.success(f"🎉 Hoan hô bạn {st.session_state.student_name}! Bạn đã hoàn thành đoạn văn ({c_count} câu) và nhận được +15 Sao Ngôn Từ ⭐!")
 
-            # Lời khen gần gũi
-            praise_points = [f"Bạn viết đúng độ dài quy định (<b>{c_count} câu văn</b>), các ý trong đoạn liên kết với nhau rất tự nhiên."]
-            if result["used_good_words"]:
-                words_str = ", ".join([f"<b>'{w}'</b>" for w in result["used_good_words"]])
-                praise_points.append(f"Bạn đã biết chọn lọc từ ngữ gợi tả rất hay như: {words_str}.")
-            if result["has_simile"]:
-                praise_points.append("Bạn đã biết dùng phép <b>so sánh</b> làm cho hình ảnh trong đoạn văn hiện lên rất rõ nét!")
-
-            # Lời góp ý sửa chữa nhẹ nhàng, dễ hiểu cho học sinh lớp 5
-            fix_points = []
-            if result["not_capitalized"]:
-                cau_loi = ", ".join([f"câu số {i}" for i in result["not_capitalized"]])
-                fix_points.append(f"Chữ cái đầu tiên ở <b>{cau_loi}</b> chưa được viết hoa. Trợ lý đã giúp bạn viết hoa lại ở đoạn văn gợi ý bên dưới rồi nhé!")
-            if result["missing_end_punct"]:
-                fix_points.append("Cuối đoạn văn bạn quên đặt dấu chấm (<b>.</b>) kết thúc câu. Bạn nhớ chú ý dấu câu nha!")
-            if not result["used_good_words"]:
-                goi_y_them = ", ".join([f"<b>{w}</b>" for w in current_item["goi_y_tu"][:3]])
-                fix_points.append(f"Ý văn của bạn rất tốt! Để câu văn giàu hình ảnh hơn, bạn có thể thêm các từ gợi tả như: {goi_y_them}.")
-            if not result["has_simile"]:
-                fix_points.append("Bạn thử thêm một hình ảnh so sánh (dùng từ <b>'như'</b>) vào câu miêu tả xem sao, đoạn văn sẽ sinh động hơn rất nhiều đấy!")
-            if result["repeated_start"]:
-                fix_points.append("Một vài câu trong đoạn đang mở đầu giống nhau. Bạn hãy thêm từ nối hoặc từ chỉ thời gian ở đầu câu để đoạn văn mượt mà hơn nhé!")
-
-            if not fix_points:
-                fix_points.append("Bài viết của bạn rất sạch sẽ, đúng chính tả và biết cách dùng từ giàu hình ảnh. Hãy tiếp tục phát huy nhé!")
-
-            praise_html = "".join([f"<li>{p}</li>" for p in praise_points])
-            fix_html = "".join([f"<li>{f}</li>" for f in fix_points])
-
-            # Tạo đoạn văn nâng cấp dựa trực tiếp vào từng câu của học sinh
             upgraded_full_paragraph = build_upgraded_paragraph_from_student(paragraph_input, current_item)
 
             st.markdown(f"""
             <div class="ai-box">
-                🌟 <b>Nhận xét từ Trợ lý Học sinh lớp 5 dành cho bạn {st.session_state.student_name}:</b><br><br>
-                👍 <b>Điểm đáng khen của bạn:</b>
-                <ul style="margin-top:4px; margin-bottom:10px;">{praise_html}</ul>
-                ✍️ <b>Gợi ý nhỏ để bạn sửa bài hay hơn nữa:</b>
-                <ul style="margin-top:4px; margin-bottom:12px;">{fix_html}</ul>
-                💎 <b>Đoạn văn gợi ý chỉnh sửa hoàn chỉnh (Dựa theo đúng ý bài viết của bạn {st.session_state.student_name}):</b><br>
-                <span style="font-size:0.92rem; color:#5f3dc4;"><i>(Các chữ <span class="hl-edit">tô màu tím</span> là phần Trợ lý giúp bạn sửa lỗi viết hoa hoặc thêm từ gợi tả, so sánh vào ý gốc của bạn)</i></span>
+                💎 <b>Đoạn văn chỉnh sửa hoàn chỉnh của bạn {st.session_state.student_name}:</b>
                 <div class="upgrade-paragraph-box">
                     {upgraded_full_paragraph}
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+# ------------------------------------------------------------------------------
+# TAB 4: THỬ THÁCH TƯƠNG TÁC TỪ NGỮ (ÔN TẬP THẺ ĐÚNG/SAI, TUYÊN DƯƠNG/BÁO ĐỘNG ĐỎ)
+# ------------------------------------------------------------------------------
+with tab4:
+    st.subheader("🎮 Thử Thách Tương Tác: Ôn Tập Từ Ngữ & Biện Pháp Tu Từ")
+    st.write("Em hãy thử tài lựa chọn thẻ đáp án chính xác cho các câu hỏi ôn tập dưới đây[cite: 1]. Chọn đúng sẽ nhận được hoa tươi và lời tuyên dương[cite: 1], chọn sai sẽ kích hoạt báo động đỏ và yêu cầu làm lại[cite: 1]!")
+
+    # Khởi tạo trạng thái trò chơi tương tác
+    if "game_key" not in st.session_state:
+        st.session_state.game_key = list(MINI_GAMES.keys())[0]
+    if "game_status" not in st.session_state:
+        st.session_state.game_status = "playing" # playing, success, fail
+
+    # Chọn dạng bài tập tương tác
+    chosen_game_key = st.selectbox(
+        "🗂️ Chọn dạng bài tập tương tác:",
+        list(MINI_GAMES.keys()),
+        key="select_game_type"
+    )
+
+    if chosen_game_key != st.session_state.game_key:
+        st.session_state.game_key = chosen_game_key
+        st.session_state.game_status = "playing"
+        # Xáo trộn lại danh sách thẻ đáp án khi đổi dạng bài
+        current_data = MINI_GAMES[chosen_game_key]
+        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
+        random.shuffle(all_opts)
+        st.session_state.shuffled_options = all_opts
+
+    if "shuffled_options" not in st.session_state:
+        current_data = MINI_GAMES[chosen_game_key]
+        all_opts = [current_data["dap_an_dung"]] + current_data["dap_an_sai"]
+        random.shuffle(all_opts)
+        st.session_state.shuffled_options = all_opts
+
+    current_data = MINI_GAMES[st.session_state.game_key]
+
+    st.markdown(f"""
+    <div style="background:#e7f5ff; border:2px solid #74c0fc; border-radius:12px; padding:16px; margin:10px 0; font-size:1.1rem; color:#1864ab; font-weight:bold;">
+        ❓ {current_data['cau_hoi']}
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("👇 **Hãy bấm chọn thẻ đáp án bên dưới:**")
+
+    # Hiển thị các thẻ lựa chọn tương tác
+    cols = st.columns(len(st.session_state.shuffled_options))
+    for idx, opt in enumerate(st.session_state.shuffled_options):
+        with cols[idx]:
+            if st.button(f"🏷️ {opt}", key=f"btn_opt_{idx}", use_container_width=True):
+                if opt == current_data["dap_an_dung"]:
+                    st.session_state.game_status = "success"
+                    st.session_state.stars += 10
+                else:
+                    st.session_state.game_status = "fail"
+
+    # Phản hồi tương tác: Hoa tươi/Tuyên dương hoặc Báo động đỏ
+    if st.session_state.game_status == "success":
+        st.markdown(f"""
+        <div class="success-flower-box">
+            🌸🌺🌷 TUYỆT VỜI! XUẤT SẮC QUÁ BẠN {st.session_state.student_name.upper()}! 🌷🌺🌸<br>
+            Bạn đã chọn thẻ đáp án <b>CHÍNH XÁC</b>[cite: 1]! Nhận ngay <b>+10 Sao Ngôn Từ ⭐</b> và những đóa hoa tươi thắm từ thầy cô[cite: 1]!
+        </div>
+        """, unsafe_allow_html=True)
+        st.balloons()
+        if st.button("🔄 Chơi Thử Thách Khác Ngay", use_container_width=True):
+            st.session_state.game_status = "playing"
+            random.shuffle(st.session_state.shuffled_options)
+            st.rerun()
+
+    elif st.session_state.game_status == "fail":
+        st.markdown(f"""
+        <div class="alert-red-box">
+            🚨 BÁO ĐỘNG ĐỎ! CHƯA CHÍNH XÁC RỒI BẠN {st.session_state.student_name.upper()}! 🚨<br>
+            Thẻ đáp án vừa chọn chưa đúng[cite: 1]. Hệ thống kích hoạt chế độ báo động đỏ[cite: 1], yêu cầu bạn hít thở sâu và suy nghĩ kỹ để <b>làm lại từ đầu</b> nhé[cite: 1]!
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🔄 Thử Lại Ngay Lập Tức", use_container_width=True):
+            st.session_state.game_status = "playing"
+            random.shuffle(st.session_state.shuffled_options)
+            st.rerun()
