@@ -40,7 +40,17 @@ st.markdown("""
         font-size: 1.05rem;
         color: #3b0764;
         margin: 12px 0;
-        line-height: 1.65;
+        line-height: 1.7;
+    }
+    .upgrade-paragraph-box {
+        background: #ffffff;
+        border: 2px dashed #ae3ec9;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-top: 10px;
+        font-size: 1.06rem;
+        line-height: 1.75;
+        color: #212529;
     }
     .warn-box {
         background: #fff4e6;
@@ -74,6 +84,13 @@ st.markdown("""
         font-size: 0.88rem;
         margin-bottom: 6px;
     }
+    .hl-edit {
+        color: #ae3ec9;
+        background-color: #f3f0ff;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 4px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -95,68 +112,151 @@ CHALLENGES_BY_LEVEL = {
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả một đồ dùng học tập thân thiết với em (cây bút, quyển vở, chiếc cặp sách...).",
             "goi_y_tu": ["xinh xắn", "ngay ngắn", "thơm phức", "người bạn nhỏ", "đồng hành"],
-            "mau_nang_cap": "Chiếc cặp sách <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>như một người bạn nhỏ chăm chỉ</strong> luôn cùng em đến trường mỗi ngày."
+            "loai": "do_vat"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả một loài cây hoặc loài hoa trong sân trường Tiểu học Bình Phước mà em yêu thích.",
             "goi_y_tu": ["xanh mát", "rực rỡ", "rung rinh", "tỏa bóng", "vẫy chào"],
-            "mau_nang_cap": "Dưới ánh nắng mai, hàng cây phượng vĩ <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>xòe những tán lá xanh rì như chiếc ô khổng lồ</strong> che mát cho chúng em."
+            "loai": "cay_coi"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả một con vật nuôi đáng yêu trong gia đình em (chú chó, chú mèo, đàn gà...).",
             "goi_y_tu": ["mượt mà", "tròn xoe", "nhanh nhẹn", "quấn quýt", "đáng yêu"],
-            "mau_nang_cap": "Chú mèo mướp có <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>bộ lông vàng mượt mà như nhung và đôi mắt tròn xoe như hai hòn bi ve</strong>."
+            "loai": "con_vat"
         }
     ],
     "⭐ Mức 2: Vượt chướng ngại vật (Trung bình - Tả cảnh thiên nhiên, trường lớp, người thân)": [
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả cảnh buổi sáng trên quê hương em, trong đó có dùng ít nhất 1 từ láy.",
             "goi_y_tu": ["trong lành", "long lanh", "rì rào", "dịu dàng", "thức dậy"],
-            "mau_nang_cap": "Buổi sáng trên quê hương em thật <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>trong lành và yên bình</strong>, những giọt sương sớm còn <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>đọng long lanh như hạt ngọc</strong> trên lá."
+            "loai": "canh_vat"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) miêu tả khung cảnh sân trường Tiểu học Bình Phước vào giờ ra chơi.",
             "goi_y_tu": ["nhộn nhịp", "rộn rã", "tung tăng", "tiếng cười", "náo nhiệt"],
-            "mau_nang_cap": "Tiếng trống trường vừa vang lên, sân trường lập tức <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>rộn rã tiếng cười nói như một bầy chim non vỡ tổ</strong>."
+            "loai": "truong_lop"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả hình ảnh thầy giáo hoặc cô giáo đang say sưa giảng bài trên lớp.",
             "goi_y_tu": ["ấm áp", "trìu mến", "say sưa", "tận tụy", "dịu hiền"],
-            "mau_nang_cap": "Giọng thầy giảng bài <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>ấm áp và truyền cảm</strong>, từng nét chữ phấn trắng <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>hiện lên ngay ngắn, đẹp đẽ</strong> trên bảng đen."
+            "loai": "con_nguoi"
         }
     ],
     "👑 Mức 3: Về đích (Khó - Kết hợp từ láy, so sánh, nhân hóa và bộc lộ cảm xúc)": [
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả dòng sông hoặc cánh đồng lúa quê hương, trong đó có sử dụng cả biện pháp so sánh và nhân hóa.",
             "goi_y_tu": ["hiền hòa", "uốn lượn", "dải lụa", "ôm ấp", "rì rào", "chín vàng"],
-            "mau_nang_cap": "Dòng sông quê em <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>hiền hòa uốn lượn như một dải lụa đào</strong>, ngày đêm <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>thầm thì kể chuyện</strong> cho đôi bờ nghe."
+            "loai": "canh_vat"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) tả một cơn mưa rào mùa hạ trên quê hương em và cảm xúc của em khi mưa tạnh.",
             "goi_y_tu": ["ào ạt", "trắng xóa", "tươi tốt", "hả hê", "trong vắt", "cầu vồng"],
-            "mau_nang_cap": "Cơn mưa rào <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>ào ạt trút nước mát lành</strong> xuống mặt đất, cây cối trong vườn <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>vẫy tay tắm mưa đầy thích thú</strong>."
+            "loai": "canh_vat"
         },
         {
             "de_bai": "Em hãy viết một đoạn văn ngắn (từ 3 đến 5 câu) kể lại một việc làm tốt của em giúp đỡ ông bà, cha mẹ ở nhà và nêu cảm nghĩ của em.",
             "goi_y_tu": ["vui vẻ", "cẩn thận", "ấm áp", "khen ngợi", "tự hào", "yêu thương"],
-            "mau_nang_cap": "Nhìn nụ cười <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>hiền hậu và ánh mắt trìu mến</strong> của bà khi em phụ quét nhà, lòng em <strong style='color:#ae3ec9; background:#f3f0ff; padding:1px 5px; border-radius:4px;'>ngập tràn niềm vui ấm áp</strong>."
+            "loai": "con_nguoi"
         }
     ]
 }
 
-# ==================== HÀM ĐẾM CÂU & PHÂN TÍCH BÀI VIẾT LỚP 5 ====================
+# ==================== HÀM TÁCH CÂU & NÂNG CẤP ĐOẠN VĂN DỰA TRÊN Ý HỌC SINH ====================
 def split_sentences(text):
-    # Tách câu dựa trên dấu chấm (.), chấm than (!), chấm hỏi (?), dấu ba chấm (...)
     raw_parts = re.split(r'[.!?…]+', text.strip())
     sentences = [s.strip() for s in raw_parts if len(s.strip()) > 0]
     return sentences
+
+def upgrade_sentence_by_student_idea(sentence, idx, total_sentences, topic_type):
+    """
+    Giữ nguyên ý gốc trong câu của học sinh, tự động sửa viết hoa đầu câu,
+    nâng cấp các cụm từ khô khan ('rất đẹp', 'rất to', 'rất vui'...) và bổ sung từ nối/hình ảnh.
+    """
+    s = sentence.strip()
+    if not s:
+        return ""
+
+    # 1. Tự động sửa lỗi viết hoa chữ cái đầu câu và đánh dấu nếu học sinh quên viết hoa
+    if not s[0].isupper():
+        s = f'<span class="hl-edit">{s[0].upper()}</span>' + s[1:]
+    else:
+        s = s[0] + s[1:]
+
+    # 2. Từ điển nâng cấp các cách diễn đạt đơn giản của học sinh thành từ gợi tả/so sánh
+    replacements = [
+        (r'\brất đẹp\b', '<span class="hl-edit">đẹp dịu dàng và rực rỡ biết bao</span>'),
+        (r'\brất xinh\b', '<span class="hl-edit">xinh xắn và đáng yêu vô cùng</span>'),
+        (r'\brất to\b', '<span class="hl-edit">to lớn, vươn cao sừng sững</span>'),
+        (r'\brất mát\b', '<span class="hl-edit">mát rượi, xua tan cái nắng trưa hè</span>'),
+        (r'\brất vui\b', '<span class="hl-edit">vui tươi, rộn rã tiếng cười</span>'),
+        (r'\brất hiền\b', '<span class="hl-edit">hiền từ và ấm áp</span>'),
+        (r'\brất nhanh\b', '<span class="hl-edit">nhanh thoăn thoắt</span>'),
+        (r'\brất thơm\b', '<span class="hl-edit">tỏa hương thơm ngát dễ chịu</span>'),
+        (r'\brất sạch\b', '<span class="hl-edit">sạch bong, gọn gàng và ngăn nắp</span>'),
+        (r'\bmàu xanh\b', '<span class="hl-edit">khoác lên mình màu xanh biếc tươi mát</span>'),
+        (r'\bmàu đỏ\b', '<span class="hl-edit">rực lên sắc đỏ tươi thắm</span>'),
+        (r'\bmàu vàng\b', '<span class="hl-edit">óng ánh sắc vàng tươi rực rỡ</span>'),
+        (r'\bchảy êm đềm\b', '<span class="hl-edit">hiền hòa uốn lượn như dải lụa mềm mại</span>'),
+        (r'\bgiảng bài\b', '<span class="hl-edit">say sưa giảng bài với giọng nói ấm áp, truyền cảm</span>'),
+        (r'\bra chơi\b', '<span class="hl-edit">ùa ra sân chơi tung tăng như bầy chim non</span>')
+    ]
+
+    modified = False
+    for pattern, repl in replacements:
+        if re.search(pattern, s, flags=re.IGNORECASE):
+            s = re.sub(pattern, repl, s, count=1, flags=re.IGNORECASE)
+            modified = True
+
+    # 3. Nếu câu của học sinh chưa có từ nối hoặc còn ngắn, tự động bồi đắp thêm ý dựa vào vị trí câu
+    s_lower = sentence.lower()
+    if idx == 0 and not modified:
+        # Câu mở đoạn: Thêm cụm từ mở đầu giàu cảm xúc nếu câu ngắn
+        if len(sentence.split()) < 10 and not any(s_lower.startswith(w) for w in ["vào", "buổi", "sáng", "trên", "ở", "trong", "nhìn"]):
+            s = f'<span class="hl-edit">Mỗi khi ngắm nhìn,</span> {s[0].lower() + s[1:]}'
+    elif idx == 1 and not modified:
+        # Câu thân đoạn 1: Thêm từ nối và hình ảnh so sánh/nhân hóa nhẹ nhàng theo chủ đề
+        if "như" not in s_lower:
+            if topic_type == "do_vat":
+                s = f'{s} <span class="hl-edit">trông thật xinh xắn như một người bạn nhỏ thân thiết</span>'
+            elif topic_type == "cay_coi":
+                s = f'{s} <span class="hl-edit">đang khẽ đung đưa trong gió như vẫy tay chào chúng em</span>'
+            elif topic_type == "con_vat":
+                s = f'{s} <span class="hl-edit">với dáng vẻ nhanh nhẹn và vô cùng đáng yêu</span>'
+            elif topic_type == "truong_lop":
+                s = f'<span class="hl-edit">Khắp sân trường,</span> {s[0].lower() + s[1:]} <span class="hl-edit">tạo nên bầu không khí vô cùng nhộn nhịp</span>'
+            elif topic_type == "con_nguoi":
+                s = f'{s} <span class="hl-edit">với ánh mắt trìu mến và nụ cười hiền hậu</span>'
+            else:
+                s = f'<span class="hl-edit">Nhìn từ xa,</span> {s[0].lower() + s[1:]} <span class="hl-edit">đẹp tựa như một bức tranh thiên nhiên tươi sáng</span>'
+    elif idx == total_sentences - 1:
+        # Câu kết đoạn: Bổ sung/mở rộng cảm nghĩ của học sinh dựa trên câu cuối các em viết
+        if any(k in s_lower for k in ["yêu", "thích", "quý", "nhớ", "tự hào", "vui", "hứa", "mong"]):
+            if not modified:
+                s = f'{s} <span class="hl-edit">và em tự hứa sẽ luôn trân trọng những kỷ niệm đẹp đẽ này</span>'
+        else:
+            if topic_type == "do_vat":
+                s = f'{s}. <span class="hl-edit">Em rất yêu quý và luôn giữ gìn người bạn nhỏ này thật cẩn thận</span>'
+            elif topic_type in ["cay_coi", "canh_vat", "truong_lop"]:
+                s = f'{s}. <span class="hl-edit">Ngắm nhìn khung cảnh ấy, lòng em lại trào dâng niềm yêu mến và tự hào biết bao</span>'
+            else:
+                s = f'{s}. <span class="hl-edit">Em cảm thấy trong lòng thật vui và ngập tràn niềm hạnh phúc ấm áp</span>'
+
+    return s + "."
+
+def build_upgraded_paragraph_from_student(text, challenge_info):
+    sentences = split_sentences(text)
+    total = len(sentences)
+    topic_type = challenge_info.get("loai", "canh_vat")
+    upgraded_list = []
+    for i, sent in enumerate(sentences):
+        upgraded_list.append(upgrade_sentence_by_student_idea(sent, i, total, topic_type))
+    return " ".join(upgraded_list)
 
 def analyze_student_paragraph(text, challenge_info):
     sentences = split_sentences(text)
     num_sentences = len(sentences)
     text_lower = text.lower()
 
-    # Kiểm tra từ láy / từ gợi tả phổ biến
     good_words = [
         "xanh biếc", "long lanh", "rì rào", "phấp phới", "hiền hòa", "êm đềm", "thơ mộng",
         "trìu mến", "dạt dào", "tươi mát", "nhộn nhịp", "rộn rã", "tung tăng", "ấm áp",
@@ -164,15 +264,10 @@ def analyze_student_paragraph(text, challenge_info):
         "ào ạt", "thướt tha", "chăm chỉ", "tận tụy", "lung linh", "ngào ngạt", "thơm phức"
     ]
     used_good_words = [w for w in good_words if w in text_lower]
-
-    # Kiểm tra dấu hiệu phép so sánh ("như", "tựa như", "giống như", "là")
     has_simile = any(k in text_lower for k in [" như ", "tựa như", "giống như", "chẳng khác gì"])
-
-    # Kiểm tra lỗi viết hoa đầu câu hoặc thiếu dấu chấm cuối đoạn
     missing_end_punct = not text.strip().endswith(('.', '!', '?', '…'))
     not_capitalized = [idx + 1 for idx, s in enumerate(sentences) if len(s) > 0 and not s[0].isupper()]
 
-    # Kiểm tra lỗi lặp từ đầu câu
     first_words = [s.split()[0].lower() for s in sentences if len(s.split()) > 0]
     repeated_start = len(first_words) != len(set(first_words)) and len(first_words) >= 3
 
@@ -245,17 +340,17 @@ with tab2:
             st.session_state.stars += 5
             st.balloons()
             
-            version1 = 'Dòng sông quê em <strong style="color:#ae3ec9; background-color:#f3f0ff; padding:2px 6px; border-radius:4px;">hiền hòa uốn lượn như dải lụa mềm mại, ôm ấp lấy những xóm làng trù phú</strong>.'
-            version2 = 'Từ trên cao nhìn xuống, con sông <strong style="color:#ae3ec9; background-color:#f3f0ff; padding:2px 6px; border-radius:4px;">khoác lên mình tấm áo xanh biếc, rợp bóng dừa nước mát rượi</strong>.'
+            # Tự động nâng cấp dựa trên chính câu học sinh nhập
+            student_sents = split_sentences(user_sentence)
+            upgraded_single = " ".join([upgrade_sentence_by_student_idea(s, idx, len(student_sents), "canh_vat") for idx, s in enumerate(student_sents)])
             
             st.markdown(f"""
             <div class="ai-box">
                 🤗 <b>Nhận xét từ Trợ lý Học sinh lớp 5 dành cho bạn {st.session_state.student_name}:</b><br><br>
-                • <b>Câu gốc của bạn:</b> <span style="color:#e03131;">"{user_sentence}"</span> <i>(Câu đã rõ ý nhưng còn hơi ngắn và lặp từ)</i><br><br>
-                • <b>Gợi ý sửa lại cho hay hơn <span style="color:#7048e8;">(Phần chữ tô màu nổi bật là phần được thêm vào)</span>:</b><br>
-                1. {version1}<br>
-                2. {version2}<br><br>
-                💡 <i><b>Mẹo nhỏ:</b> Bạn chỉ cần thay từ lặp bằng từ đồng nghĩa (con sông -> dòng sông) và thêm từ láy, hình ảnh so sánh ("như dải lụa") là câu văn sáng bừng lên ngay!</i>
+                • <b>Câu gốc của bạn:</b> <span style="color:#e03131;">"{user_sentence}"</span><br><br>
+                • <b>Câu văn sau khi được nâng cấp dựa theo ý của bạn <span style="color:#7048e8;">(Phần tô màu tím là từ ngữ được trau chuốt thêm)</span>:</b><br>
+                <div class="upgrade-paragraph-box">{upgraded_single}</div><br>
+                💡 <i><b>Mẹo nhỏ:</b> Bạn chỉ cần thay các từ chỉ mức độ như "rất đẹp, rất to..." bằng từ láy và thêm hình ảnh so sánh ("như...") là câu văn của bạn sẽ cuốn hút ngay!</i>
             </div>
             """, unsafe_allow_html=True)
             st.success("Tuyệt vời! Em được thưởng +5 Sao Ngôn Từ ⭐")
@@ -263,7 +358,7 @@ with tab2:
             st.warning("Bạn hãy nhập câu văn vào ô trống trước khi bấm nút nhé!")
 
 # ------------------------------------------------------------------------------
-# TAB 3: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH (CÓ RÀNG BUỘC 3 - 5 CÂU)
+# TAB 3: THỬ THÁCH SÁNG TÁC ĐOẠN VĂN NHANH (CÓ RÀNG BUỘC 3 - 5 CÂU & SỬA THEO Ý HS)
 # ------------------------------------------------------------------------------
 with tab3:
     st.subheader("🏆 Thử Thách Sáng Tác Đoạn Văn Nhanh (Từ 3 đến 5 câu)")
@@ -291,10 +386,9 @@ with tab3:
     paragraph_input = st.text_area(
         "📝 Viết đoạn văn của bạn vào đây (Nhớ viết từ 3 đến 5 câu và đặt dấu chấm '.' cuối mỗi câu):",
         height=140,
-        placeholder="Ví dụ: Sáng sớm, bầu trời quê em trong xanh và cao vời vợi. Những giọt sương đêm còn đọng long lanh trên phiến lá như những hạt ngọc nhỏ. Gió thổi rì rào qua hàng dừa xanh mát. Em rất yêu vẻ đẹp bình yên của quê hương mình."
+        placeholder="Ví dụ: Buổi sáng quê em rất đẹp. Gió thổi rất mát qua hàng cây. Ông mặt trời tỏa nắng màu vàng trên cánh đồng. Em rất yêu quê hương của em."
     )
 
-    # Bộ đếm số câu trực tiếp giúp học sinh dễ theo dõi
     live_sentences = split_sentences(paragraph_input)
     st.caption(f"📊 **Số câu hiện tại bạn đã viết:** `{len(live_sentences)} câu` *(Yêu cầu hợp lệ: từ 3 đến 5 câu)*")
 
@@ -328,40 +422,41 @@ with tab3:
             </div>
             """, unsafe_allow_html=True)
         else:
-            # ĐẠT YÊU CẦU TỪ 3 - 5 CÂU -> CHẤM ĐIỂM & NHẬN XÉT GẦN GŨI
             st.session_state.stars += 15
             st.balloons()
             st.success(f"🎉 Hoan hô bạn {st.session_state.student_name}! Bạn đã viết đúng yêu cầu ({c_count} câu văn) và nhận được +15 Sao Ngôn Từ ⭐!")
 
-            # Tạo lời khen gần gũi
-            praise_points = []
-            praise_points.append(f"Bạn viết đúng số câu quy định (<b>{c_count} câu</b>), các câu sắp xếp rất hợp lý.")
+            # Lời khen gần gũi
+            praise_points = [f"Bạn viết đúng độ dài quy định (<b>{c_count} câu văn</b>), các ý trong đoạn liên kết với nhau rất tự nhiên."]
             if result["used_good_words"]:
                 words_str = ", ".join([f"<b>'{w}'</b>" for w in result["used_good_words"]])
-                praise_points.append(f"Bạn đã biết dùng từ ngữ gợi tả rất hay trong bài như: {words_str}.")
+                praise_points.append(f"Bạn đã biết chọn lọc từ ngữ gợi tả rất hay như: {words_str}.")
             if result["has_simile"]:
-                praise_points.append("Bạn đã khéo léo đưa hình ảnh <b>so sánh</b> vào bài giúp câu văn sinh động hơn hẳn!")
+                praise_points.append("Bạn đã biết dùng phép <b>so sánh</b> làm cho hình ảnh trong đoạn văn hiện lên rất rõ nét!")
 
-            # Tạo lời góp ý sửa chữa nhẹ nhàng, dễ hiểu cho học sinh lớp 5
+            # Lời góp ý sửa chữa nhẹ nhàng, dễ hiểu cho học sinh lớp 5
             fix_points = []
             if result["not_capitalized"]:
                 cau_loi = ", ".join([f"câu số {i}" for i in result["not_capitalized"]])
-                fix_points.append(f"Chữ cái đầu tiên ở <b>{cau_loi}</b> chưa được viết hoa. Bạn nhớ viết hoa chữ cái đầu mỗi câu sau dấu chấm nhé!")
+                fix_points.append(f"Chữ cái đầu tiên ở <b>{cau_loi}</b> chưa được viết hoa. Trợ lý đã giúp bạn viết hoa lại ở đoạn văn gợi ý bên dưới rồi nhé!")
             if result["missing_end_punct"]:
-                fix_points.append("Cuối đoạn văn bạn quên đặt dấu chấm (<b>.</b>) rồi. Nhớ đặt dấu chấm kết thúc câu cuối cùng nha!")
+                fix_points.append("Cuối đoạn văn bạn quên đặt dấu chấm (<b>.</b>) kết thúc câu. Bạn nhớ chú ý dấu câu nha!")
             if not result["used_good_words"]:
                 goi_y_them = ", ".join([f"<b>{w}</b>" for w in current_item["goi_y_tu"][:3]])
-                fix_points.append(f"Câu văn của bạn đã rõ ý rồi, nhưng để bài văn bay bổng hơn, bạn thử thêm các từ láy hoặc từ gợi tả như: {goi_y_them} vào nhé!")
+                fix_points.append(f"Ý văn của bạn rất tốt! Để câu văn giàu hình ảnh hơn, bạn có thể thêm các từ gợi tả như: {goi_y_them}.")
             if not result["has_simile"]:
-                fix_points.append("Bạn thử thêm từ <b>'như'</b> để tạo một hình ảnh so sánh xem sao, chắc chắn bài văn sẽ cuốn hút hơn nhiều đấy!")
+                fix_points.append("Bạn thử thêm một hình ảnh so sánh (dùng từ <b>'như'</b>) vào câu miêu tả xem sao, đoạn văn sẽ sinh động hơn rất nhiều đấy!")
             if result["repeated_start"]:
-                fix_points.append("Một số câu trong bài đang bắt đầu bằng từ giống nhau. Bạn thử đổi cách mở đầu câu (ví dụ thêm từ chỉ thời gian: <i>Sáng sớm, Nhìn từ xa, Em rất thích...</i>) để tránh lặp từ nhé!")
+                fix_points.append("Một vài câu trong đoạn đang mở đầu giống nhau. Bạn hãy thêm từ nối hoặc từ chỉ thời gian ở đầu câu để đoạn văn mượt mà hơn nhé!")
 
             if not fix_points:
-                fix_points.append("Đoạn văn của bạn trình bày rất chỉn chu, viết hoa và đặt dấu câu đầy đủ. Hãy phát huy nhé!")
+                fix_points.append("Bài viết của bạn rất sạch sẽ, đúng chính tả và biết cách dùng từ giàu hình ảnh. Hãy tiếp tục phát huy nhé!")
 
             praise_html = "".join([f"<li>{p}</li>" for p in praise_points])
             fix_html = "".join([f"<li>{f}</li>" for f in fix_points])
+
+            # Tạo đoạn văn nâng cấp dựa trực tiếp vào từng câu của học sinh
+            upgraded_full_paragraph = build_upgraded_paragraph_from_student(paragraph_input, current_item)
 
             st.markdown(f"""
             <div class="ai-box">
@@ -369,8 +464,11 @@ with tab3:
                 👍 <b>Điểm đáng khen của bạn:</b>
                 <ul style="margin-top:4px; margin-bottom:10px;">{praise_html}</ul>
                 ✍️ <b>Gợi ý nhỏ để bạn sửa bài hay hơn nữa:</b>
-                <ul style="margin-top:4px; margin-bottom:10px;">{fix_html}</ul>
-                💎 <b>Câu văn mẫu gợi ý cho đề bài này:</b><br>
-                👉 <i>"{current_item['mau_nang_cap']}"</i>
+                <ul style="margin-top:4px; margin-bottom:12px;">{fix_html}</ul>
+                💎 <b>Đoạn văn gợi ý chỉnh sửa hoàn chỉnh (Dựa theo đúng ý bài viết của bạn {st.session_state.student_name}):</b><br>
+                <span style="font-size:0.92rem; color:#5f3dc4;"><i>(Các chữ <span class="hl-edit">tô màu tím</span> là phần Trợ lý giúp bạn sửa lỗi viết hoa hoặc thêm từ gợi tả, so sánh vào ý gốc của bạn)</i></span>
+                <div class="upgrade-paragraph-box">
+                    {upgraded_full_paragraph}
+                </div>
             </div>
             """, unsafe_allow_html=True)
