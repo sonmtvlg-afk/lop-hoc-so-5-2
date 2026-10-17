@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 
 # ==================== CẤU HÌNH TRANG ====================
 st.set_page_config(
-    page_title="Phòng Thí Nghiệm Khoa Học 6 Chủ Đề - Lớp 5/2",
+    page_title="Phòng Thí Nghiệm Khoa Học Lớp 5 - TH Bình Phước",
     page_icon="🔬",
     layout="wide"
 )
@@ -40,8 +40,8 @@ st.markdown("""
 
 st.markdown("""
 <div class="sci-banner">
-    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC 6 CHỦ ĐỀ - LỚP 5/2</h1>
-    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Chương trình Khoa học Lớp 5</p>
+    <h1>🔬 PHÒNG THÍ NGHIỆM KHOA HỌC LỚP 5 - LỚP 5/2</h1>
+    <p>Trường Tiểu học Bình Phước • GVCN: Thầy Huỳnh Minh Sơn • Tích hợp Chủ đề Năng lượng & Chủ đề Con người và Sức khỏe</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -95,7 +95,7 @@ science_lab_html = """
         background: #e6fcf5;
         color: #087f5b;
         font-weight: 800;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s;
@@ -161,7 +161,7 @@ science_lab_html = """
         font-weight: 700;
         cursor: pointer;
         transition: 0.15s;
-        font-size: 0.86rem;
+        font-size: 0.85rem;
     }
     .act-btn:hover { background: #f1f3f5; transform: translateY(-1px); }
     .act-btn.selected {
@@ -213,15 +213,15 @@ science_lab_html = """
     <!-- CỘT TRÁI: MÀN HÌNH MÔ PHỎNG -->
     <div class="stage-panel">
         <div class="station-tabs">
-            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Chủ đề 2: Trạm Điện</button>
-            <button id="tab2" class="tab-btn" onclick="switchStation(2)">🧪 Chủ đề 1 & 4: Chất & Vi Khuẩn</button>
-            <button id="tab3" class="tab-btn" onclick="switchStation(3)">🌿 Chủ đề 3 & 6: Sinh Vật & Môi Trường</button>
+            <button id="tab1" class="tab-btn active" onclick="switchStation(1)">⚡ Trạm 1: Năng Lượng Điện</button>
+            <button id="tab2" class="tab-btn" onclick="switchStation(2)">👶 Trạm 2: Các Giai Đoạn Phát Triển</button>
+            <button id="tab3" class="tab-btn" onclick="switchStation(3)">💪 Trạm 3: Sức Khỏe Tuổi Dậy Thì</button>
         </div>
 
         <canvas id="labCanvas" width="760" height="420"></canvas>
 
         <div id="aiExplain" class="ai-explain-box">
-            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b> (Lớp 5/2 - TH Bình Phước)! Hãy chọn trạm thí nghiệm bám sát 6 chủ đề sách giáo khoa Khoa học 5 để bắt đầu nhé!
+            🤖 <b>Trợ lý Khoa học AI:</b> Chào nhà khoa học nhí <b>Hiểu Minh</b> (Lớp 5/2 - TH Bình Phước)! Hãy chọn trạm thí nghiệm để bắt đầu khám phá nhé!
         </div>
     </div>
 
@@ -229,14 +229,14 @@ science_lab_html = """
     <div class="control-panel">
         <div class="user-bar">
             <div>👩‍🔬 Nhà khoa học: <span id="scientistName">Hiểu Minh</span></div>
-            <div>🌟 <span id="expScore">90</span> Điểm</div>
+            <div>🌟 <span id="expScore">95</span> Điểm</div>
         </div>
 
         <div>
             <input type="text" id="nameInput" value="Hiểu Minh" placeholder="Nhập tên học sinh..." oninput="updateName()">
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 1: CHỦ ĐỀ 2 - NĂNG LƯỢNG ĐIỆN -->
+        <!-- ĐIỀU KHIỂN TRẠM 1: NĂNG LƯỢNG ĐIỆN (GIỮ NGUYÊN) -->
         <div id="ctrlStation1" class="ctrl-group">
             <div class="ctrl-title">⚡ Chủ đề 2: Mạch Điện Đơn Giản & Vật Dẫn Điện</div>
             <label style="font-size:0.85rem; font-weight:bold;">1. Nguồn Điện (Bài 8, 9, 11):</label>
@@ -245,7 +245,7 @@ science_lab_html = """
                 <option value="solar">☀️ Năng lượng Mặt trời (Bài 11)</option>
             </select>
 
-            <label style="font-size:0.85rem; font-weight:bold;">2. Thử nghiệm vật liệu (Bài 9):</label>
+            <label style="font-size:0.85rem; font-weight:bold;">2. Thử nghiệm vật liệu (Bài 9)[cite: 9]:</label>
             <div class="btn-grid" style="margin-top:4px;">
                 <button class="act-btn selected" id="mat_copper" onclick="selectMaterial('copper')">🪙 Thanh Đồng</button>
                 <button class="act-btn" id="mat_iron" onclick="selectMaterial('iron')">🔩 Đinh Sắt</button>
@@ -259,29 +259,31 @@ science_lab_html = """
             </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 2: CHỦ ĐỀ 1 & 4 - CHẤT & VI KHUẨN -->
+        <!-- ĐIỀU KHIỂN TRẠM 2: CHỦ ĐỀ 5 - CÁC GIAI ĐOẠN PHÁT TRIỂN CHÍNH (BÀI 23) -->
         <div id="ctrlStation2" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🧪 Chủ đề 1 & 4: Trạng Thái Chất & Vi Khuẩn</div>
-            <label style="font-size:0.85rem; font-weight:bold;">Chọn nội dung thí nghiệm:</label>
+            <div class="ctrl-title">👶 Chủ đề 5: Các Giai Đoạn Phát Triển (Bài 23)[cite: 9]</div>
+            <label style="font-size:0.85rem; font-weight:bold;">Chọn giai đoạn vòng đời con người:</label>
             <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
-                <button class="act-btn selected" id="exp_state" onclick="selectStateExp('state')">🧊 Bài 4: Thể Rắn - Lỏng - Khí</button>
-                <button class="act-btn" id="exp_bac" onclick="selectStateExp('bac')">🦠 Bài 19: Vi khuẩn Lên men có ích</button>
+                <button class="act-btn selected" id="stage_kid" onclick="selectStage('kid')">👶 Trẻ em & Thiếu nhi</button>
+                <button class="act-btn" id="stage_pub" onclick="selectStage('pub')">🧑‍🎓 Tuổi dậy thì (Lớp 5)</button>
+                <button class="act-btn" id="stage_adult" onclick="selectStage('adult')">👨‍💼 Người trưởng thành</button>
+                <button class="act-btn" id="stage_old" onclick="selectStage('old')">🧓 Tuổi già</button>
             </div>
             <div style="font-size:0.85rem; color:#087f5b; font-weight:bold;">
-                👉 Khám phá tính chất của chất và vai trò vi khuẩn trong đời sống.
+                👉 Cơ thể con người lớn lên, thay đổi về chiều cao, cân nặng và trí tuệ qua từng thời kỳ.
             </div>
         </div>
 
-        <!-- ĐIỀU KHIỂN TRẠM 3: CHỦ ĐỀ 3 & 6 - SINH VẬT & MÔI TRƯỜNG -->
+        <!-- ĐIỀU KHIỂN TRẠM 3: CHỦ ĐỀ 5 - CHĂM SÓC SỨC KHỎE TUỔI DẬY THÌ (BÀI 25) -->
         <div id="ctrlStation3" class="ctrl-group" style="display:none;">
-            <div class="ctrl-title">🌿 Chủ đề 3 & 6: Sinh Vật, Môi Trường & Đất[cite: 9]</div>
-            <label style="font-size:0.85rem; font-weight:bold;">Chọn nội dung tìm hiểu:</label>
+            <div class="ctrl-title">💪 Chủ đề 5: Chăm Sóc Sức Khỏe Tuổi Dậy Thì (Bài 25)[cite: 9]</div>
+            <label style="font-size:0.85rem; font-weight:bold;">Chọn nội dung chăm sóc sức khỏe:</label>
             <div class="btn-grid" style="margin-top:6px; margin-bottom:10px;">
-                <button class="act-btn selected" id="eco_soil" onclick="selectEcoExp('soil')">🌱 Bài 1 & 2: Vai trò & Bảo vệ Đất</button>
-                <button class="act-btn" id="eco_food" onclick="selectEcoExp('food')">🐇 Bài 13 & 28: Chuỗi thức ăn tự nhiên</button>
+                <button class="act-btn selected" id="hl_hygiene" onclick="selectHealth('hygiene')">🧼 Vệ sinh cá nhân & Thay đổi thể chất</button>
+                <button class="act-btn" id="hl_mental" onclick="selectHealth('mental')">🧠 Dinh dưỡng & Sức khỏe tinh thần</button>
             </div>
             <div style="font-size:0.85rem; color:#087f5b; font-weight:bold;">
-                👉 Tìm hiểu về môi trường sống và mối quan hệ giữa các sinh vật[cite: 9].
+                👉 Tuổi dậy thì cần ăn uống đầy đủ dưỡng chất, tập thể dục và giữ tinh thần thoải mái.
             </div>
         </div>
 
@@ -305,7 +307,7 @@ const canvas = document.getElementById('labCanvas');
 const ctx = canvas.getContext('2d');
 
 let currentStation = 1;
-let expScore = 90;
+let expScore = 95;
 let tick = 0;
 
 // Trạm 1
@@ -318,10 +320,10 @@ let circuit = {
 };
 
 // Trạm 2
-let stateBacMode = 'state';
+let humanStage = 'kid';
 
 // Trạm 3
-let ecoMode = 'soil';
+let healthMode = 'hygiene';
 
 function playTone(win) {
     try {
@@ -362,13 +364,13 @@ function switchStation(stNum) {
         qText.innerText = "Theo Bài 9 (Chủ đề 2), vật liệu nào dẫn điện giúp bóng đèn sáng?[cite: 9]";
         qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🪙 Thanh đồng & Đinh sắt</button><button class="act-btn" onclick="answerQuiz(false)">📏 Thước nhựa & Gỗ khô</button>`;
     } else if (stNum === 2) {
-        document.getElementById('aiExplain').innerHTML = `🧪 <b>Chủ đề 1 & 4:</b> Khám phá tính chất thể rắn, lỏng, khí của chất (Bài 4) và vi khuẩn lên men có ích trong thực phẩm (Bài 19)[cite: 9].`;
-        qText.innerText = "Theo Bài 19 (Chủ đề 4), vi khuẩn nào được ứng dụng để làm sữa chua?[cite: 9]";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🛡️ Vi khuẩn lên men (Lactic)</button><button class="act-btn" onclick="answerQuiz(false)">🦠 Vi khuẩn gây bệnh tả</button>`;
+        document.getElementById('aiExplain').innerHTML = `👶 <b>Bài 23 (Chủ đề 5):</b> Con người trải qua các giai đoạn: Sơ sinh, Trẻ em, Thiếu niên, Tuổi dậy thì, Trưởng thành và Tuổi già[cite: 9].`;
+        qText.innerText = "Theo Bài 23 (Chủ đề 5), giai đoạn nào cơ thể có sự phát triển mạnh mẽ nhất về chiều cao và tâm sinh lý?[cite: 9]";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🧑‍🎓 Tuổi dậy thì</button><button class="act-btn" onclick="answerQuiz(false)">🧓 Tuổi già</button>`;
     } else {
-        document.getElementById('aiExplain').innerHTML = `🌿 <b>Chủ đề 3 & 6:</b> Tìm hiểu vai trò của đất đối với cây trồng (Bài 1) và chuỗi thức ăn trong tự nhiên (Bài 13, 28)[cite: 9].`;
-        qText.innerText = "Theo Chủ đề 3, sinh vật nào là sinh vật sản xuất trong chuỗi thức ăn?[cite: 9]";
-        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🌱 Thực vật (Cỏ xanh)</button><button class="act-btn" onclick="answerQuiz(false)">🦊 Động vật ăn thịt</button>`;
+        document.getElementById('aiExplain').innerHTML = `💪 <b>Bài 25 (Chủ đề 5):</b> Chăm sóc sức khỏe tuổi dậy thì bao gồm giữ vệ sinh cơ thể, ăn uống đủ chất, ngủ đủ giấc và giữ tinh thần vui tươi[cite: 9].`;
+        qText.innerText = "Theo Bài 25 (Chủ đề 5), việc làm nào cần thiết để chăm sóc cơ thể tuổi dậy thì?[cite: 9]";
+        qOpts.innerHTML = `<button class="act-btn" onclick="answerQuiz(true)">🧼 Vệ sinh sạch sẽ & dinh dưỡng đủ chất</button><button class="act-btn" onclick="answerQuiz(false)"> thức khuya & bỏ bữa</button>`;
     }
 }
 
@@ -432,28 +434,33 @@ function updateCircuitExplanation() {
 }
 
 // Trạm 2 logic
-function selectStateExp(mode) {
-    stateBacMode = mode;
-    document.getElementById('exp_state').className = 'act-btn' + (mode === 'state' ? ' selected' : '');
-    document.getElementById('exp_bac').className = 'act-btn' + (mode === 'bac' ? ' selected' : '');
+function selectStage(st) {
+    humanStage = st;
+    ['kid', 'pub', 'adult', 'old'].forEach(s => {
+        document.getElementById('stage_' + s).className = 'act-btn' + (s === st ? ' selected' : '');
+    });
     const box = document.getElementById('aiExplain');
-    if (mode === 'state') {
-        box.innerHTML = `🧊 <b>Bài 4 (Chủ đề 1):</b> Mô phỏng các trạng thái Rắn (Nước đá), Lỏng (Nước) và Khí (Hơi nước)[cite: 9].`;
+    if (st === 'kid') {
+        box.innerHTML = `👶 <b>Giai đoạn Trẻ em & Thiếu nhi:</b> Cơ thể phát triển chiều cao, cân nặng nhanh chóng, học tập và vui chơi tích cực.`;
+    } else if (st === 'pub') {
+        box.innerHTML = `🧑‍🎓 <b>Tuổi dậy thì (Học sinh lớp 5):</b> Giai đoạn chuyển tiếp quan trọng từ trẻ em thành người lớn, phát triển mạnh về chiều cao, cân nặng và bắt đầu có sự thay đổi tâm sinh lý[cite: 9].`;
+    } else if (st === 'adult') {
+        box.innerHTML = `👨‍💼 <b>Người trưởng thành:</b> Cơ thể đạt sự phát triển hoàn thiện nhất, có khả năng lao động, lập gia đình và gánh vác trách nhiệm xã hội.`;
     } else {
-        box.innerHTML = `🦠 <b>Bài 19 (Chủ đề 4):</b> Vi khuẩn lên men (Lactic) có ích giúp muối dưa chua và làm sữa chua thơm ngon[cite: 9].`;
+        box.innerHTML = `🧓 <b>Tuổi già:</b> Các cơ quan trong cơ thể dần lão hóa, cần được chăm sóc sức khỏe và nghỉ ngơi hợp lý.`;
     }
 }
 
 // Trạm 3 logic
-function selectEcoExp(mode) {
-    ecoMode = mode;
-    document.getElementById('eco_soil').className = 'act-btn' + (mode === 'soil' ? ' selected' : '');
-    document.getElementById('eco_food').className = 'act-btn' + (mode === 'food' ? ' selected' : '');
+function selectHealth(mode) {
+    healthMode = mode;
+    document.getElementById('hl_hygiene').className = 'act-btn' + (mode === 'hygiene' ? ' selected' : '');
+    document.getElementById('hl_mental').className = 'act-btn' + (mode === 'mental' ? ' selected' : '');
     const box = document.getElementById('aiExplain');
-    if (mode === 'soil') {
-        box.innerHTML = `🌱 <b>Bài 1 & 2 (Chủ đề 1 & 6):</b> Đất cung cấp chất dinh dưỡng, nước và không khí cho cây trồng. Cần chống xói mòn và ô nhiễm đất[cite: 9].`;
+    if (mode === 'hygiene') {
+        box.innerHTML = `🧼 <b>Vệ sinh & Thể chất (Bài 25):</b> Tắm giặt thường xuyên, giữ vệ sinh sạch sẽ, mặc quần áo thoáng mát và tập thể dục đều đặn[cite: 9].`;
     } else {
-        box.innerHTML = `🌿 <b>Bài 13 & 28 (Chủ đề 3 & 6):</b> Chuỗi thức ăn tự nhiên bắt đầu từ Thực vật (sản xuất) sang Động vật ăn cỏ và Động vật ăn thịt[cite: 9].`;
+        box.innerHTML = `🧠 <b>Dinh dưỡng & Tinh thần (Bài 25):</b> Ăn đủ 4 nhóm chất, uống đủ nước, ngủ đủ giấc và giữ tinh thần lạc quan, chia sẻ với ba mẹ thầy cô[cite: 9].`;
     }
 }
 
@@ -463,7 +470,7 @@ function drawStation1() {
     const isFlowing = circuit.switchClosed && circuit.conductors.includes(circuit.material);
 
     ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText('⚡ CHỦ ĐỀ 2: MẠCH ĐIỆN & VẬT DẪN ĐIỆN (BÀI 9)', 25, 32);
+    ctx.fillText('⚡ CHỦ ĐỀ 2: MẠCH ĐIỆN & VẬT DẪN ĐIỆN (BÀI 9)[cite: 9]', 25, 32);
 
     ctx.strokeStyle = isFlowing ? '#facc15' : '#64748b'; ctx.lineWidth = 6;
     ctx.strokeRect(120, 90, 520, 240);
@@ -525,56 +532,57 @@ function drawStation1() {
 function drawStation2() {
     ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText(stateBacMode === 'state' ? '🧊 CHỦ ĐỀ 1: TRẠNG THÁI RẮN - LỎNG - KHÍ (BÀI 4)[cite: 9]' : '🦠 CHỦ ĐỀ 4: VI KHUẨN CÓ ÍCH (BÀI 19)[cite: 9]', 25, 32);
+    ctx.fillText('👶 CHỦ ĐỀ 5: CÁC GIAI ĐOẠN PHÁT TRIỂN CHÍNH CỦA CON NGƯỜI (BÀI 23)[cite: 9]', 25, 32);
 
-    if (stateBacMode === 'state') {
-        // Mô phỏng 3 trạng thái chất
-        ctx.fillStyle = 'rgba(186, 230, 253, 0.85)'; ctx.fillRect(100, 130, 150, 180);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('🧊 Thể Rắn (Đá)', 120, 220);
+    // Sơ đồ các cột mốc phát triển
+    const stages = [
+        { id: 'kid', label: 'Trẻ em', icon: '👶', x: 120 },
+        { id: 'pub', label: 'Tuổi dậy thì', icon: '🧑‍🎓', x: 300 },
+        { id: 'adult', label: 'Trưởng thành', icon: '👨‍💼', x: 480 },
+        { id: 'old', label: 'Tuổi già', icon: '🧓', x: 640 }
+    ];
 
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.6)'; ctx.fillRect(305, 130, 150, 180);
-        ctx.fillStyle = 'white'; ctx.fillText('💧 Thể Lỏng (Nước)', 318, 220);
+    stages.forEach(s => {
+        let isSel = humanStage === s.id;
+        ctx.fillStyle = isSel ? '#0ca678' : '#334155';
+        ctx.beginPath(); ctx.arc(s.x, 210, isSel ? 45 : 36, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = isSel ? '#fde047' : '#64748b'; ctx.lineWidth = isSel ? 4 : 2; ctx.stroke();
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)'; ctx.fillRect(510, 130, 150, 180);
-        ctx.fillStyle = 'white'; ctx.fillText('♨️ Thể Khí (Hơi)', 525, 220);
-    } else {
-        // Mô phỏng vi khuẩn lên men
-        ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 6;
-        ctx.beginPath(); ctx.arc(380, 220, 120, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        for (let i = 0; i < 18; i++) {
-            let bx = 330 + Math.sin(i + tick * 0.05) * 60;
-            let by = 190 + Math.cos(i + tick * 0.05) * 50;
-            ctx.fillStyle = '#4ade80';
-            ctx.beginPath(); ctx.arc(bx, by, 9, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('🛡️ Vi khuẩn Lactic (Lên men sữa chua có ích)', 380, 370);
+        ctx.font = 'bold 32px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(s.icon, s.x, 222);
+
+        ctx.fillStyle = isSel ? '#fde047' : 'white'; ctx.font = 'bold 15px sans-serif';
+        ctx.fillText(s.label, s.x, 285);
         ctx.textAlign = 'left';
-    }
+    });
 }
 
 function drawStation3() {
-    ctx.fillStyle = '#0284c7'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white'; ctx.font = 'bold 17px sans-serif';
-    ctx.fillText(ecoMode === 'soil' ? '🌱 CHỦ ĐỀ 1 & 6: VAI TRÒ VÀ BẢO VỆ ĐẤT (BÀI 1 & 2)[cite: 9]' : '🌿 CHỦ ĐỀ 3 & 6: CHUỖI THỨC ĂN TỰ NHIÊN (BÀI 13 & 28)[cite: 9]', 25, 32);
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 17px sans-serif';
+    ctx.fillText('💪 CHỦ ĐỀ 5: CHĂM SÓC SỨC KHỎE TUỔI DẬY THÌ (BÀI 25)[cite: 9]', 25, 32);
 
-    if (ecoMode === 'soil') {
-        // Mô phỏng đất trồng cây
-        ctx.fillStyle = '#b45309'; ctx.fillRect(0, 280, canvas.width, 140);
-        ctx.fillStyle = '#78350f'; ctx.fillRect(0, 340, canvas.width, 80);
-        ctx.fillStyle = '#fde047'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('☀️', 620, 90);
-        ctx.fillStyle = '#22c55e'; ctx.font = 'bold 50px sans-serif'; ctx.fillText('🌳', 350, 275);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 15px sans-serif';
-        ctx.fillText('Đất cung cấp chất dinh dưỡng, nước và không khí cho cây phát triển xanh tốt!', 100, 380);
-    } else {
-        // Chuỗi thức ăn
-        ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 310, canvas.width, 110);
-        ctx.fillStyle = '#22c55e'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🌱 Cỏ', 160, 285);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 300, 260);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🐇 Thỏ', 390, 285);
-        ctx.fillStyle = 'white'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('➡️', 530, 260);
-        ctx.fillStyle = '#f97316'; ctx.font = 'bold 45px sans-serif'; ctx.fillText('🦊 Cáo', 610, 285);
-    }
+    // Minh họa chăm sóc sức khỏe (Vệ sinh, Dinh dưỡng, Thể thao)
+    const tips = [
+        { title: '🧼 Vệ sinh cá nhân', desc: 'Tắm gội sạch sẽ hàng ngày, mặc quần áo thoáng mát.', x: 150 },
+        { title: '🥗 Dinh dưỡng đủ chất', desc: 'Ăn đủ 4 nhóm chất, uống đủ nước, hạn chế đồ ăn nhanh.', x: 380 },
+        { title: '⚽ Thể thao & Tinh thần', desc: 'Tập thể dục, ngủ đủ giấc, giữ tinh thần vui tươi, lạc quan.', x: 610 }
+    ];
+
+    tips.forEach(t => {
+        ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#0ca678'; ctx.lineWidth = 3;
+        ctx.fillRect(t.x - 100, 110, 200, 180);
+        ctx.strokeRect(t.x - 100, 110, 200, 180);
+
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(t.title, t.x, 145);
+
+        ctx.fillStyle = 'white'; ctx.font = '13px sans-serif';
+        // Tự động ngắt dòng đơn giản
+        ctx.fillText(t.desc.slice(0, 22), t.x, 185);
+        ctx.fillText(t.desc.slice(22), t.x, 210);
+        ctx.textAlign = 'left';
+    });
 }
 
 function animate() {
