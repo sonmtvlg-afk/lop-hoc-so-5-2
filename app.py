@@ -1,3 +1,7 @@
+<ElicitationsGroup>
+Dưới đây là mã nguồn Python đã được cập nhật. Em đã bổ sung định dạng **in đậm kết hợp màu tím nổi bật (`**<span style="color:#7048e8;">...</span>**`)** cho các từ ngữ, hình ảnh so sánh và nhân hóa được Trợ lý AI nâng cấp trong **Trạm "Bác Sĩ Sửa Câu"**, giúp học sinh dễ dàng nhận ra phần được cải tiến so với câu gốc:
+
+```python
 import streamlit as st
 import random
 
@@ -39,6 +43,7 @@ st.markdown("""
         font-size: 1.05rem;
         color: #3b0764;
         margin: 12px 0;
+        line-height: 1.6;
     }
     .vocab-badge {
         display: inline-block;
@@ -125,20 +130,18 @@ with tab2:
             st.session_state.stars += 5
             st.balloons()
             
-            improved_sentences = [
-                f"🌟 **Phiên bản 1 (Dùng từ láy & Nhân hóa):** Dòng sông quê em hiền hòa uốn lượn như dải lụa mềm mại, ôm ấp lấy những xóm làng trù phú.",
-                f"🌟 **Phiên bản 2 (Giàu hình ảnh):** Từ trên cao nhìn xuống, con sông khoác lên mình tấm áo xanh biếc, rợp bóng dừa nước mát rượi.",
-                f"🌟 **Mẹo từ AI:** AI đã giúp em thay thế các từ lặp (như từ 'con sông') bằng các từ ngữ gợi tả và hình ảnh so sánh sinh động hơn!"
-            ]
+            # Phần sửa lại được tô đậm và tô màu nổi bật để học sinh dễ chú ý
+            version1 = 'Dòng sông quê em <strong style="color:#ae3ec9; background-color:#f3f0ff; padding:2px 6px; border-radius:4px;">hiền hòa uốn lượn như dải lụa mềm mại, ôm ấp lấy những xóm làng trù phú</strong>.'
+            version2 = 'Từ trên cao nhìn xuống, con sông <strong style="color:#ae3ec9; background-color:#f3f0ff; padding:2px 6px; border-radius:4px;">khoác lên mình tấm áo xanh biếc, rợp bóng dừa nước mát rượi</strong>.'
             
             st.markdown(f"""
             <div class="ai-box">
                 🤖 <b>Trợ lý AI Tiếng Việt 5/2 đã nâng cấp câu văn cho em {st.session_state.student_name}:</b><br><br>
                 • <b>Câu gốc của em:</b> "{user_sentence}"<br><br>
-                • <b>Các câu văn gợi ý nâng cấp:</b><br>
-                {improved_sentences[0]}<br>
-                {improved_sentences[1]}<br><br>
-                <i>({improved_sentences[2]})</i>
+                • <b>Các câu văn gợi ý nâng cấp <span style="color:#7048e8;">(Phần chữ tô màu nổi bật là phần cải tiến)</span>:</b><br>
+                1. {version1}<br>
+                2. {version2}<br><br>
+                <i>(Mẹo từ AI: AI đã giúp em thay thế các từ lặp bằng các từ ngữ gợi tả và hình ảnh so sánh sinh động hơn!)</i>
             </div>
             """, unsafe_allow_html=True)
             st.success("Tuyệt vời! Em được thưởng +5 Sao Ngôn Từ ⭐")
@@ -184,3 +187,5 @@ with tab3:
         if st.button("🎲 Đổi Thử Thách Khác", use_container_width=True):
             st.session_state.current_challenge = random.choice(challenges)
             st.rerun()
+```
+</ElicitationsGroup>
